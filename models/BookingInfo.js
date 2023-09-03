@@ -16,6 +16,13 @@ const bookingInfoSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
+    advancePaidOn: {
+      type: Date,
+      required: true,
+    },
+    fullyPaidDate: {
+      type: Date,
+    },
     totalAmount: {
       type: Number,
       required: true,
@@ -34,6 +41,11 @@ const bookingInfoSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "BookingDateTime",
       required: true,
+    },
+    bookingStatus: {
+      type: String,
+      required: true,
+      enum: ["Cancelled", "AdvancePaid", "Booked"],
     },
     paymentSummary: String,
   },

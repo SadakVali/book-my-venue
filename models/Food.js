@@ -14,6 +14,12 @@ const foodSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    vegPricePerPlate: {
+      type: Number,
+    },
+    NonvegPricePerPlate: {
+      type: Number,
+    },
   },
   {
     timestamps: true,

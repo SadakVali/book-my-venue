@@ -77,7 +77,7 @@ const functionHallSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    summary: {
+    aboutVenue: {
       type: String,
       required: true,
     },
