@@ -1,17 +1,17 @@
-import contactusFormResponse from "../mail/templates/contactusFormResponse";
+import contactusFormEmailTemplate from "../mail/templates/contactusFormEmailTemplate";
 import sendMail from "../utils/sendMail";
+import { ADMIN_CONSTANTS } from "../utils/constants";
 
 export const contactUsController = async (req, res) => {
   // Destructure request body
-  const { email, firstName, lastName, message, phoneNo, countryCode } =
-    req.body;
+  const { email, name, message, contactNumber } = req.body;
 
   try {
     // Validate request data (optional but recommended)
-    if (!email || !firstName || !message) {
+    if (!email || !name || !message) {
       return res.status(400).json({
         success: false,
-        message: "Email, firstName, and message are required fields.",
+        message: "Email, name, and message are required fields.",
       });
     }
 
@@ -19,13 +19,25 @@ export const contactUsController = async (req, res) => {
     const emailResponse = await sendMail(
       email,
       "Your Data Sent Successfully",
-      contactusFormResponse(
+      contactusFormEmailTemplate(
         email,
-        firstName,
-        lastName,
+        name,
         message,
-        phoneNo,
-        countryCode
+        contactNumber,
+        (toCustomer = true)
+      )
+    );
+
+    // Send contact form response email
+    await sendMail(
+      ADMIN_CONSTANTS.EMAIL,
+      "FeedBack from a BookMyHall Customer",
+      contactusFormEmailTemplate(
+        email,
+        name,
+        message,
+        contactNumber,
+        (toCustomer = false)
       )
     );
 

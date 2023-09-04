@@ -3,7 +3,7 @@ import Video from "../models/Video";
 import Chapter from "../models/Chapter";
 
 // utility snippets
-import { uploadFileToCloudinary } from "../utils/fileUploader";
+import { uploadFileToCloudinary } from "../utils/uploadFileToCloudinary";
 
 // create a new Video under a given chapter
 exports.createVideo = async (req, res) => {
@@ -116,56 +116,6 @@ exports.updateVideo = async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "An error occurred while updating the subsection",
-    });
-  }
-};
-
-// HW: deleteVideo
-exports.deleteVideo = async (req, res) => {
-  try {
-    // Fetch the data from the request body and validate inputs
-    const { chapterId, videoId } = req.body;
-    if (!chapterId || !videoId) {
-      return res.status(400).json({
-        success: false,
-        message: "Both chapterId and videoId are required.",
-      });
-    }
-
-    // Delete videoId from the Chapter collection
-    const updatedChapter = await Chapter.findByIdAndUpdate(
-      chapterId,
-      { $pull: { videos: videoId } },
-      { new: true } // Return the updated document
-    );
-
-    if (!updatedChapter) {
-      return res.status(404).json({
-        success: false,
-        message: "Chapter document not found",
-      });
-    }
-
-    // Delete the video document from the videos array field
-    const deletedVideo = await Video.findByIdAndDelete(videoId);
-    if (!deletedVideo) {
-      return res.status(404).json({
-        success: false,
-        message: "Video document not found",
-      });
-    }
-
-    // Return success response with updatedChapter
-    return res.status(200).json({
-      success: true,
-      message: "Video deleted successfully",
-      data: updatedChapter, // Use the updated document from the Chapter array
-    });
-  } catch (error) {
-    console.error("Error occured while deleting a video", error);
-    return res.status(500).json({
-      success: false,
-      message: "An error occurred while deleting the video document",
     });
   }
 };

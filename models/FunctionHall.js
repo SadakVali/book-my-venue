@@ -7,7 +7,7 @@ const functionHallSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    description: {
+    aboutVenue: {
       type: String,
       required: true,
       trim: true,
@@ -77,10 +77,6 @@ const functionHallSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    aboutVenue: {
-      type: String,
-      required: true,
-    },
     pricePerDay: {
       type: Number,
       required: true,
@@ -94,7 +90,6 @@ const functionHallSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "BookingInfo",
-        required: true,
       },
     ],
     status: {

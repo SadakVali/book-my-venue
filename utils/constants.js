@@ -8,3 +8,7 @@ export const VENUE_STATUS = {
   DRAFT: "Draft",
   PUBLISHED: "Published",
 };
+
+export const ADMIN_CONSTANTS = {
+  EMAIL: "rebirth4vali@gmail.com",
+};
