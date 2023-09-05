@@ -9,6 +9,12 @@ export const VENUE_STATUS = {
   PUBLISHED: "Published",
 };
 
+export const BOOKING_STATUS = {
+  BOOKED: "Booked",
+  CANCELLED: "Cancelled",
+  ADVANCE_PAID: "AdvancePaid",
+};
+
 export const ADMIN_CONSTANTS = {
   EMAIL: "rebirth4vali@gmail.com",
 };

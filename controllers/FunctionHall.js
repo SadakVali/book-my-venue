@@ -1,6 +1,6 @@
 // Importing the utility snippets
 import { uploadFilesToCloudinary } from "../utils/uploadFilesToCloudinary";
-import { convertSecondsToDuration } from "../utils/secToDuration";
+// import { convertSecondsToDuration } from "../utils/secToDuration";
 
 // Importing the models
 import User from "../models/User";
@@ -10,7 +10,6 @@ import Alcohol from "../models/Alcohol";
 import Decor from "../models/Decor";
 import OtherPolicies from "../models/OtherPolicies";
 import Address from "../models/Address";
-import GPS from "../models/GPS";
 
 // Create a new function hall handler function
 exports.createFunctionHall = async (req, res) => {
@@ -190,7 +189,7 @@ exports.createFunctionHall = async (req, res) => {
     });
 
     // Create a new course entry
-    const newCourse = await FunctionHall.create({
+    const newFunctionHallDetails = await FunctionHall.create({
       name,
       aboutVenue,
       pricePerDay,
@@ -211,7 +210,7 @@ exports.createFunctionHall = async (req, res) => {
     // Add the new course to the user doc of Instructor
     await User.findByIdAndUpdate(
       managerId,
-      { $push: { functionHall: newCourse._id } },
+      { $push: { functionHall: newFunctionHallDetails._id } },
       { new: true }
     );
 
@@ -219,7 +218,7 @@ exports.createFunctionHall = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Course Created Successfully",
-      data: newCourse,
+      data: newFunctionHallDetails,
     });
   } catch (error) {
     console.error(error);

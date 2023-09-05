@@ -17,29 +17,23 @@ const bookingInfoSchema = new mongoose.Schema(
       required: true,
     },
     advancePaidOn: {
-      type: Date,
+      type: Number,
       required: true,
     },
     fullyPaidDate: {
-      type: Date,
+      type: Number,
     },
     totalAmount: {
       type: Number,
       required: true,
     },
     nextPaymentDueDate: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "BookingDateTime",
+      type: Number,
       required: true,
     },
-    checkInDateTime: {
+    bookingSlot: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "BookingDateTime",
-      required: true,
-    },
-    checkOutDateTime: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "BookingDateTime",
+      ref: "BookingSlot",
       required: true,
     },
     bookingStatus: {
@@ -55,6 +49,6 @@ const bookingInfoSchema = new mongoose.Schema(
   }
 );
 
-const BookingInfo = mongoose.model("FunctionHall", bookingInfoSchema);
+const BookingInfo = mongoose.model("BookingInfo", bookingInfoSchema);
 
 export default BookingInfo;

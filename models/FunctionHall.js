@@ -81,7 +81,7 @@ const functionHallSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    bookingDates: [
+    allBookings: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "BookingInfo",
