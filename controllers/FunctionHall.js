@@ -1,5 +1,5 @@
 // Importing the utility snippets
-import { uploadFileToCloudinary } from "../utils/uploadFileToCloudinary";
+import { uploadFilesToCloudinary } from "../utils/uploadFilesToCloudinary";
 import { convertSecondsToDuration } from "../utils/secToDuration";
 
 // Importing the models
@@ -26,7 +26,6 @@ exports.createFunctionHall = async (req, res) => {
       lodgingRooms,
       roomPrice,
       bookingCancellation,
-      status,
       // Food
       cateringProvidedByVenue,
       outsideCatererAllowed,
@@ -70,7 +69,6 @@ exports.createFunctionHall = async (req, res) => {
       !lodgingRooms ||
       !roomPrice ||
       !bookingCancellation ||
-      !status ||
       // Food
       !cateringProvidedByVenue ||
       !outsideCatererAllowed ||
@@ -105,8 +103,8 @@ exports.createFunctionHall = async (req, res) => {
         message: "All fields are required",
       });
 
-    // Set default status to "Draft" if not provided
-    if (!status) status = "Draft";
+    // Set default status to "Draft"
+    const status = "Draft";
 
     // Check if the user is an instructor
     const managerId = req.user.id;
@@ -127,7 +125,7 @@ exports.createFunctionHall = async (req, res) => {
         message: "FunctionHall is already registered with this ManagerId",
       });
 
-    // Upload images to Cloudinary
+    // TODO:Upload images to Cloudinary
     const imagesResponse = await uploadFileToCloudinary(
       req?.files?.images,
       process.env.FOLDER_NAME
@@ -236,7 +234,7 @@ exports.createFunctionHall = async (req, res) => {
 // Get all details of a single function hall with detailed information instead of ObjectIds
 exports.getSingleFunctionHallDetails = async (req, res) => {
   try {
-    // Validate and extract the courseId from the request parameters
+    // Validate and extract the functionHallId from the request parameters
     const { functionHallId } = req.body;
     if (!functionHallId) {
       return res.status(400).json({
@@ -281,146 +279,103 @@ exports.getSingleFunctionHallDetails = async (req, res) => {
     });
   }
 };
-// // Get full single FunctionHall details
-// exports.getFullSingleFunctionHallDetails = async (req, res) => {
-//   try {
-//     // Validate and extract the courseId from the request body
-//     const { courseId } = req.body;
-//     if (!courseId) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "CourseId must be provided in the request body",
-//       });
-//     }
-
-//     // Validate and extract the userId from the authenticated user (assuming req.user is set)
-//     const userId = req.user?.id;
-//     if (!userId) {
-//       return res.status(400).json({
-//         success: false,
-//         message:
-//           "User ID is missing in the request or user is not authenticated",
-//       });
-//     }
-
-//     // Fetch full details of the course with populated data
-//     const courseDetails = await Course.findById(courseId)
-//       .populate("category")
-//       .populate("ratingsAndReviews")
-//       .populate({ path: "instructor", populate: { path: "additionalDetails" } })
-//       .populate({ path: "chapters", populate: { path: "videos" } })
-//       .exec();
-
-//     // Validate if the course was found
-//     if (!courseDetails) {
-//       return res.status(404).json({
-//         success: false,
-//         message: `Course with courseId ${courseId} not found`,
-//       });
-//     }
-
-//     // Calculate the total duration of the course
-//     let totalCourseDurationInSeconds = 0;
-//     courseDetails.chapters.forEach((chapter) => {
-//       chapter.videos.forEach((video) => {
-//         totalCourseDurationInSeconds += parseInt(video.timeDuration);
-//       });
-//     });
-//     const totalCourseDuration = convertSecondsToDuration(
-//       totalCourseDurationInSeconds
-//     );
-
-//     // Fetch the course progress for the given course and user
-//     const courseProgress = await CourseProgress.findOne({
-//       courseId,
-//       userId,
-//     });
-
-//     // Return the response with the full course details, total duration, and completed videos (if available)
-//     return res.status(200).json({
-//       success: true,
-//       message: "Successfully fetched all the course details",
-//       data: {
-//         courseDetails,
-//         totalCourseDuration,
-//         completedVideos: courseProgress?.completedVideos || [], // If courseProgress is not found, default to an empty array
-//       },
-//     });
-//   } catch (error) {
-//     console.error(error);
-//     return res.status(500).json({
-//       success: false,
-//       message:
-//         "Something went wrong while fetching the complete course details with courseProgress",
-//       error: error.message,
-//     });
-//   }
-// };
 
 // Edit a single function hall details
 exports.editFunctionHall = async (req, res) => {
   try {
-    // Validate and extract the courseId from the request body
-    const { courseId } = req.body;
-    if (!courseId) {
+    // Validate and extract the functionHallId from the request body
+    const { functionHallId } = req.body;
+    if (!functionHallId) {
       return res.status(400).json({
         success: false,
-        message: "CourseId must be provided in the request body",
+        message: "functionHallId must be provided in the request body",
       });
     }
 
-    // Find the course by its courseId
-    const course = await Course.findById(courseId);
-    if (!course) {
+    // Find the course by its functionHallId
+    const existingFunctionHall = await FunctionHall.findById(functionHallId);
+    if (!existingFunctionHall) {
       return res.status(404).json({
         success: false,
-        message: `Course with courseId ${courseId} not found`,
+        message: `FunctionHall with functionHallId ${functionHallId} not found`,
       });
     }
 
-    // If a thumbnail image is found in the request, update it
-    if (req.files && req.files.thumbnailImage) {
-      const thumbnailImage = req.files.thumbnailImage;
-      const thumbnailResponse = await uploadFileToCloudinary(
-        thumbnailImage,
-        process.env.FOLDER_NAME
-      );
-      course.thumbnail = thumbnailResponse.secure_url;
-    }
-
-    // Update fields that are present in the request body
-    for (const key in req.body) {
-      if (req.body.hasOwnProperty(key)) {
-        if (key === "tag" || key === "instructions") {
-          course[key] = JSON.parse(req.body[key]);
-        } else {
-          course[key] = req.body[key];
-        }
+    // Extract all possible fields from the FunctionHall schema
+    const functionHallFields = Object.keys(existingFunctionHall._doc);
+    // Iterate through the FunctionHall fields and update if non-null values are present in req.body
+    functionHallFields.forEach(async (field) => {
+      if (
+        req.body[field] !== undefined &&
+        req.body[field] !== null &&
+        field !== "images" &&
+        field !== "video"
+      ) {
+        existingFunctionHall[field] = req.body[field];
       }
-    }
+      if (field === "video" && req.files && req.files[field]) {
+        public_ids = [existingFunctionHall[field].publicId];
+        const uploadedFilesDetails = await uploadFilesToCloudinary(
+          req.files[field],
+          process.env.FOLDER_NAME,
+          public_ids
+        );
+        existingFunctionHall.video.url = uploadedFilesDetails.secure_url;
+        existingFunctionHall.video.publicId = uploadedFilesDetails.public_id;
+        existingFunctionHall.video.duration = uploadedFilesDetails.duration;
+      }
 
-    // Save the updated course to the database
-    await course.save();
+      if (field === "images") {
+        public_ids = existingFunctionHall[field].map((image) => image.publicId);
+        const uploadedFilesDetails = await uploadFilesToCloudinary(
+          req.files[field],
+          process.env.FOLDER_NAME,
+          public_ids
+        );
+        existingFunctionHall.images = uploadedFilesDetails.map((imgRes) => {
+          return { url: imgRes.secure_url, publicId: imgRes.public_id };
+        });
+      }
+    });
 
-    // Fetch the updated details of the course with populated data
-    const updatedCourseDetails = await Course.findById(courseId)
-      .populate("category")
-      .populate("ratingAndReviews")
-      .populate({ path: "instructor", populate: { path: "additionalDetails" } })
-      .populate({ path: "chapters", populate: { path: "videos" } })
-      .exec();
+    // Save the updated FunctionHall document
+    const updatedFunctionHall = await existingFunctionHall.save();
 
-    // Return the response with the updated course details
+    const subSchemaFieldsToUpdate = [
+      "food",
+      "alcohol",
+      "decoration",
+      "otherPolicies",
+      "address",
+      "manager",
+    ];
+    // Iterate through the sub-schema fields and update if non-null values are present in req.body
+    subSchemaFieldsToUpdate.forEach(async (subSchemaId) => {
+      // Access the Address subdocument within the FunctionHall
+      const newSubSchema = existingFunctionHall[subSchemaId];
+      // Extract all possible fields from the Address sub-schema
+      const newSubSchemaFields = Object.keys(newSubSchema._doc);
+      // Iterate through the Address sub-schema fields and update if non-null values are present in req.body
+      newSubSchemaFields.forEach((field) => {
+        if (req.body[field] !== undefined && req.body[field] !== null) {
+          newSubSchema[field] = req.body[field];
+        }
+      });
+      // Save the updated Address sub-document
+      await newSubSchema.save();
+    });
+
+    // Return the response with the updated existingFunctionHall details
     return res.status(200).json({
       success: true,
-      message: "Course Updated Successfully",
-      data: updatedCourseDetails,
+      message: "Function Hall Details Updated Successfully",
+      data: updatedFunctionHall,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while updating the course",
+      message: "Something went wrong while updating the existingFunctionHall",
       error: error.message,
     });
   }

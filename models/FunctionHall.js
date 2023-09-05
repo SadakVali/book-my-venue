@@ -17,7 +17,7 @@ const functionHallSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    images: [String],
+    images: [{ url: { type: String }, publicId: { type: String } }],
     price: {
       type: Number,
       required: true,
@@ -73,17 +73,12 @@ const functionHallSchema = new mongoose.Schema(
       required: true,
     },
     video: {
-      type: String,
-      required: true,
-      trim: true,
+      url: { type: String, required: true, trim: true },
+      publicId: { type: String, required: true, trim: true },
+      duration: { type: String, required: true, trim: true },
     },
     pricePerDay: {
       type: Number,
-      required: true,
-    },
-    gpsCoordinates: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "GPS",
       required: true,
     },
     bookingDates: [

@@ -32,10 +32,17 @@ const addressSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    GPS: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "GPS",
-      required: true,
+    location: {
+      type: {
+        type: String,
+        enum: ["Point"], // Only allow the "Point" type
+        default: "Point", // Set the default value to "Point"
+        required: true,
+      },
+      coordinates: {
+        type: [Number], // longitude first, and then latitude
+        required: true,
+      },
     },
   },
   {
