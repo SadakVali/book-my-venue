@@ -2,10 +2,19 @@ import mongoose from "mongoose";
 
 const bookingInfoSchema = new mongoose.Schema(
   {
-    customer: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+    customerName: {
+      type: Number,
       required: true,
+    },
+    customerContactNumber: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    customerAlternateContactNumber: {
+      type: Number,
+      required: true,
+      unique: true,
     },
     functionHall: {
       type: mongoose.Schema.Types.ObjectId,

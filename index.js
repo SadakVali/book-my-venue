@@ -16,6 +16,9 @@ const dotenv = require("dotenv");
 const mongodbConnection = require("./config/mongodbConnection");
 const { cloudinaryConnect } = require("./config/cloudinary");
 
+// importing the cronjob code
+const scheduler = require("./scheduler"); // Import the scheduler function
+
 // inintializing environment variables and locale variables
 dotenv.config();
 const PORT = process.env.PORT || 4000;
@@ -63,4 +66,6 @@ app.get("/", (req, res) =>
 // activate the server
 app.listen(PORT, () => {
   console.log(`App is running on PORT ${PORT}`);
+  // Call the scheduler function when the server starts
+  scheduler();
 });
