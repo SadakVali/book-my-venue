@@ -18,11 +18,6 @@ const functionHallSchema = new mongoose.Schema(
       required: true,
     },
     images: [{ url: { type: String }, publicId: { type: String } }],
-    price: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
     advancePercentage: {
       type: Number,
       required: true,

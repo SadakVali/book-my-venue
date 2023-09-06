@@ -13,6 +13,7 @@ export const BOOKING_STATUS = {
   BOOKED: "Booked",
   CANCELLED: "Cancelled",
   ADVANCE_PAID: "AdvancePaid",
+  OCCATION_OVER: "OccationOver",
 };
 
 export const ADMIN_CONSTANTS = {

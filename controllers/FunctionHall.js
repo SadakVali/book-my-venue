@@ -381,3 +381,92 @@ exports.editFunctionHall = async (req, res) => {
 };
 
 // Fetch available halls on specified dates, months & years
+exports.allAvailableFunctionHalls = async (req, res) => {
+  try {
+    // Validate and extract the inputs from the request body
+    const { checkInUnixTimestamp, checkOutUnixTimestamp } = req.body;
+
+    const functionHalls = await FunctionHall.aggregate([
+      // Stage 1: Lookup BookingInfo documents based on allBookings field
+      {
+        $lookup: {
+          from: "BookingInfo",
+          localField: "allBookings",
+          foreignField: "_id",
+          as: "bookings",
+        },
+      },
+      // Stage 2: Unwind the bookings array for individual booking details
+      {
+        $unwind: "$bookings",
+      },
+      // Stage 3: Lookup BookingSlot documents for each booking
+      {
+        $lookup: {
+          from: "BookingSlot",
+          localField: "bookings.bookingSlot",
+          foreignField: "_id",
+          as: "bookingSlots",
+        },
+      },
+      // Stage 4: Filter Function Halls based on booking slot availability
+      {
+        $match: {
+          $or: [
+            { "bookingSlots.checkInTime": { $gte: checkOutUnixTimestamp } },
+            { "bookingSlots.checkOutTime": { $lte: checkInUnixTimestamp } },
+          ],
+        },
+      },
+      // Stage 5: Lookup FunctionHall documents again
+      {
+        $lookup: {
+          from: "FunctionHall",
+          localField: "_id",
+          foreignField: "_id",
+          as: "functionHallDetails",
+        },
+      },
+      // Stage 6: Unwind the result from the FunctionHall collection
+      {
+        $unwind: "$functionHallDetails",
+      },
+      // Stage 7: Filter Function Halls by status "Published"
+      {
+        $match: {
+          "functionHallDetails.status": "Published",
+        },
+      },
+      // Stage 8: Project the desired fields for the final result
+      {
+        $project: {
+          _id: 1,
+          name: "$functionHallDetails.name",
+          aboutVenue: "$functionHallDetails.aboutVenue",
+          manager: "$functionHallDetails.manager",
+          images: "$functionHallDetails.images",
+          pricePerDay: "$functionHallDetails.pricePerDay",
+          guestCapacity: "$functionHallDetails.guestCapacity",
+          parkingSpace: "$functionHallDetails.parkingSpace",
+          lodgingRooms: "$functionHallDetails.lodgingRooms",
+          video: "$functionHallDetails.video",
+        },
+      },
+    ]);
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: "FUnction Halls open for booking fetched successfully",
+      data: functionHalls,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong while fetching the available function halls for booking",
+      error: error.message,
+    });
+  }
+};

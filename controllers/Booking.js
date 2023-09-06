@@ -83,5 +83,45 @@ exports.createNewBooking = async (req, res) => {
 // All Cancelled Bookings (bookingStatus === "Cancelled")
 // All Advance Paid Bookings (current UnixTimeStamp < nextPaymentDueDate and bookingStatus === "AdvancePaid")
 // All Completely Paid Bookings (bookingStatus === "Booked")
+// All Occation Over (bookingStatus === "OccationOver")
+// cancel booking
+// change status to booked
+// change status to Occation Over
 
 // Fetch Booking History of a single Function Hall of specified month & Year
+exports.bookingHistoryOfSingleFunctionHall = async (req, res) => {
+  try {
+    // Validate and extract the inputs from the request body
+    const { managerId, startingUnixTimeStamp, endingUnixTimeStamp } = req.body;
+
+    const functionHall = await FunctionHall.findById(managerId);
+    let functionHallBookingHistoryDetails;
+    if (functionHall) {
+      functionHallBookingHistoryDetails =
+        await functionHall.allBookings.aggregate([
+          { $unwind: "$allBookings" },
+          {
+            $match: {
+              "allBookings.checkInTime": { $lt: endingUnixTimeStamp },
+              "allBookings.checkOutTime": { $gt: startingUnixTimeStamp },
+            },
+          },
+        ]);
+    }
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: "Booking History Filtered successfully",
+      data: functionHallBookingHistoryDetails,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong while fetching the booking history of a Function Hall",
+      error: error.message,
+    });
+  }
+};

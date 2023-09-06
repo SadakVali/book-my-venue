@@ -39,7 +39,7 @@ const bookingInfoSchema = new mongoose.Schema(
     bookingStatus: {
       type: String,
       required: true,
-      enum: ["Cancelled", "AdvancePaid", "Booked"],
+      enum: ["Cancelled", "AdvancePaid", "Booked", "OccationOver"],
     },
     paymentSummary: String,
   },
