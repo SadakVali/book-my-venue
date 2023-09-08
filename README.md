@@ -1,2 +1,3 @@
 # BookMyHall
- Function Hall Booking Web App
+
+Venue Booking Web App

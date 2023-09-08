@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const otherPoliciesSchema = new mongoose.Schema(
   {
@@ -34,4 +34,4 @@ const otherPoliciesSchema = new mongoose.Schema(
 
 const OtherPolicies = mongoose.model("OtherPolicies", otherPoliciesSchema);
 
-export default OtherPolicies;
+module.exports = OtherPolicies;

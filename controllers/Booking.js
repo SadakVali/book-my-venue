@@ -1,24 +1,24 @@
 // Importing the models
-import User from "../models/User";
-import BookingSlot from "../models/BookingSlot";
-import BookingInfo from "../models/BookingInfo";
-import FunctionHall from "../models/FunctionHall";
+const User = require("../models/User");
+const BookingSlot = require("../models/BookingSlot");
+const BookingInfo = require("../models/BookingInfo");
+const Venue = require("../models/FunctionHall");
 
-// import constants
-import { BOOKING_STATUS } from "../utils/constants";
-import { ACCOUNT_TYPE } from "../utils/constants";
+// const constants
+const { BOOKING_STATUS } = require("../utils/constants");
+const { ACCOUNT_TYPE } = require("../utils/constants");
 
 // create a new booking
 exports.createNewBooking = async (req, res) => {
   try {
-    // Validate and extract the inputs from the request body
+    // Validate and extract the inputs = require(the request body
     const {
       checkInTime,
       checkOutTime,
       name,
       contactNumber,
       alternateContactNumber,
-      functionHallId,
+      venueId,
       advancePaid,
       advancePaidOn,
       totalAmount,
@@ -26,10 +26,10 @@ exports.createNewBooking = async (req, res) => {
       paymentSummary,
     } = req.body;
     const bookingStatus = BOOKING_STATUS.DRAFT;
-    if (!functionHallId) {
+    if (!venueId) {
       return res.status(400).json({
         success: false,
-        message: "functionHallId must be provided in the request body",
+        message: "venueId must be provided in the request body",
       });
     }
 
@@ -47,7 +47,7 @@ exports.createNewBooking = async (req, res) => {
     });
     const newBookingDetails = await BookingInfo.create({
       customer: customerDetails._id,
-      manager: functionHallId,
+      manager: venueId,
       advancePaid,
       advancePaidOn,
       totalAmount,
@@ -56,9 +56,9 @@ exports.createNewBooking = async (req, res) => {
       bookingStatus,
       paymentSummary,
     });
-    // updating the allBookings field of the function hall
-    await FunctionHall.findByIdAndUpdate(
-      functionHallId,
+    // updating the allBookings field of the venue
+    await Venue.findByIdAndUpdate(
+      venueId,
       { $push: { allBookings: newBookingDetails._id } },
       { new: true }
     );
@@ -72,7 +72,7 @@ exports.createNewBooking = async (req, res) => {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while creating a Function Hall booking",
+      message: "Something went wrong while creating a Venue booking",
       error: error.message,
     });
   }
@@ -81,7 +81,7 @@ exports.createNewBooking = async (req, res) => {
 // Fetch details of all Bookings of a single customer
 exports.fetchReciepts = async (req, res) => {
   try {
-    // Validate and extract the inputs from the request body
+    // Validate and extract the inputs = require(the request body
     const { customerContactNumber } = req.body;
 
     const customerBookingReciepts = await BookingInfo.find({
@@ -237,7 +237,7 @@ exports.fetchAllBookingsPastOccation = async (req, res) => {
     return res.status(200).json({
       success: true,
       message:
-        "All Bookings Reciepts whose Occation has been selebrated in your Function Hall fetched successfully",
+        "All Bookings Reciepts whose Occation has been selebrated in your Venue fetched successfully",
       data: allOccationCompltedBookings,
     });
   } catch (error) {
@@ -254,7 +254,7 @@ exports.fetchAllBookingsPastOccation = async (req, res) => {
 // cancel booking
 exports.cancelSingleBooking = async (req, res) => {
   try {
-    // Validate and extract the inputs from the request body
+    // Validate and extract the inputs = require(the request body
     const { bookingId } = req.body;
     const cancelledBooking = await BookingInfo.findByIdAndUpdate(
       bookingId,
@@ -283,7 +283,7 @@ exports.cancelSingleBooking = async (req, res) => {
 // change status to booked
 exports.changeStatusToBooked = async (req, res) => {
   try {
-    // Validate and extract the inputs from the request body
+    // Validate and extract the inputs = require(the request body
     const { bookingId } = req.body;
     const compltelyBookedReciept = await BookingInfo.findByIdAndUpdate(
       bookingId,
@@ -309,39 +309,38 @@ exports.changeStatusToBooked = async (req, res) => {
   }
 };
 
-// Fetch Booking History of a single Function Hall of specified month & Year
-exports.bookingHistoryOfSingleFunctionHall = async (req, res) => {
+// Fetch Booking History of a single Venue of specified month & Year
+exports.bookingHistoryOfSingleVenue = async (req, res) => {
   try {
-    // Validate and extract the inputs from the request body
+    // Validate and extract the inputs = require(the request body
     const { managerId, startingUnixTimeStamp, endingUnixTimeStamp } = req.body;
 
-    const functionHall = await FunctionHall.findById(managerId);
-    let functionHallBookingHistoryDetails;
-    if (functionHall) {
-      functionHallBookingHistoryDetails =
-        await functionHall.allBookings.aggregate([
-          { $unwind: "$allBookings" },
-          {
-            $match: {
-              "allBookings.checkInTime": { $lt: endingUnixTimeStamp },
-              "allBookings.checkOutTime": { $gt: startingUnixTimeStamp },
-            },
+    const venue = await Venue.findById(managerId);
+    let venueBookingHistoryDetails;
+    if (venue) {
+      venueBookingHistoryDetails = await venue.allBookings.aggregate([
+        { $unwind: "$allBookings" },
+        {
+          $match: {
+            "allBookings.checkInTime": { $lt: endingUnixTimeStamp },
+            "allBookings.checkOutTime": { $gt: startingUnixTimeStamp },
           },
-        ]);
+        },
+      ]);
     }
 
     // Return a success response
     return res.status(200).json({
       success: true,
       message: "Booking History Filtered successfully",
-      data: functionHallBookingHistoryDetails,
+      data: venueBookingHistoryDetails,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
       message:
-        "Something went wrong while fetching the booking history of a Function Hall",
+        "Something went wrong while fetching the booking history of a Venue",
       error: error.message,
     });
   }

@@ -1,5 +1,5 @@
-import mongoose from "mongoose";
-import bcrypt from "bcrypt";
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
 const userSchema = new mongoose.Schema(
   {
@@ -29,10 +29,10 @@ const userSchema = new mongoose.Schema(
       enum: ["Admin", "Manager", "Customer"],
       required: true,
     },
-    functionHall: [
+    venue: [
       {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "FunctionHall",
+        ref: "Venue",
       },
     ],
     image: {

@@ -69,8 +69,8 @@ const contactusFormEmailTemplate = (
   </head>
   <body>
     ${
-      toCustomer ? (
-        <div class="container">
+      toCustomer
+        ? `<div class="container">
           <a href="https://studynotion-edtech-project.vercel.app">
             <img
               class="logo"
@@ -98,16 +98,14 @@ const contactusFormEmailTemplate = (
             <a href="mailto:info@studynotion.com">info@studynotion.com</a>. We
             are here to help!
           </div>
-        </div>
-      ) : (
-        <div class="body">
+        </div>`
+        : `<div class="body">
           <p>Name : ${name}</p>
           <p>Email : ${email}</p>
           <p>Phone Number : ${contactNumber}</p>
           <p>Message : ${message}</p>
           <p>We appreciate your interest and will get back to you shortly.</p>
-        </div>
-      )
+        </div>`
     }
   </body>
 </html>`;

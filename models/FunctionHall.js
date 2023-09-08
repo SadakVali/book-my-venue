@@ -1,6 +1,6 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
-const functionHallSchema = new mongoose.Schema(
+const venueSchema = new mongoose.Schema(
   {
     name: {
       type: String,
@@ -93,6 +93,6 @@ const functionHallSchema = new mongoose.Schema(
   }
 );
 
-const FunctionHall = mongoose.model("FunctionHall", functionHallSchema);
+const Venue = mongoose.model("Venue", venueSchema);
 
-export default FunctionHall;
+module.exports = Venue;

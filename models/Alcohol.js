@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const alcoholSchema = new mongoose.Schema(
   {
@@ -18,4 +18,4 @@ const alcoholSchema = new mongoose.Schema(
 
 const Alcohol = mongoose.model("Alcohol", alcoholSchema);
 
-export default Alcohol;
+module.exports = Alcohol;

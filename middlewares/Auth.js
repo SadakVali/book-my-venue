@@ -1,4 +1,4 @@
-// import packages
+// const packages
 const jwt = require("jsonwebtoken");
 
 // Constants
@@ -8,7 +8,7 @@ const TOKEN_INVALID_MESSAGE = "Token is invalid";
 // Authentication Middleware
 exports.auth = async (req, res, next) => {
   try {
-    // Extract token from request headers, cookies, or body
+    // Extract token = require(request headers, cookies, or body
     const token =
       (req.headers.authorization &&
         req.headers.authorization.replace("Bearer ", "")) ||
@@ -27,6 +27,7 @@ exports.auth = async (req, res, next) => {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       // Store the decoded JWT payload in the request object for further use
       req.user = decoded;
+      console.log(req.user);
       next();
     } catch (error) {
       return res.status(401).json({
@@ -49,7 +50,7 @@ exports.auth = async (req, res, next) => {
 exports.isAuthorized = async (req, res, next) => {
   try {
     // Validate req.user and account type existence
-    if (!req.user || !req.user.functionHall) {
+    if (!req.user || !req.user.venue) {
       return res.status(401).json({
         success: false,
         message: "Invalid request. User not authenticated.",
@@ -57,10 +58,10 @@ exports.isAuthorized = async (req, res, next) => {
     }
 
     // Check if the user is a Admin
-    if (req.user.functionHall !== req.body.functionHall) {
+    if (req.user.venue !== req.body.venue) {
       return res.status(403).json({
         success: false,
-        message: "You are not the Manager of this Function Hall.",
+        message: "You are not the Manager of this Venue.",
       });
     }
 

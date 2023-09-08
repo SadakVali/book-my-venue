@@ -5,11 +5,9 @@ const cookieParser = require("cookie-parser");
 const expressFileupload = require("express-fileupload");
 
 // // importing the routes
-// const userRoutes = require("./routes/User");
-// const courseRoutes = require("./routes/Course");
-// const paymentRoutes = require("./routes/Payment");
-// const profileRoutes = require("./routes/Profile");
-// const contactUsRoutes = require("./routes/Contact");
+const contactUsRoutes = require("./routes/contact");
+const venueRoutes = require("./routes/functionHall");
+const userRoutes = require("./routes/user");
 
 // importing the configurations
 const dotenv = require("dotenv");
@@ -17,7 +15,7 @@ const mongodbConnection = require("./config/mongodbConnection");
 const { cloudinaryConnect } = require("./config/cloudinary");
 
 // importing the cronjob code
-const scheduler = require("./scheduler"); // Import the scheduler function
+const scheduler = require("./jobs/scheduler"); // Import the scheduler function
 
 // inintializing environment variables and locale variables
 dotenv.config();
@@ -48,12 +46,10 @@ app.use(
   })
 );
 
-// // routes
-// app.use("/api/v1/auth", userRoutes);
-// app.use("/api/v1/profile", profileRoutes);
-// app.use("/api/v1/course", courseRoutes);
-// app.use("/api/v1/payment", paymentRoutes);
-// app.use("/api/v1/reach", contactUsRoutes);
+// routes
+app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/venue", venueRoutes);
+app.use("/api/v1/reach", contactUsRoutes);
 
 // define initial route
 app.get("/", (req, res) =>

@@ -1,6 +1,6 @@
 const schedule = require("node-schedule");
 const mongoose = require("mongoose");
-const BookingInfo = require("./models/BookingInfo"); // Import your BookingInfo model
+const BookingInfo = require("../models/BookingInfo"); // Import your BookingInfo model
 
 // Define the scheduling logic in a function
 function scheduleBookingStatusUpdate() {

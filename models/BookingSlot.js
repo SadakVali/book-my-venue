@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const bookingSlotSchema = new mongoose.Schema({
   checkInTime: {
@@ -13,4 +13,4 @@ const bookingSlotSchema = new mongoose.Schema({
 
 const BookingSlot = mongoose.model("BookingSlot", bookingSlotSchema);
 
-export default BookingSlot;
+module.exports = BookingSlot;

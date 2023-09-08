@@ -1,8 +1,8 @@
-import contactusFormEmailTemplate from "../mail/templates/contactusFormEmailTemplate";
-import sendMail from "../utils/sendMail";
-import { ADMIN_CONSTANTS } from "../utils/constants";
+const contactusFormEmailTemplate = require("../utils/contactusFormEmailTemplate");
+const sendMail = require("../utils/sendMail");
+const ADMIN_CONSTANTS = require("../utils/constants");
 
-export const contactUsController = async (req, res) => {
+exports.contactUsController = async (req, res) => {
   // Destructure request body
   const { email, name, message, contactNumber } = req.body;
 
@@ -31,7 +31,7 @@ export const contactUsController = async (req, res) => {
     // Send contact form response email
     await sendMail(
       ADMIN_CONSTANTS.EMAIL,
-      "FeedBack from a BookMyHall Customer",
+      "FeedBack = require(a BookMyHall Customer",
       contactusFormEmailTemplate(
         email,
         name,

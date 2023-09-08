@@ -1,7 +1,7 @@
 // importing the packages
 const mongoose = require("mongoose");
 
-exports.mongodbConnection = async () => {
+exports.connect = async () => {
   try {
     // Connect to the MongoDB Atlas Cloud Database
     await mongoose.connect(process.env.MONGODB_URL, {

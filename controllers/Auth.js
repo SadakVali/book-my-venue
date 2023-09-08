@@ -1,20 +1,22 @@
 // Import packages using ES6 modules
-import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 // Import models using ES6 modules
-import User from "../models/User";
+const User = require("../models/User");
+
+const { ACCOUNT_TYPE } = require("../utils/constants");
 
 // signup controller to register users
 exports.signup = async (req, res) => {
   try {
-    // Destructure data from the body of the request
+    // Destructure data = require(the body of the request
     const {
       name,
       contactNumber,
       confirmContactNumber,
-      alternateNumber,
-      confirmAlternateNumber,
+      alternateContactNumber,
+      confirmAlternateContactNumber,
       password,
       confirmPassword,
     } = req.body;
@@ -24,8 +26,8 @@ exports.signup = async (req, res) => {
       !name ||
       !contactNumber ||
       !confirmContactNumber ||
-      !alternateNumber ||
-      !confirmAlternateNumber ||
+      !alternateContactNumber ||
+      !confirmAlternateContactNumber ||
       !password ||
       !confirmPassword
     ) {
@@ -42,11 +44,11 @@ exports.signup = async (req, res) => {
       });
     }
 
-    if (alternateNumber !== confirmAlternateNumber) {
+    if (alternateContactNumber !== confirmAlternateContactNumber) {
       return res.status(400).json({
         success: false,
         message:
-          "alternateNumber and confirmAlternateNumber values do not match.",
+          "alternateContactNumber and confirmAlternateContactNumber values do not match.",
       });
     }
 
@@ -70,8 +72,8 @@ exports.signup = async (req, res) => {
     const user = await User.create({
       name,
       contactNumber,
-      alternateNumber,
-      role,
+      alternateContactNumber,
+      role: ACCOUNT_TYPE.MANAGER,
       password,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${name} ${name}`,
     });
@@ -94,7 +96,7 @@ exports.signup = async (req, res) => {
 // login controller for authenticating users
 exports.login = async (req, res) => {
   try {
-    // get email and password from request body
+    // get email and password = require(request body
     const { contactNumber, password } = req.body;
 
     // validate the data

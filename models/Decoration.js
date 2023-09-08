@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const decorationSchema = new mongoose.Schema(
   {
@@ -18,4 +18,4 @@ const decorationSchema = new mongoose.Schema(
 
 const Decoration = mongoose.model("Decoration", decorationSchema);
 
-export default Decoration;
+module.exports = Decoration;

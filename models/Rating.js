@@ -1,5 +1,5 @@
-// import the mongoose library
-import mongoose from "mongoose";
+// const the mongoose library
+const mongoose = require("mongoose");
 
 // define the schema for the rating and review
 const ratingSchema = new mongoose.Schema(
@@ -12,7 +12,7 @@ const ratingSchema = new mongoose.Schema(
     },
     course: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "FunctionHall",
+      ref: "Venue",
     },
   },
   { timestamps: true }

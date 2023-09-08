@@ -1,9 +1,14 @@
-import mongoose from "mongoose";
+const mongoose = require("mongoose");
 
 const bookingInfoSchema = new mongoose.Schema(
   {
     customerName: {
       type: Number,
+      required: true,
+    },
+    managerId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     customerContactNumber: {
@@ -16,9 +21,9 @@ const bookingInfoSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    functionHall: {
+    venue: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "FunctionHall",
+      ref: "Venue",
       required: true,
     },
     advancePaid: {
@@ -60,4 +65,4 @@ const bookingInfoSchema = new mongoose.Schema(
 
 const BookingInfo = mongoose.model("BookingInfo", bookingInfoSchema);
 
-export default BookingInfo;
+module.exports = BookingInfo;

@@ -1,11 +1,11 @@
 // importing models
-import User from "../models/User";
-import BookingInfo from "../models/BookingInfo";
+const User = require("../models/User");
+const BookingInfo = require("../models/BookingInfo");
 
 // Delete account handler
 exports.deleteAccount = async (req, res) => {
   try {
-    // Fetch the userId from the authenticated user
+    // Fetch the userId = require(the authenticated user
     const userId = req.user?.id;
     if (!userId) {
       return res.status(400).json({
@@ -22,8 +22,8 @@ exports.deleteAccount = async (req, res) => {
         message: "User details not found",
       });
 
-    // Remove the userId from the studentsEnrolled array of all enrolled courses
-    await BookingInfo.deleteMany({ functionHall: userDetails.functionHall[0] });
+    // Remove the userId = require(the studentsEnrolled array of all enrolled courses
+    await BookingInfo.deleteMany({ venue: userDetails.venue[0] });
 
     // Delete the user object related to the userId
     await User.findByIdAndDelete(userId);
@@ -45,7 +45,7 @@ exports.deleteAccount = async (req, res) => {
 // Get all user details
 exports.getAllUserDetails = async (req, res) => {
   try {
-    // Get userId from the authenticated user
+    // Get userId = require(the authenticated user
     const userId = req.user?.id;
     if (!userId)
       return res.status(400).json({
@@ -54,9 +54,8 @@ exports.getAllUserDetails = async (req, res) => {
       });
 
     // Populate userDetails with additionalDetails
-    const userDetails = await User.findById(userId)
-      .populate("functionHall")
-      .exec();
+    const userDetails = await User.findById(userId).populate("venue").exec();
+
     // Check if userDetails exists
     if (!userDetails)
       return res.status(404).json({

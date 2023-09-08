@@ -1,5 +1,5 @@
 // importing the packages
-import nodemailer from "nodemailer";
+const nodemailer = require("nodemailer");
 
 const sendMail = async (email, title, body) => {
   try {

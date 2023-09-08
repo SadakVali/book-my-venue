@@ -1,20 +1,20 @@
 // Importing the utility snippets
-import { uploadFilesToCloudinary } from "../utils/uploadFilesToCloudinary";
-// import { convertSecondsToDuration } from "../utils/secToDuration";
+const uploadFilesToCloudinary = require("../utils/uploadFileToCloudinary");
+// const { convertSecondsToDuration } = require("../utils/secToDuration");
 
 // Importing the models
-import User from "../models/User";
-import FunctionHall from "../models/FunctionHall";
-import Food from "../models/Food";
-import Alcohol from "../models/Alcohol";
-import Decor from "../models/Decor";
-import OtherPolicies from "../models/OtherPolicies";
-import Address from "../models/Address";
+const User = require("../models/User");
+const Venue = require("../models/FunctionHall");
+const Food = require("../models/Food");
+const Alcohol = require("../models/Alcohol");
+const Decor = require("../models/Decoration");
+const OtherPolicies = require("../models/OtherPolicies");
+const Address = require("../models/Address");
 
-// Create a new function hall handler function
-exports.createFunctionHall = async (req, res) => {
+// Create a new venue handler function
+exports.createVenue = async (req, res) => {
   try {
-    // Destructure data from the request body
+    // Destructure data = require(the request body
     const {
       name,
       aboutVenue,
@@ -118,10 +118,10 @@ exports.createFunctionHall = async (req, res) => {
       });
 
     // make sure there is no functionhall registered with the given managerId earlier
-    if (managerDetails.FunctionHall.length)
+    if (managerDetails.Venue.length)
       return req.status(401).json({
         success: false,
-        message: "FunctionHall is already registered with this ManagerId",
+        message: "Venue is already registered with this ManagerId",
       });
 
     // TODO:Upload images to Cloudinary
@@ -189,7 +189,7 @@ exports.createFunctionHall = async (req, res) => {
     });
 
     // Create a new course entry
-    const newFunctionHallDetails = await FunctionHall.create({
+    const newVenueDetails = await Venue.create({
       name,
       aboutVenue,
       pricePerDay,
@@ -210,7 +210,7 @@ exports.createFunctionHall = async (req, res) => {
     // Add the new course to the user doc of Instructor
     await User.findByIdAndUpdate(
       managerId,
-      { $push: { functionHall: newFunctionHallDetails._id } },
+      { $push: { venue: newVenueDetails._id } },
       { new: true }
     );
 
@@ -218,7 +218,7 @@ exports.createFunctionHall = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Course Created Successfully",
-      data: newFunctionHallDetails,
+      data: newVenueDetails,
     });
   } catch (error) {
     console.error(error);
@@ -230,20 +230,20 @@ exports.createFunctionHall = async (req, res) => {
   }
 };
 
-// Get all details of a single function hall with detailed information instead of ObjectIds
-exports.getSingleFunctionHallDetails = async (req, res) => {
+// Get all details of a single venue with detailed information instead of ObjectIds
+exports.getSingleVenueDetails = async (req, res) => {
   try {
-    // Validate and extract the functionHallId from the request parameters
-    const { functionHallId } = req.body;
-    if (!functionHallId) {
+    // Validate and extract the venueId = require(the request parameters
+    const { venueId } = req.body;
+    if (!venueId) {
       return res.status(400).json({
         success: false,
-        message: "functionHallId must be provided in the request body",
+        message: "venueId must be provided in the request body",
       });
     }
 
-    // Fetch details of the published Function Hall
-    const functionHallDetails = await FunctionHall.findById(functionHallId)
+    // Fetch details of the published Venue
+    const venueDetails = await Venue.findById(venueId)
       .where("status")
       .equals("Published")
       .populate("food")
@@ -254,91 +254,90 @@ exports.getSingleFunctionHallDetails = async (req, res) => {
       .populate({ path: "address", populate: { path: "GPS" } })
       .exec();
 
-    // Validation: Check if the functionHallDetails was found
-    if (!functionHallDetails) {
+    // Validation: Check if the venueDetails was found
+    if (!venueDetails) {
       return res.status(404).json({
         success: false,
-        message: `Function Hall with functionHallId ${functionHallId} not found`,
+        message: `Venue with venueId ${venueId} not found`,
       });
     }
 
     // Return the response with course details and total duration
     return res.status(200).json({
       success: true,
-      message: "Function Hall details fetched successfully",
-      data: functionHallDetails,
+      message: "Venue details fetched successfully",
+      data: venueDetails,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message:
-        "Something went wrong while fetching a single Function Hall details",
+      message: "Something went wrong while fetching a single Venue details",
       error: error.message,
     });
   }
 };
 
-// Edit a single function hall details
-exports.editFunctionHall = async (req, res) => {
+// Edit a single venue details
+exports.editVenue = async (req, res) => {
   try {
-    // Validate and extract the functionHallId from the request body
-    const { functionHallId } = req.body;
-    if (!functionHallId) {
+    // Validate and extract the venueId = require(the request body
+    const { venueId } = req.body;
+    if (!venueId) {
       return res.status(400).json({
         success: false,
-        message: "functionHallId must be provided in the request body",
+        message: "venueId must be provided in the request body",
       });
     }
 
-    // Find the course by its functionHallId
-    const existingFunctionHall = await FunctionHall.findById(functionHallId);
-    if (!existingFunctionHall) {
+    // Find the course by its venueId
+    const existingVenue = await Venue.findById(venueId);
+    if (!existingVenue) {
       return res.status(404).json({
         success: false,
-        message: `FunctionHall with functionHallId ${functionHallId} not found`,
+        message: `Venue with venueId ${venueId} not found`,
       });
     }
 
-    // Extract all possible fields from the FunctionHall schema
-    const functionHallFields = Object.keys(existingFunctionHall._doc);
-    // Iterate through the FunctionHall fields and update if non-null values are present in req.body
-    functionHallFields.forEach(async (field) => {
+    // Extract all possible fields = require(the Venue schema
+    const venueFields = Object.keys(existingVenue._doc);
+    // Iterate through the Venue fields and update if non-null values are present in req.body
+    venueFields.forEach(async (field) => {
       if (
         req.body[field] !== undefined &&
         req.body[field] !== null &&
         field !== "images" &&
         field !== "video"
       ) {
-        existingFunctionHall[field] = req.body[field];
+        existingVenue[field] = req.body[field];
       }
       if (field === "video" && req.files && req.files[field]) {
-        public_ids = [existingFunctionHall[field].publicId];
+        public_ids = [existingVenue[field].publicId];
         const uploadedFilesDetails = await uploadFilesToCloudinary(
           req.files[field],
           process.env.FOLDER_NAME,
           public_ids
         );
-        existingFunctionHall.video.url = uploadedFilesDetails.secure_url;
-        existingFunctionHall.video.publicId = uploadedFilesDetails.public_id;
-        existingFunctionHall.video.duration = uploadedFilesDetails.duration;
+        existingVenue.video.url = uploadedFilesDetails.secure_url;
+        existingVenue.video.publicId = uploadedFilesDetails.public_id;
+        existingVenue.video.duration = uploadedFilesDetails.duration;
       }
 
       if (field === "images") {
-        public_ids = existingFunctionHall[field].map((image) => image.publicId);
+        public_ids = existingVenue[field].map((image) => image.publicId);
         const uploadedFilesDetails = await uploadFilesToCloudinary(
           req.files[field],
           process.env.FOLDER_NAME,
           public_ids
         );
-        existingFunctionHall.images = uploadedFilesDetails.map((imgRes) => {
+        existingVenue.images = uploadedFilesDetails.map((imgRes) => {
           return { url: imgRes.secure_url, publicId: imgRes.public_id };
         });
       }
     });
 
-    // Save the updated FunctionHall document
-    const updatedFunctionHall = await existingFunctionHall.save();
+    // Save the updated Venue document
+    const updatedVenue = await existingVenue.save();
 
     const subSchemaFieldsToUpdate = [
       "food",
@@ -350,9 +349,9 @@ exports.editFunctionHall = async (req, res) => {
     ];
     // Iterate through the sub-schema fields and update if non-null values are present in req.body
     subSchemaFieldsToUpdate.forEach(async (subSchemaId) => {
-      // Access the Address subdocument within the FunctionHall
-      const newSubSchema = existingFunctionHall[subSchemaId];
-      // Extract all possible fields from the Address sub-schema
+      // Access the Address subdocument within the Venue
+      const newSubSchema = existingVenue[subSchemaId];
+      // Extract all possible fields = require(the Address sub-schema
       const newSubSchemaFields = Object.keys(newSubSchema._doc);
       // Iterate through the Address sub-schema fields and update if non-null values are present in req.body
       newSubSchemaFields.forEach((field) => {
@@ -364,29 +363,29 @@ exports.editFunctionHall = async (req, res) => {
       await newSubSchema.save();
     });
 
-    // Return the response with the updated existingFunctionHall details
+    // Return the response with the updated existingVenue details
     return res.status(200).json({
       success: true,
-      message: "Function Hall Details Updated Successfully",
-      data: updatedFunctionHall,
+      message: "Venue Details Updated Successfully",
+      data: updatedVenue,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while updating the existingFunctionHall",
+      message: "Something went wrong while updating the existingVenue",
       error: error.message,
     });
   }
 };
 
 // Fetch available halls on specified dates, months & years
-exports.allAvailableFunctionHalls = async (req, res) => {
+exports.allAvailableVenues = async (req, res) => {
   try {
-    // Validate and extract the inputs from the request body
+    // Validate and extract the inputs = require(the request body
     const { checkInUnixTimestamp, checkOutUnixTimestamp } = req.body;
 
-    const functionHalls = await FunctionHall.aggregate([
+    const venues = await Venue.aggregate([
       // Stage 1: Lookup BookingInfo documents based on allBookings field
       {
         $lookup: {
@@ -409,7 +408,7 @@ exports.allAvailableFunctionHalls = async (req, res) => {
           as: "bookingSlots",
         },
       },
-      // Stage 4: Filter Function Halls based on booking slot availability
+      // Stage 4: Filter Venues based on booking slot availability
       {
         $match: {
           $or: [
@@ -418,38 +417,38 @@ exports.allAvailableFunctionHalls = async (req, res) => {
           ],
         },
       },
-      // Stage 5: Lookup FunctionHall documents again
+      // Stage 5: Lookup Venue documents again
       {
         $lookup: {
-          from: "FunctionHall",
+          from: "Venue",
           localField: "_id",
           foreignField: "_id",
-          as: "functionHallDetails",
+          as: "venueDetails",
         },
       },
-      // Stage 6: Unwind the result from the FunctionHall collection
+      // Stage 6: Unwind the result = require(the Venue collection
       {
-        $unwind: "$functionHallDetails",
+        $unwind: "$venueDetails",
       },
-      // Stage 7: Filter Function Halls by status "Published"
+      // Stage 7: Filter Venues by status "Published"
       {
         $match: {
-          "functionHallDetails.status": "Published",
+          "venueDetails.status": "Published",
         },
       },
       // Stage 8: Project the desired fields for the final result
       {
         $project: {
           _id: 1,
-          name: "$functionHallDetails.name",
-          aboutVenue: "$functionHallDetails.aboutVenue",
-          manager: "$functionHallDetails.manager",
-          images: "$functionHallDetails.images",
-          pricePerDay: "$functionHallDetails.pricePerDay",
-          guestCapacity: "$functionHallDetails.guestCapacity",
-          parkingSpace: "$functionHallDetails.parkingSpace",
-          lodgingRooms: "$functionHallDetails.lodgingRooms",
-          video: "$functionHallDetails.video",
+          name: "$venueDetails.name",
+          aboutVenue: "$venueDetails.aboutVenue",
+          manager: "$venueDetails.manager",
+          images: "$venueDetails.images",
+          pricePerDay: "$venueDetails.pricePerDay",
+          guestCapacity: "$venueDetails.guestCapacity",
+          parkingSpace: "$venueDetails.parkingSpace",
+          lodgingRooms: "$venueDetails.lodgingRooms",
+          video: "$venueDetails.video",
         },
       },
     ]);
@@ -458,14 +457,14 @@ exports.allAvailableFunctionHalls = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "FUnction Halls open for booking fetched successfully",
-      data: functionHalls,
+      data: venues,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
       message:
-        "Something went wrong while fetching the available function halls for booking",
+        "Something went wrong while fetching the available venues for booking",
       error: error.message,
     });
   }

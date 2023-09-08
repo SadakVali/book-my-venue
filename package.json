@@ -1,7 +1,7 @@
 {
   "name": "bookmyhall",
   "version": "1.0.0",
-  "description": "Function Hall Booking Web App",
+  "description": "Venue Booking Web App",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
