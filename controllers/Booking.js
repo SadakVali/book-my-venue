@@ -1,6 +1,5 @@
 // Importing the models
 const User = require("../models/User");
-const BookingSlot = require("../models/BookingSlot");
 const BookingInfo = require("../models/BookingInfo");
 const Venue = require("../models/FunctionHall");
 

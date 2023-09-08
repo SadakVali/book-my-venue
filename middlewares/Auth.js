@@ -1,5 +1,6 @@
 // const packages
 const jwt = require("jsonwebtoken");
+const { ACCOUNT_TYPE } = require("../utils/constants");
 
 // Constants
 const TOKEN_MISSING_MESSAGE = "Token is missing";
@@ -50,7 +51,7 @@ exports.auth = async (req, res, next) => {
 exports.isAuthorized = async (req, res, next) => {
   try {
     // Validate req.user and account type existence
-    if (!req.user || !req.user.venue) {
+    if (!req.user || !req.user.id) {
       return res.status(401).json({
         success: false,
         message: "Invalid request. User not authenticated.",
@@ -58,7 +59,7 @@ exports.isAuthorized = async (req, res, next) => {
     }
 
     // Check if the user is a Admin
-    if (req.user.venue !== req.body.venue) {
+    if (req.user.role !== ACCOUNT_TYPE.MANAGER) {
       return res.status(403).json({
         success: false,
         message: "You are not the Manager of this Venue.",

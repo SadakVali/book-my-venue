@@ -45,9 +45,12 @@ const bookingInfoSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    bookingSlot: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "BookingSlot",
+    checkInTime: {
+      type: Number,
+      required: true,
+    },
+    checkOutTime: {
+      type: Number,
       required: true,
     },
     bookingStatus: {

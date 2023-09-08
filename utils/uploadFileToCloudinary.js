@@ -18,12 +18,18 @@ exports.uploadFilesToCloudinary = async (
   public_ids
 ) => {
   try {
+    console.log("Hi Bro files are being uploaded", files);
     // Use the Cloudinary API to delete the images if exists
-    for (const public_id of public_ids)
-      await cloudinary.uploader.destroy(public_id);
+    if (public_ids) {
+      for (const public_id of public_ids)
+        await cloudinary.uploader.destroy(public_id);
+    }
 
     // upload the images
     const uploadedImages = [];
+    if (!Array.isArray(files)) {
+      files = [files];
+    }
     for (const file of files) {
       // Create options object for Cloudinary upload
       const options = { folder };

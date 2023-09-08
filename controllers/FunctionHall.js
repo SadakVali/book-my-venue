@@ -1,14 +1,10 @@
 // Importing the utility snippets
-const uploadFilesToCloudinary = require("../utils/uploadFileToCloudinary");
+const { uploadFilesToCloudinary } = require("../utils/uploadFileToCloudinary");
 // const { convertSecondsToDuration } = require("../utils/secToDuration");
 
 // Importing the models
 const User = require("../models/User");
 const Venue = require("../models/FunctionHall");
-const Food = require("../models/Food");
-const Alcohol = require("../models/Alcohol");
-const Decor = require("../models/Decoration");
-const OtherPolicies = require("../models/OtherPolicies");
 const Address = require("../models/Address");
 
 // Create a new venue handler function
@@ -95,7 +91,7 @@ exports.createVenue = async (req, res) => {
       !city ||
       !pin ||
       // GPS
-      !coordinates
+      !coordinates.length
     )
       return res.status(400).json({
         success: false,
@@ -105,9 +101,8 @@ exports.createVenue = async (req, res) => {
     // Set default status to "Draft"
     const status = "Draft";
 
-    // Check if the user is an instructor
-    const managerId = req.user.id;
-    const managerDetails = await User.findById(managerId, {
+    // Check if the user is a manager
+    const managerDetails = await User.findById(req.user.id, {
       role: "Manager",
     });
     console.log("Manager Details", managerDetails);
@@ -117,57 +112,63 @@ exports.createVenue = async (req, res) => {
         message: "Manager details not found",
       });
 
-    // make sure there is no functionhall registered with the given managerId earlier
-    if (managerDetails.Venue.length)
+    // make sure there is no function hall registered with the given managerId earlier
+    if (managerDetails.venue)
       return req.status(401).json({
         success: false,
         message: "Venue is already registered with this ManagerId",
       });
 
-    // TODO:Upload images to Cloudinary
-    const imagesResponse = await uploadFileToCloudinary(
-      req?.files?.images,
-      process.env.FOLDER_NAME
-    );
-    console.log("Uploaded Images Details", imagesResponse);
+    // Upload images to Cloudinary
+    let imagesResponse;
+    if (req?.files?.images) {
+      imagesResponse = await uploadFilesToCloudinary(
+        req?.files?.images,
+        process.env.FOLDER_NAME
+      );
+      console.log("Uploaded Images Details", imagesResponse);
+    }
 
     // Upload video to Cloudinary
-    const videoResponse = await uploadFileToCloudinary(
-      req?.files?.video,
-      process.env.FOLDER_NAME
-    );
-    console.log("Uploaded Video Details", videoResponse);
+    let videoResponse;
+    if (req?.files?.video) {
+      videoResponse = await uploadFilesToCloudinary(
+        req?.files?.video,
+        process.env.FOLDER_NAME
+      );
+      console.log("Uploaded Video Details", videoResponse);
+    }
 
     // Create a new Food entry
-    const newFoodEntry = await Food.create({
+    const newFoodEntry = {
       cateringProvidedByVenue,
       outsideCatererAllowed,
       nonVegAllowedAtVenue,
       vegPricePerPlate,
       NonvegPricePerPlate,
-    });
+    };
 
     // Create a new Alcohol entry
-    const newAlcoholEntry = await Alcohol.create({
+    const newAlcoholEntry = {
       alcoholProvidedByVenue,
       outsideAlcoholAllowed,
-    });
+    };
 
     // Create a new Decor entry
-    const newDecorEntry = await Decor.create({
+    const newDecorEntry = {
       decorProvidedByVenue,
       outsideDecoratersAllowed,
-    });
+    };
 
     // Create a new OtherPolicies entry
-    const newOtherPoliciesEntry = await OtherPolicies.create({
+    const newOtherPoliciesEntry = {
       isMusicAllowedLateAtNight,
       isHallAirConditioned,
       isBaaratAllowed,
       fireCrackersAllowed,
       isHawanAllowed,
       isOverNightWeddingAllowed,
-    });
+    };
 
     // Create a new Address entry
     const newAddressEntry = await Address.create({
@@ -177,54 +178,73 @@ exports.createVenue = async (req, res) => {
       village,
       city,
       pin,
-      GPS: newGPSEntry._id,
+      location: { type: "Point", coordinates: JSON.parse(coordinates) },
     });
 
-    // Create a new GPS entry
-    const newGPSEntry = await GPS.create({
-      location: {
-        type: "Point",
-        coordinates,
-      },
-    });
+    const zipImageArrays = (imagesResponse) => {
+      const urls = imagesResponse.map((res) => res.secure_url);
+      const publicIds = imagesResponse.map((res) => res.public_id);
+      const result = [];
+      // Assuming arr1 and arr2 have the same length
+      for (let i = 0; i < urls.length; i++)
+        result.push({ url: urls[i], publicId: publicIds[i] });
+      return result;
+    };
 
-    // Create a new course entry
+    const zipVideoArrays = (videoResponse) => {
+      const urls = videoResponse.map((res) => res.secure_url);
+      const publicIds = videoResponse.map((res) => res.public_id);
+      const durations = videoResponse.map((res) => res.duration);
+      const result = [];
+      // Assuming arr1 and arr2 have the same length
+      for (let i = 0; i < urls.length; i++)
+        result.push({
+          url: urls[i],
+          publicId: publicIds[i],
+          duration: durations[i],
+        });
+      return result;
+    };
+
+    // Create a new function hall entry
     const newVenueDetails = await Venue.create({
       name,
       aboutVenue,
       pricePerDay,
+      manager: req.user.id,
       advancePercentage,
+      images: zipImageArrays(imagesResponse),
+      video: zipVideoArrays(videoResponse),
       guestCapacity,
       carParkingSpace,
       lodgingRooms,
       roomPrice,
       bookingCancellation,
-      status,
-      food: newFoodEntry._id,
-      alcohol: newAlcoholEntry._id,
-      decoration: newDecorEntry._id,
-      otherPolicies: newOtherPoliciesEntry._id,
+      food: newFoodEntry,
+      alcohol: newAlcoholEntry,
+      decoration: newDecorEntry,
+      otherPolicies: newOtherPoliciesEntry,
       address: newAddressEntry._id,
     });
 
-    // Add the new course to the user doc of Instructor
+    // Add the new function hall to the user doc of Instructor
     await User.findByIdAndUpdate(
-      managerId,
+      req.user.id,
       { $push: { venue: newVenueDetails._id } },
       { new: true }
     );
 
-    // Return new course and success response
+    // Return new Function Hall and success response
     return res.status(201).json({
       success: true,
-      message: "Course Created Successfully",
+      message: "Function Hall Created Successfully",
       data: newVenueDetails,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Failed to create course",
+      message: "Failed to create a new Function Hall",
       error: error.message,
     });
   }
@@ -262,7 +282,7 @@ exports.getSingleVenueDetails = async (req, res) => {
       });
     }
 
-    // Return the response with course details and total duration
+    // Return the response with function hall details and total duration
     return res.status(200).json({
       success: true,
       message: "Venue details fetched successfully",
@@ -290,7 +310,7 @@ exports.editVenue = async (req, res) => {
       });
     }
 
-    // Find the course by its venueId
+    // Find the function hall by its venueId
     const existingVenue = await Venue.findById(venueId);
     if (!existingVenue) {
       return res.status(404).json({

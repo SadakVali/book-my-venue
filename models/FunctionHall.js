@@ -17,7 +17,6 @@ const venueSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-    images: [{ url: { type: String }, publicId: { type: String } }],
     advancePercentage: {
       type: Number,
       required: true,
@@ -43,35 +42,89 @@ const venueSchema = new mongoose.Schema(
       required: true,
     },
     food: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Food",
-      required: true,
+      cateringProvidedByVenue: {
+        type: Boolean,
+        required: true,
+      },
+      outsideCatererAllowed: {
+        type: Boolean,
+        required: true,
+      },
+      nonVegAllowedAtVenue: {
+        type: Boolean,
+        required: true,
+      },
+      vegPricePerPlate: {
+        type: Number,
+      },
+      NonvegPricePerPlate: {
+        type: Number,
+      },
     },
     alcohol: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Alcohol",
-      required: true,
+      alcoholProvidedByVenue: {
+        type: Boolean,
+        required: true,
+      },
+      outsideAlcoholAllowed: {
+        type: Boolean,
+        required: true,
+      },
     },
     decoration: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Decoration",
-      required: true,
+      decorProvidedByVenue: {
+        type: Boolean,
+        required: true,
+      },
+      outsideDecoratersAllowed: {
+        type: Boolean,
+        required: true,
+      },
     },
     otherPolicies: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "OtherPolicies",
-      required: true,
+      isMusicAllowedLateAtNight: {
+        type: Boolean,
+        required: true,
+      },
+      isHallAirConditioned: {
+        type: Boolean,
+        required: true,
+      },
+      isBaaratAllowed: {
+        type: Boolean,
+        required: true,
+      },
+      fireCrackersAllowed: {
+        type: Boolean,
+        required: true,
+      },
+      isHawanAllowed: {
+        type: Boolean,
+        required: true,
+      },
+      isOverNightWeddingAllowed: {
+        type: Boolean,
+        required: true,
+      },
     },
     address: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Address",
       required: true,
     },
-    video: {
-      url: { type: String, required: true, trim: true },
-      publicId: { type: String, required: true, trim: true },
-      duration: { type: String, required: true, trim: true },
-    },
+    images: [
+      {
+        url: { type: String, required: true, trim: true },
+        publicId: { type: String, required: true, trim: true },
+      },
+    ],
+    video: [
+      {
+        url: { type: String, required: true, trim: true },
+        publicId: { type: String, required: true, trim: true },
+        duration: { type: String, required: true, trim: true },
+      },
+    ],
     pricePerDay: {
       type: Number,
       required: true,
