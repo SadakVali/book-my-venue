@@ -6,9 +6,9 @@ const User = require("../models/User");
 const Venue = require("../models/Venue");
 const Address = require("../models/Address");
 
-// import constants
-import { VENUE_STATUS } from "../utils/constants";
-import { ACCOUNT_TYPE } from "../utils/constants";
+// const constants
+const { VENUE_STATUS } = require("../utils/constants");
+const { ACCOUNT_TYPE } = require("../utils/constants");
 
 // Create a new venue handler function
 exports.createVenue = async (req, res) => {
@@ -17,7 +17,7 @@ exports.createVenue = async (req, res) => {
     const {
       name,
       aboutVenue,
-      pricePerDay,
+      venuePricePerDay,
       advancePercentage,
       guestCapacity,
       carParkingSpace,
@@ -57,10 +57,10 @@ exports.createVenue = async (req, res) => {
     // Validate required fields
     if (
       !req?.files?.images || // Use optional chaining for safer thumbnailImage access
-      !req?.files?.video ||
+      !req?.files?.videos ||
       !name ||
       !aboutVenue ||
-      !pricePerDay ||
+      !venuePricePerDay ||
       !advancePercentage ||
       !guestCapacity ||
       !carParkingSpace ||
@@ -129,11 +129,11 @@ exports.createVenue = async (req, res) => {
       console.log("Uploaded Images Details", imagesResponse);
     }
 
-    // Upload video to Cloudinary
+    // Upload videos to Cloudinary
     let videoResponse;
-    if (req?.files?.video) {
+    if (req?.files?.videos) {
       videoResponse = await uploadFilesToCloudinary(
-        req?.files?.video,
+        req?.files?.videos,
         process.env.FOLDER_NAME
       );
       console.log("Uploaded Video Details", videoResponse);
@@ -210,11 +210,11 @@ exports.createVenue = async (req, res) => {
     const newVenueDetails = await Venue.create({
       name,
       aboutVenue,
-      pricePerDay,
+      venuePricePerDay,
       manager: req.user.id,
       advancePercentage,
       images: zipImageArrays(imagesResponse),
-      video: zipVideoArrays(videoResponse),
+      videos: zipVideoArrays(videoResponse),
       guestCapacity,
       carParkingSpace,
       numOfLodgingRooms,
@@ -302,7 +302,7 @@ exports.editVenue = async (req, res) => {
     const {
       name,
       aboutVenue,
-      pricePerDay,
+      venuePricePerDay,
       advancePercentage,
       guestCapacity,
       carParkingSpace,
@@ -359,13 +359,13 @@ exports.editVenue = async (req, res) => {
       console.log("Uploaded Images Details", imagesResponse);
     }
 
-    // Upload video to Cloudinary
+    // Upload videos to Cloudinary
     let videoResponse;
-    if (req?.files?.video) {
+    if (req?.files?.videos) {
       videoResponse = await uploadFilesToCloudinary(
-        (files = req?.files?.video),
+        (files = req?.files?.videos),
         (folder = process.env.FOLDER_NAME),
-        (publicIds = existingVenue.video.map((vid) => vid.publicId))
+        (publicIds = existingVenue.videos.map((vid) => vid.publicId))
       );
       console.log("Uploaded Video Details", videoResponse);
     }
@@ -374,7 +374,7 @@ exports.editVenue = async (req, res) => {
     if (
       !name ||
       !aboutVenue ||
-      !pricePerDay ||
+      !venuePricePerDay ||
       !advancePercentage ||
       !guestCapacity ||
       !carParkingSpace ||
@@ -403,7 +403,8 @@ exports.editVenue = async (req, res) => {
     ) {
       if (name !== undefined) existingVenue.name = name;
       if (aboutVenue !== undefined) existingVenue.aboutVenue = aboutVenue;
-      if (pricePerDay !== undefined) existingVenue.pricePerDay = pricePerDay;
+      if (venuePricePerDay !== undefined)
+        existingVenue.venuePricePerDay = venuePricePerDay;
       if (advancePercentage !== undefined)
         existingVenue.advancePercentage = advancePercentage;
       if (guestCapacity !== undefined)

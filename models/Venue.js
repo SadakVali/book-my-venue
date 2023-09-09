@@ -1,8 +1,8 @@
-// import libraries
+// const libraries
 const mongoose = require("mongoose");
 
-// import constants
-import { VENUE_STATUS } from "../utils/constants";
+// const constants
+const { VENUE_STATUS } = require("../utils/constants");
 
 const venueSchema = new mongoose.Schema(
   {
@@ -122,14 +122,14 @@ const venueSchema = new mongoose.Schema(
         publicId: { type: String, required: true, trim: true },
       },
     ],
-    video: [
+    videos: [
       {
         url: { type: String, required: true, trim: true },
         publicId: { type: String, required: true, trim: true },
         duration: { type: String, required: true, trim: true },
       },
     ],
-    pricePerDay: {
+    venuePricePerDay: {
       type: Number,
       required: true,
     },

@@ -4,10 +4,10 @@ const express = require("express");
 // const controllers
 const {
   createNewBooking,
-  fetchReciepts,
+  fetchSingleCustomerReciepts,
   fetchPaymentsDueTodayBookings,
   fetchAllCancelledBookings,
-  fetchAdvancePaidBookingsNotDueToday,
+  fetchAdvancePaidBookings,
   fetchAllBookedReciepts,
   fetchAllBookingsPastOccation,
   cancelSingleBooking,
@@ -19,7 +19,7 @@ const {
   getSingleVenueDetails,
   editVenue,
   allAvailableVenues,
-} = require("../controllers/FunctionHall");
+} = require("../controllers/Venue");
 
 // const middlewares
 const { auth, isAuthorized } = require("../middlewares/Auth");
@@ -33,7 +33,7 @@ const router = express.Router();
 // bookings should only be created by managers
 router.post("/create-booking", auth, isAuthorized, createNewBooking);
 // reciepts are allowed to see by anyone
-router.get("/fetch-reciepts", fetchReciepts);
+router.get("/fetch-reciepts", fetchSingleCustomerReciepts);
 // get all booking that need to be reminded for payment today
 router.get(
   "/get-payment-due-today-bookings",
@@ -53,7 +53,7 @@ router.get(
   "/get-advance-only-paid-bookings",
   auth,
   isAuthorized,
-  fetchAdvancePaidBookingsNotDueToday
+  fetchAdvancePaidBookings
 );
 // get all bookings that completely paid money
 router.get(
