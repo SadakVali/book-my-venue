@@ -1,11 +1,14 @@
 // Importing the utility snippets
 const { uploadFilesToCloudinary } = require("../utils/uploadFileToCloudinary");
-// const { convertSecondsToDuration } = require("../utils/secToDuration");
 
 // Importing the models
 const User = require("../models/User");
-const Venue = require("../models/FunctionHall");
+const Venue = require("../models/Venue");
 const Address = require("../models/Address");
+
+// import constants
+import { VENUE_STATUS } from "../utils/constants";
+import { ACCOUNT_TYPE } from "../utils/constants";
 
 // Create a new venue handler function
 exports.createVenue = async (req, res) => {
@@ -18,26 +21,26 @@ exports.createVenue = async (req, res) => {
       advancePercentage,
       guestCapacity,
       carParkingSpace,
-      lodgingRooms,
-      roomPrice,
-      bookingCancellation,
+      numOfLodgingRooms,
+      lodgingRoomPrice,
+      isBookingCancellable,
       // Food
-      cateringProvidedByVenue,
-      outsideCatererAllowed,
-      nonVegAllowedAtVenue,
+      isCateringProvidedByVenue,
+      isOutsideCatererAllowed,
+      isNonVegAllowedAtVenue,
       vegPricePerPlate,
       NonvegPricePerPlate,
       // Alcohol
-      alcoholProvidedByVenue,
-      outsideAlcoholAllowed,
+      isAlcoholProvidedByVenue,
+      isOutsideAlcoholAllowed,
       // Decor
-      decorProvidedByVenue,
-      outsideDecoratersAllowed,
+      isDecorProvidedByVenue,
+      isOutsideDecoratersAllowed,
       // OtherPolicies
       isMusicAllowedLateAtNight,
       isHallAirConditioned,
       isBaaratAllowed,
-      fireCrackersAllowed,
+      areFireCrackersAllowed,
       isHawanAllowed,
       isOverNightWeddingAllowed,
       // Address
@@ -61,26 +64,26 @@ exports.createVenue = async (req, res) => {
       !advancePercentage ||
       !guestCapacity ||
       !carParkingSpace ||
-      !lodgingRooms ||
-      !roomPrice ||
-      !bookingCancellation ||
+      !numOfLodgingRooms ||
+      !lodgingRoomPrice ||
+      !isBookingCancellable ||
       // Food
-      !cateringProvidedByVenue ||
-      !outsideCatererAllowed ||
-      !nonVegAllowedAtVenue ||
+      !isCateringProvidedByVenue ||
+      !isOutsideCatererAllowed ||
+      !isNonVegAllowedAtVenue ||
       !vegPricePerPlate ||
       !NonvegPricePerPlate ||
       // Alcohol
-      !alcoholProvidedByVenue ||
-      !outsideAlcoholAllowed ||
+      !isAlcoholProvidedByVenue ||
+      !isOutsideAlcoholAllowed ||
       // Decor
-      !decorProvidedByVenue ||
-      !outsideDecoratersAllowed ||
+      !isDecorProvidedByVenue ||
+      !isOutsideDecoratersAllowed ||
       // OtherPolicies
       !isMusicAllowedLateAtNight ||
       !isHallAirConditioned ||
       !isBaaratAllowed ||
-      !fireCrackersAllowed ||
+      !areFireCrackersAllowed ||
       !isHawanAllowed ||
       !isOverNightWeddingAllowed ||
       // Address
@@ -98,14 +101,11 @@ exports.createVenue = async (req, res) => {
         message: "All fields are required",
       });
 
-    // Set default status to "Draft"
-    const status = "Draft";
-
     // Check if the user is a manager
     const managerDetails = await User.findById(req.user.id, {
-      role: "Manager",
+      role: ACCOUNT_TYPE.MANAGER,
     });
-    console.log("Manager Details", managerDetails);
+    // console.log("Manager Details", managerDetails);
     if (!managerDetails)
       return res.status(404).json({
         success: false,
@@ -141,23 +141,23 @@ exports.createVenue = async (req, res) => {
 
     // Create a new Food entry
     const newFoodEntry = {
-      cateringProvidedByVenue,
-      outsideCatererAllowed,
-      nonVegAllowedAtVenue,
+      isCateringProvidedByVenue,
+      isOutsideCatererAllowed,
+      isNonVegAllowedAtVenue,
       vegPricePerPlate,
       NonvegPricePerPlate,
     };
 
     // Create a new Alcohol entry
     const newAlcoholEntry = {
-      alcoholProvidedByVenue,
-      outsideAlcoholAllowed,
+      isAlcoholProvidedByVenue,
+      isOutsideAlcoholAllowed,
     };
 
     // Create a new Decor entry
     const newDecorEntry = {
-      decorProvidedByVenue,
-      outsideDecoratersAllowed,
+      isDecorProvidedByVenue,
+      isOutsideDecoratersAllowed,
     };
 
     // Create a new OtherPolicies entry
@@ -165,7 +165,7 @@ exports.createVenue = async (req, res) => {
       isMusicAllowedLateAtNight,
       isHallAirConditioned,
       isBaaratAllowed,
-      fireCrackersAllowed,
+      areFireCrackersAllowed,
       isHawanAllowed,
       isOverNightWeddingAllowed,
     };
@@ -217,14 +217,15 @@ exports.createVenue = async (req, res) => {
       video: zipVideoArrays(videoResponse),
       guestCapacity,
       carParkingSpace,
-      lodgingRooms,
-      roomPrice,
-      bookingCancellation,
+      numOfLodgingRooms,
+      lodgingRoomPrice,
+      isBookingCancellable,
       food: newFoodEntry,
       alcohol: newAlcoholEntry,
       decoration: newDecorEntry,
       otherPolicies: newOtherPoliciesEntry,
       address: newAddressEntry._id,
+      status: VENUE_STATUS.DRAFT,
     });
 
     // Add the new function hall to the user doc of Instructor
@@ -305,26 +306,26 @@ exports.editVenue = async (req, res) => {
       advancePercentage,
       guestCapacity,
       carParkingSpace,
-      lodgingRooms,
-      roomPrice,
-      bookingCancellation,
+      numOfLodgingRooms,
+      lodgingRoomPrice,
+      isBookingCancellable,
       // Food
-      cateringProvidedByVenue,
-      outsideCatererAllowed,
-      nonVegAllowedAtVenue,
+      isCateringProvidedByVenue,
+      isOutsideCatererAllowed,
+      isNonVegAllowedAtVenue,
       vegPricePerPlate,
       NonvegPricePerPlate,
       // Alcohol
-      alcoholProvidedByVenue,
-      outsideAlcoholAllowed,
+      isAlcoholProvidedByVenue,
+      isOutsideAlcoholAllowed,
       // Decor
-      decorProvidedByVenue,
-      outsideDecoratersAllowed,
+      isDecorProvidedByVenue,
+      isOutsideDecoratersAllowed,
       // OtherPolicies
       isMusicAllowedLateAtNight,
       isHallAirConditioned,
       isBaaratAllowed,
-      fireCrackersAllowed,
+      areFireCrackersAllowed,
       isHawanAllowed,
       isOverNightWeddingAllowed,
       // Address
@@ -377,26 +378,26 @@ exports.editVenue = async (req, res) => {
       !advancePercentage ||
       !guestCapacity ||
       !carParkingSpace ||
-      !lodgingRooms ||
-      !roomPrice ||
-      !bookingCancellation ||
+      !numOfLodgingRooms ||
+      !lodgingRoomPrice ||
+      !isBookingCancellable ||
       // Food
-      !cateringProvidedByVenue ||
-      !outsideCatererAllowed ||
-      !nonVegAllowedAtVenue ||
+      !isCateringProvidedByVenue ||
+      !isOutsideCatererAllowed ||
+      !isNonVegAllowedAtVenue ||
       !vegPricePerPlate ||
       !NonvegPricePerPlate ||
       // Alcohol
-      !alcoholProvidedByVenue ||
-      !outsideAlcoholAllowed ||
+      !isAlcoholProvidedByVenue ||
+      !isOutsideAlcoholAllowed ||
       // Decor
-      !decorProvidedByVenue ||
-      !outsideDecoratersAllowed ||
+      !isDecorProvidedByVenue ||
+      !isOutsideDecoratersAllowed ||
       // OtherPolicies
       !isMusicAllowedLateAtNight ||
       !isHallAirConditioned ||
       !isBaaratAllowed ||
-      !fireCrackersAllowed ||
+      !areFireCrackersAllowed ||
       !isHawanAllowed ||
       !isOverNightWeddingAllowed
     ) {
@@ -409,34 +410,36 @@ exports.editVenue = async (req, res) => {
         existingVenue.guestCapacity = guestCapacity;
       if (carParkingSpace !== undefined)
         existingVenue.carParkingSpace = carParkingSpace;
-      if (lodgingRooms !== undefined) existingVenue.lodgingRooms = lodgingRooms;
-      if (roomPrice !== undefined) existingVenue.roomPrice = roomPrice;
-      if (bookingCancellation !== undefined)
-        existingVenue.bookingCancellation = bookingCancellation;
+      if (numOfLodgingRooms !== undefined)
+        existingVenue.numOfLodgingRooms = numOfLodgingRooms;
+      if (lodgingRoomPrice !== undefined)
+        existingVenue.lodgingRoomPrice = lodgingRoomPrice;
+      if (isBookingCancellable !== undefined)
+        existingVenue.isBookingCancellable = isBookingCancellable;
 
       // Create a new Food entry
-      if (cateringProvidedByVenue !== undefined)
-        existingVenue.cateringProvidedByVenue = cateringProvidedByVenue;
-      if (outsideCatererAllowed !== undefined)
-        existingVenue.outsideCatererAllowed = outsideCatererAllowed;
-      if (nonVegAllowedAtVenue !== undefined)
-        existingVenue.nonVegAllowedAtVenue = nonVegAllowedAtVenue;
+      if (isCateringProvidedByVenue !== undefined)
+        existingVenue.isCateringProvidedByVenue = isCateringProvidedByVenue;
+      if (isOutsideCatererAllowed !== undefined)
+        existingVenue.isOutsideCatererAllowed = isOutsideCatererAllowed;
+      if (isNonVegAllowedAtVenue !== undefined)
+        existingVenue.isNonVegAllowedAtVenue = isNonVegAllowedAtVenue;
       if (vegPricePerPlate !== undefined)
         existingVenue.vegPricePerPlate = vegPricePerPlate;
       if (NonvegPricePerPlate !== undefined)
         existingVenue.NonvegPricePerPlate = NonvegPricePerPlate;
 
       // Create a new Alcohol entry
-      if (alcoholProvidedByVenue !== undefined)
-        existingVenue.alcoholProvidedByVenue = alcoholProvidedByVenue;
-      if (outsideAlcoholAllowed !== undefined)
-        existingVenue.outsideAlcoholAllowed = outsideAlcoholAllowed;
+      if (isAlcoholProvidedByVenue !== undefined)
+        existingVenue.isAlcoholProvidedByVenue = isAlcoholProvidedByVenue;
+      if (isOutsideAlcoholAllowed !== undefined)
+        existingVenue.isOutsideAlcoholAllowed = isOutsideAlcoholAllowed;
 
       // Create a new Decor entry
-      if (decorProvidedByVenue !== undefined)
-        existingVenue.decorProvidedByVenue = decorProvidedByVenue;
-      if (outsideDecoratersAllowed !== undefined)
-        existingVenue.outsideDecoratersAllowed = outsideDecoratersAllowed;
+      if (isDecorProvidedByVenue !== undefined)
+        existingVenue.isDecorProvidedByVenue = isDecorProvidedByVenue;
+      if (isOutsideDecoratersAllowed !== undefined)
+        existingVenue.isOutsideDecoratersAllowed = isOutsideDecoratersAllowed;
 
       // Create a new OtherPolicies entry
       if (isMusicAllowedLateAtNight !== undefined)
@@ -445,8 +448,8 @@ exports.editVenue = async (req, res) => {
         existingVenue.isHallAirConditioned = isHallAirConditioned;
       if (isBaaratAllowed !== undefined)
         existingVenue.isBaaratAllowed = isBaaratAllowed;
-      if (fireCrackersAllowed !== undefined)
-        existingVenue.fireCrackersAllowed = fireCrackersAllowed;
+      if (areFireCrackersAllowed !== undefined)
+        existingVenue.areFireCrackersAllowed = areFireCrackersAllowed;
       if (isHawanAllowed !== undefined)
         existingVenue.isHawanAllowed = isHawanAllowed;
       if (isOverNightWeddingAllowed !== undefined)
@@ -514,7 +517,7 @@ exports.allAvailableVenues = async (req, res) => {
     // Return a success response
     return res.status(200).json({
       success: true,
-      message: "FUnction Halls open for booking fetched successfully",
+      message: "Function Halls open for booking fetched successfully",
       data: availableFunctionHalls,
     });
   } catch (error) {

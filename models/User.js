@@ -1,5 +1,9 @@
+// import libraries
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+
+// import constants
+import { ACCOUNT_TYPE } from "../utils/constants";
 
 const userSchema = new mongoose.Schema(
   {
@@ -26,15 +30,13 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ["Admin", "Manager", "Customer"],
+      enum: [ACCOUNT_TYPE.ADMIN, ACCOUNT_TYPE.MANAGER, ACCOUNT_TYPE.CUSTOMER],
       required: true,
     },
-    venue: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Venue",
-      },
-    ],
+    venue: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Venue",
+    },
     image: {
       type: String,
       required: true,

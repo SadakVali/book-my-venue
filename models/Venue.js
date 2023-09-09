@@ -1,4 +1,8 @@
+// import libraries
 const mongoose = require("mongoose");
+
+// import constants
+import { VENUE_STATUS } from "../utils/constants";
 
 const venueSchema = new mongoose.Schema(
   {
@@ -29,28 +33,28 @@ const venueSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    lodgingRooms: {
+    numOfLodgingRooms: {
       type: Number,
       required: true,
     },
-    roomPrice: {
+    lodgingRoomPrice: {
       type: Number,
       required: true,
     },
-    bookingCancellation: {
+    isBookingCancellable: {
       type: Boolean,
       required: true,
     },
     food: {
-      cateringProvidedByVenue: {
+      isCateringProvidedByVenue: {
         type: Boolean,
         required: true,
       },
-      outsideCatererAllowed: {
+      isOutsideCatererAllowed: {
         type: Boolean,
         required: true,
       },
-      nonVegAllowedAtVenue: {
+      isNonVegAllowedAtVenue: {
         type: Boolean,
         required: true,
       },
@@ -62,21 +66,21 @@ const venueSchema = new mongoose.Schema(
       },
     },
     alcohol: {
-      alcoholProvidedByVenue: {
+      isAlcoholProvidedByVenue: {
         type: Boolean,
         required: true,
       },
-      outsideAlcoholAllowed: {
+      isOutsideAlcoholAllowed: {
         type: Boolean,
         required: true,
       },
     },
     decoration: {
-      decorProvidedByVenue: {
+      isDecorProvidedByVenue: {
         type: Boolean,
         required: true,
       },
-      outsideDecoratersAllowed: {
+      isOutsideDecoratersAllowed: {
         type: Boolean,
         required: true,
       },
@@ -94,7 +98,7 @@ const venueSchema = new mongoose.Schema(
         type: Boolean,
         required: true,
       },
-      fireCrackersAllowed: {
+      areFireCrackersAllowed: {
         type: Boolean,
         required: true,
       },
@@ -137,7 +141,8 @@ const venueSchema = new mongoose.Schema(
     ],
     status: {
       type: String,
-      enum: ["Draft", "Published"],
+      enum: [VENUE_STATUS.DRAFT, VENUE_STATUS.PUBLISHED],
+      required: true,
     },
   },
   {

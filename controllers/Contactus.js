@@ -15,7 +15,7 @@ exports.contactUsController = async (req, res) => {
       });
     }
 
-    // Send contact form response email
+    // Send contact form response email to customer
     const emailResponse = await sendMail(
       email,
       "Your Data Sent Successfully",
@@ -28,10 +28,10 @@ exports.contactUsController = async (req, res) => {
       )
     );
 
-    // Send contact form response email
+    // Send contact form response email to admin
     await sendMail(
       ADMIN_CONSTANTS.EMAIL,
-      "FeedBack = require(a BookMyHall Customer",
+      "FeedBack recieved from a BookMyVenue Customer",
       contactusFormEmailTemplate(
         email,
         name,

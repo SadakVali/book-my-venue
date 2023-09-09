@@ -3,12 +3,7 @@ const mongoose = require("mongoose");
 const bookingInfoSchema = new mongoose.Schema(
   {
     customerName: {
-      type: Number,
-      required: true,
-    },
-    managerId: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      type: String,
       required: true,
     },
     customerContactNumber: {
@@ -21,10 +16,25 @@ const bookingInfoSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    venue: {
+    venueName: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Venue",
       required: true,
+    },
+    venueAddress: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Address",
+      required: true,
+    },
+    managerContactNumber: {
+      type: Number,
+      required: true,
+      unique: true,
+    },
+    managerAlternateContactNumber: {
+      type: Number,
+      required: true,
+      unique: true,
     },
     advancePaid: {
       type: Number,

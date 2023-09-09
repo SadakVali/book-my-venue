@@ -1,6 +1,6 @@
 // Importing the models
 const BookingInfo = require("../models/BookingInfo");
-const Venue = require("../models/FunctionHall");
+const Venue = require("../models/Venue");
 
 // const constants
 const { BOOKING_STATUS } = require("../utils/constants");
@@ -11,13 +11,7 @@ exports.fetchPaymentsDueTodayBookings = async (req, res) => {
   try {
     const paymentDueReciepts = await BookingInfo.find({
       nextPaymentDueDate: { $lte: Math.floor(Date.now() / 1000) },
-      bookingStatus: {
-        $nin: [
-          BOOKING_STATUS.BOOKED,
-          BOOKING_STATUS.CANCELLED,
-          BOOKING_STATUS.OCCATION_OVER,
-        ],
-      },
+      bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     });
 
     if (paymentDueReciepts.length === 0)
@@ -44,10 +38,10 @@ exports.fetchPaymentsDueTodayBookings = async (req, res) => {
 
 // get All Advance Paid Bookings
 // (current UnixTimeStamp < nextPaymentDueDate and bookingStatus === "AdvancePaid")
-exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
+exports.fetchAdvancePaidBookings = async (req, res) => {
   try {
     const advancePaidBookings = await BookingInfo.find({
-      nextPaymentDueDate: { $lte: Math.floor(Date.now() / 1000) },
+      nextPaymentDueDate: { $gt: Math.floor(Date.now() / 1000) },
       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     });
 
@@ -76,7 +70,7 @@ exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
 };
 
 // UPDATE THE SUMMARY OF THE BOOKING RECIEPT
-exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
+exports.updatePaymentSummary = async (req, res) => {
   try {
     const { bookingId, paymentSummary } = req.body;
     // Validate input
@@ -104,7 +98,7 @@ exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Booking Summary is updated successfully",
-      data: advancePaidBookings,
+      data: updatedBookingDetails,
     });
   } catch (error) {
     console.error(error);
@@ -127,8 +121,8 @@ exports.createNewBooking = async (req, res) => {
       customerAlternateContactNumber,
       venueName,
       venueAddress,
-      managerNumber,
-      managerAlternateNumber,
+      managerContactNumber,
+      managerAlternateContactNumber,
       advancePaid,
       advancePaidOn,
       fullyPaidDate,
@@ -145,8 +139,8 @@ exports.createNewBooking = async (req, res) => {
       customerAlternateContactNumber,
       venueName,
       venueAddress,
-      managerNumber,
-      managerAlternateNumber,
+      managerContactNumber,
+      managerAlternateContactNumber,
       advancePaid,
       advancePaidOn,
       fullyPaidDate,
@@ -155,7 +149,7 @@ exports.createNewBooking = async (req, res) => {
       checkOutTime,
       totalAmount,
       paymentSummary,
-      bookingStatus: BOOKING_STATUS.DRAFT,
+      bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     });
     // updating the allBookings field of the venue
     await Venue.findByIdAndUpdate(venueId, {
@@ -178,7 +172,7 @@ exports.createNewBooking = async (req, res) => {
 };
 
 // get all reciepts of a single customer
-exports.fetchReciepts = async (req, res) => {
+exports.fetchSingleCustomerReciepts = async (req, res) => {
   try {
     // Validate and extract the inputs
     const { customerContactNumber } = req.body;
@@ -186,7 +180,7 @@ exports.fetchReciepts = async (req, res) => {
       customerContactNumber,
     });
     if (customerBookingReciepts.length === 0)
-      return res.status(400).json({
+      return res.status(404).json({
         success: false,
         message: "Invalid customerContactNumber given",
       });
