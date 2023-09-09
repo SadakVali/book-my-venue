@@ -1,66 +1,166 @@
 // Importing the models
-const User = require("../models/User");
 const BookingInfo = require("../models/BookingInfo");
 const Venue = require("../models/FunctionHall");
 
 // const constants
 const { BOOKING_STATUS } = require("../utils/constants");
-const { ACCOUNT_TYPE } = require("../utils/constants");
+
+// get All Payment Due today Bookings
+// (current UnixTimeStamp >= nextPaymentDueDate and bookingStatus === "AdvancePaid")
+exports.fetchPaymentsDueTodayBookings = async (req, res) => {
+  try {
+    const paymentDueReciepts = await BookingInfo.find({
+      nextPaymentDueDate: { $lte: Math.floor(Date.now() / 1000) },
+      bookingStatus: {
+        $nin: [
+          BOOKING_STATUS.BOOKED,
+          BOOKING_STATUS.CANCELLED,
+          BOOKING_STATUS.OCCATION_OVER,
+        ],
+      },
+    });
+
+    if (paymentDueReciepts.length === 0)
+      return res.status(204).json({
+        success: false,
+        message: "No Booking needs to be reminded for payment",
+      });
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: "All Payments Reciepts that are Due today fetched successfully",
+      data: paymentDueReciepts,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching the Payment Due Reciepts",
+      error: error.message,
+    });
+  }
+};
+
+// get All Advance Paid Bookings
+// (current UnixTimeStamp < nextPaymentDueDate and bookingStatus === "AdvancePaid")
+exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
+  try {
+    const advancePaidBookings = await BookingInfo.find({
+      nextPaymentDueDate: { $lte: Math.floor(Date.now() / 1000) },
+      bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
+    });
+
+    if (advancePaidBookings.length === 0)
+      return res.status(204).json({
+        success: false,
+        message: "There are No Adavance Paid Bookings",
+      });
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message:
+        "All Advance Paid Bookings But Not Due Today Reciepts fetched successfully",
+      data: advancePaidBookings,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong while fetching All Advance Paid Bookings But Not Due Today Reciepts",
+      error: error.message,
+    });
+  }
+};
+
+// UPDATE THE SUMMARY OF THE BOOKING RECIEPT
+exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
+  try {
+    const { bookingId, paymentSummary } = req.body;
+    // Validate input
+    if (!bookingId || !paymentSummary) {
+      return res.status(400).json({
+        success: false,
+        message: "Both 'bookingId' and 'paymentSummary' are required fields.",
+      });
+    }
+
+    const updatedBookingDetails = await BookingInfo.findByIdAndUpdate(
+      bookingId,
+      { paymentSummary: paymentSummary },
+      { new: true }
+    );
+
+    if (!updatedBookingDetails) {
+      return res.status(404).json({
+        success: false,
+        message: "Couldn't found the booking info with the given bookingId",
+      });
+    }
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: "Booking Summary is updated successfully",
+      data: advancePaidBookings,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while updating the summary of the booking",
+      error: error.message,
+    });
+  }
+};
 
 // create a new booking
 exports.createNewBooking = async (req, res) => {
   try {
     // Validate and extract the inputs = require(the request body
     const {
-      checkInTime,
-      checkOutTime,
-      name,
-      contactNumber,
-      alternateContactNumber,
       venueId,
+      customerName,
+      customerContactNumber,
+      customerAlternateContactNumber,
+      venueName,
+      venueAddress,
+      managerNumber,
+      managerAlternateNumber,
       advancePaid,
       advancePaidOn,
-      totalAmount,
+      fullyPaidDate,
       nextPaymentDueDate,
+      checkInTime,
+      checkOutTime,
+      totalAmount,
       paymentSummary,
     } = req.body;
-    const bookingStatus = BOOKING_STATUS.DRAFT;
-    if (!venueId) {
-      return res.status(400).json({
-        success: false,
-        message: "venueId must be provided in the request body",
-      });
-    }
 
-    let customerDetails = await User.find({ contactNumber });
-    customerDetails = await User.create({
-      name,
-      contactNumber,
-      alternateContactNumber,
-      role: ACCOUNT_TYPE.CUSTOMER,
-      image: `https://api.dicebear.com/5.x/initials/svg?seed=${name} ${name}`,
-    });
-    const newBookingSlot = await BookingSlot.create({
-      checkInTime,
-      checkOutTime,
-    });
     const newBookingDetails = await BookingInfo.create({
-      customer: customerDetails._id,
-      manager: venueId,
+      customerName,
+      customerContactNumber,
+      customerAlternateContactNumber,
+      venueName,
+      venueAddress,
+      managerNumber,
+      managerAlternateNumber,
       advancePaid,
       advancePaidOn,
-      totalAmount,
+      fullyPaidDate,
       nextPaymentDueDate,
-      bookingSLot: newBookingSlot._id,
-      bookingStatus,
+      checkInTime,
+      checkOutTime,
+      totalAmount,
       paymentSummary,
+      bookingStatus: BOOKING_STATUS.DRAFT,
     });
     // updating the allBookings field of the venue
-    await Venue.findByIdAndUpdate(
-      venueId,
-      { $push: { allBookings: newBookingDetails._id } },
-      { new: true }
-    );
+    await Venue.findByIdAndUpdate(venueId, {
+      $push: { allBookings: newBookingDetails._id },
+    });
     // Return a success response
     return res.status(200).json({
       success: true,
@@ -77,17 +177,15 @@ exports.createNewBooking = async (req, res) => {
   }
 };
 
-// Fetch details of all Bookings of a single customer
+// get all reciepts of a single customer
 exports.fetchReciepts = async (req, res) => {
   try {
-    // Validate and extract the inputs = require(the request body
+    // Validate and extract the inputs
     const { customerContactNumber } = req.body;
-
     const customerBookingReciepts = await BookingInfo.find({
       customerContactNumber,
     });
-
-    if (!customerBookingReciepts)
+    if (customerBookingReciepts.length === 0)
       return res.status(400).json({
         success: false,
         message: "Invalid customerContactNumber given",
@@ -110,44 +208,22 @@ exports.fetchReciepts = async (req, res) => {
   }
 };
 
-// All Payment Due today Bookings (current UnixTimeStamp >= nextPaymentDueDate and bookingStatus === "AdvancePaid")
-exports.fetchPaymentsDueTodayBookings = async (req, res) => {
-  try {
-    const paymentDueReciepts = await BookingInfo.find({
-      nextPaymentDueDate: { $lt: Math.floor(Date.now() / 1000) },
-    });
-
-    if (paymentDueReciepts.length === 0)
-      return res.status(400).json({
-        success: false,
-        message: "Invalid customerContactNumber given",
-      });
-
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message: "All Payments Reciepts that are Due today fetched successfully",
-      data: paymentDueReciepts,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while fetching the Payment Due Reciepts",
-      error: error.message,
-    });
-  }
-};
-
-// All Cancelled Bookings (bookingStatus === "Cancelled")
+// get All Cancelled Bookings (bookingStatus === "Cancelled")
 exports.fetchAllCancelledBookings = async (req, res) => {
   try {
-    // TODO: Sort it by occation date in descending order
+    // Sort it by occation date in descending order
     const allCancelledBookings = await BookingInfo.find({
-      bookingStatus: {
-        $elemMatch: { $eq: BOOKING_STATUS.CANCELLED },
-      },
-    });
+      bookingStatus: BOOKING_STATUS.CANCELLED,
+    }) // Sort by 'checkInTime' in descending order.
+      .sort({ checkInTime: -1 })
+      .exec();
+    // Check if there are no matching bookings
+    if (allCancelledBookings.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No bookings with 'Booked' status found.",
+      });
+    }
     // Return a success response
     return res.status(200).json({
       success: true,
@@ -164,48 +240,22 @@ exports.fetchAllCancelledBookings = async (req, res) => {
   }
 };
 
-// All Advance Paid Bookings (current UnixTimeStamp < nextPaymentDueDate and bookingStatus === "AdvancePaid")
-exports.fetchAdvancePaidBookingsNotDueToday = async (req, res) => {
-  try {
-    const currentTimeInSeconds = Math.floor(Date.now() / 1000);
-    const advancePaidBookings = await BookingInfo.find({
-      nextPaymentDueDate: { $lt: currentTimeInSeconds },
-      bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
-    });
-
-    if (advancePaidBookings.length === 0)
-      return res.status(400).json({
-        success: false,
-        message: "Invalid customerContactNumber given",
-      });
-
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message:
-        "All Advance Paid Bookings But Not Due Today Reciepts fetched successfully",
-      data: advancePaidBookings,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message:
-        "Something went wrong while fetching All Advance Paid Bookings But Not Due Today Reciepts",
-      error: error.message,
-    });
-  }
-};
-
-// All Completely Paid Bookings (bookingStatus === "Booked")
+// get All Completely Paid booking reciepts (bookingStatus === "Booked")
 exports.fetchAllBookedReciepts = async (req, res) => {
   try {
-    // TODO: Sort it by occation date in descending order
+    // Sort it by occation date in descending order
     const allCompletelyBookedReciepts = await BookingInfo.find({
-      bookingStatus: {
-        $elemMatch: { $eq: BOOKING_STATUS.BOOKED },
-      },
-    });
+      bookingStatus: BOOKING_STATUS.BOOKED,
+    }) // Sort by 'checkInTime' in descending order.
+      .sort({ checkInTime: -1 })
+      .exec();
+    // Check if there are no matching bookings
+    if (allCompletelyBookedReciepts.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No bookings with 'Booked' status found.",
+      });
+    }
     // Return a success response
     return res.status(200).json({
       success: true,
@@ -223,21 +273,28 @@ exports.fetchAllBookedReciepts = async (req, res) => {
   }
 };
 
-// All Occation Over (bookingStatus === "OccationOver")
+// get All Occation Over booking reciepts (bookingStatus === "OccasionOver")
 exports.fetchAllBookingsPastOccation = async (req, res) => {
   try {
-    // TODO: Sort it by occation date in descending order
-    const allOccationCompltedBookings = await BookingInfo.find({
-      bookingStatus: {
-        $elemMatch: { $eq: BOOKING_STATUS.OCCATION_OVER },
-      },
-    });
+    // Sort it by occation date in descending order
+    const allOccasionCompletedBookings = await BookingInfo.find({
+      bookingStatus: BOOKING_STATUS.OCCATION_OVER,
+    }) // Sort by 'checkInTime' in descending order.
+      .sort({ checkInTime: -1 })
+      .exec();
+    // Check if there are no matching bookings
+    if (allOccasionCompletedBookings.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No bookings with 'OccasionOver' status found.",
+      });
+    }
     // Return a success response
     return res.status(200).json({
       success: true,
       message:
         "All Bookings Reciepts whose Occation has been selebrated in your Venue fetched successfully",
-      data: allOccationCompltedBookings,
+      data: allOccasionCompletedBookings,
     });
   } catch (error) {
     console.error(error);
@@ -250,24 +307,29 @@ exports.fetchAllBookingsPastOccation = async (req, res) => {
   }
 };
 
-// cancel booking
+// change status to cancel
 exports.cancelSingleBooking = async (req, res) => {
   try {
-    // Validate and extract the inputs = require(the request body
+    // Validate and extract the inputs
     const { bookingId } = req.body;
-    const cancelledBooking = await BookingInfo.findByIdAndUpdate(
+    const updatedBooking = await BookingInfo.findByIdAndUpdate(
       bookingId,
       {
         bookingStatus: BOOKING_STATUS.CANCELLED,
       },
       { new: true }
     );
+    if (!updatedBooking)
+      return res.status(404).json({
+        success: false,
+        message: "Incorrect bookingId",
+      });
 
     // Return a success response
     return res.status(200).json({
       success: true,
       message: "Booking has been Cancelled successfully",
-      data: cancelledBooking,
+      data: updatedBooking,
     });
   } catch (error) {
     console.error(error);
@@ -282,21 +344,26 @@ exports.cancelSingleBooking = async (req, res) => {
 // change status to booked
 exports.changeStatusToBooked = async (req, res) => {
   try {
-    // Validate and extract the inputs = require(the request body
+    // Validate and extract the inputs
     const { bookingId } = req.body;
-    const compltelyBookedReciept = await BookingInfo.findByIdAndUpdate(
+    const updatedReciept = await BookingInfo.findByIdAndUpdate(
       bookingId,
       {
         bookingStatus: BOOKING_STATUS.BOOKED,
       },
       { new: true }
     );
+    if (!updatedBooking)
+      return res.status(404).json({
+        success: false,
+        message: "Incorrect bookingId",
+      });
 
     // Return a success response
     return res.status(200).json({
       success: true,
       message: "Status of the Booking has been Changed to Booked sccessfully",
-      data: compltelyBookedReciept,
+      data: updatedReciept,
     });
   } catch (error) {
     console.error(error);
@@ -314,19 +381,17 @@ exports.bookingHistoryOfSingleVenue = async (req, res) => {
     // Validate and extract the inputs = require(the request body
     const { managerId, startingUnixTimeStamp, endingUnixTimeStamp } = req.body;
 
-    const venue = await Venue.findById(managerId);
-    let venueBookingHistoryDetails;
-    if (venue) {
-      venueBookingHistoryDetails = await venue.allBookings.aggregate([
-        { $unwind: "$allBookings" },
-        {
-          $match: {
-            "allBookings.checkInTime": { $lt: endingUnixTimeStamp },
-            "allBookings.checkOutTime": { $gt: startingUnixTimeStamp },
-          },
-        },
-      ]);
-    }
+    const venue = await Venue.findOne({ managerId });
+    if (!venue)
+      return res.status(404).json({
+        success: false,
+        message: "Venue not found",
+      });
+
+    const venueBookingHistoryDetails = venue.allBookings.find({
+      "allBookings.checkInTime": { $lt: endingUnixTimeStamp },
+      "allBookings.checkOutTime": { $gt: startingUnixTimeStamp },
+    });
 
     // Return a success response
     return res.status(200).json({

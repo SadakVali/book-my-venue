@@ -266,12 +266,8 @@ exports.getSingleVenueDetails = async (req, res) => {
     const venueDetails = await Venue.findById(venueId)
       .where("status")
       .equals("Published")
-      .populate("food")
-      .populate("alcohol")
-      .populate("decoration")
-      .populate("otherPolicies")
-      .populate("bookingDates")
-      .populate({ path: "address", populate: { path: "GPS" } })
+      .populate("address")
+      .populate("manager")
       .exec();
 
     // Validation: Check if the venueDetails was found
@@ -301,99 +297,199 @@ exports.getSingleVenueDetails = async (req, res) => {
 // Edit a single venue details
 exports.editVenue = async (req, res) => {
   try {
-    // Validate and extract the venueId = require(the request body
-    const { venueId } = req.body;
-    if (!venueId) {
-      return res.status(400).json({
-        success: false,
-        message: "venueId must be provided in the request body",
-      });
-    }
+    // Destructure data = require(the request body
+    const {
+      name,
+      aboutVenue,
+      pricePerDay,
+      advancePercentage,
+      guestCapacity,
+      carParkingSpace,
+      lodgingRooms,
+      roomPrice,
+      bookingCancellation,
+      // Food
+      cateringProvidedByVenue,
+      outsideCatererAllowed,
+      nonVegAllowedAtVenue,
+      vegPricePerPlate,
+      NonvegPricePerPlate,
+      // Alcohol
+      alcoholProvidedByVenue,
+      outsideAlcoholAllowed,
+      // Decor
+      decorProvidedByVenue,
+      outsideDecoratersAllowed,
+      // OtherPolicies
+      isMusicAllowedLateAtNight,
+      isHallAirConditioned,
+      isBaaratAllowed,
+      fireCrackersAllowed,
+      isHawanAllowed,
+      isOverNightWeddingAllowed,
+      // Address
+      street,
+      landmark,
+      distanceFromLandmark,
+      village,
+      city,
+      pin,
+      // GPS
+      coordinates,
+      venueId,
+    } = req.body;
 
     // Find the function hall by its venueId
-    const existingVenue = await Venue.findById(venueId);
-    if (!existingVenue) {
-      return res.status(404).json({
-        success: false,
-        message: `Venue with venueId ${venueId} not found`,
-      });
+    const existingVenue = await Venue.findById(venueId)
+      .where("status")
+      .equals("Published")
+      .populate("address")
+      .populate("manager")
+      .exec();
+
+    // Upload images to Cloudinary
+    let imagesResponse;
+    if (req?.files?.images) {
+      imagesResponse = await uploadFilesToCloudinary(
+        (files = req?.files?.images),
+        (folder = process.env.FOLDER_NAME),
+        (publicIds = existingVenue.images.map((image) => image.publicId))
+      );
+      console.log("Uploaded Images Details", imagesResponse);
     }
 
-    // Extract all possible fields = require(the Venue schema
-    const venueFields = Object.keys(existingVenue._doc);
-    // Iterate through the Venue fields and update if non-null values are present in req.body
-    venueFields.forEach(async (field) => {
-      if (
-        req.body[field] !== undefined &&
-        req.body[field] !== null &&
-        field !== "images" &&
-        field !== "video"
-      ) {
-        existingVenue[field] = req.body[field];
-      }
-      if (field === "video" && req.files && req.files[field]) {
-        public_ids = [existingVenue[field].publicId];
-        const uploadedFilesDetails = await uploadFilesToCloudinary(
-          req.files[field],
-          process.env.FOLDER_NAME,
-          public_ids
-        );
-        existingVenue.video.url = uploadedFilesDetails.secure_url;
-        existingVenue.video.publicId = uploadedFilesDetails.public_id;
-        existingVenue.video.duration = uploadedFilesDetails.duration;
-      }
+    // Upload video to Cloudinary
+    let videoResponse;
+    if (req?.files?.video) {
+      videoResponse = await uploadFilesToCloudinary(
+        (files = req?.files?.video),
+        (folder = process.env.FOLDER_NAME),
+        (publicIds = existingVenue.video.map((vid) => vid.publicId))
+      );
+      console.log("Uploaded Video Details", videoResponse);
+    }
 
-      if (field === "images") {
-        public_ids = existingVenue[field].map((image) => image.publicId);
-        const uploadedFilesDetails = await uploadFilesToCloudinary(
-          req.files[field],
-          process.env.FOLDER_NAME,
-          public_ids
-        );
-        existingVenue.images = uploadedFilesDetails.map((imgRes) => {
-          return { url: imgRes.secure_url, publicId: imgRes.public_id };
-        });
-      }
-    });
+    // Update the main venue fields if they are defined
+    if (
+      !name ||
+      !aboutVenue ||
+      !pricePerDay ||
+      !advancePercentage ||
+      !guestCapacity ||
+      !carParkingSpace ||
+      !lodgingRooms ||
+      !roomPrice ||
+      !bookingCancellation ||
+      // Food
+      !cateringProvidedByVenue ||
+      !outsideCatererAllowed ||
+      !nonVegAllowedAtVenue ||
+      !vegPricePerPlate ||
+      !NonvegPricePerPlate ||
+      // Alcohol
+      !alcoholProvidedByVenue ||
+      !outsideAlcoholAllowed ||
+      // Decor
+      !decorProvidedByVenue ||
+      !outsideDecoratersAllowed ||
+      // OtherPolicies
+      !isMusicAllowedLateAtNight ||
+      !isHallAirConditioned ||
+      !isBaaratAllowed ||
+      !fireCrackersAllowed ||
+      !isHawanAllowed ||
+      !isOverNightWeddingAllowed
+    ) {
+      if (name !== undefined) existingVenue.name = name;
+      if (aboutVenue !== undefined) existingVenue.aboutVenue = aboutVenue;
+      if (pricePerDay !== undefined) existingVenue.pricePerDay = pricePerDay;
+      if (advancePercentage !== undefined)
+        existingVenue.advancePercentage = advancePercentage;
+      if (guestCapacity !== undefined)
+        existingVenue.guestCapacity = guestCapacity;
+      if (carParkingSpace !== undefined)
+        existingVenue.carParkingSpace = carParkingSpace;
+      if (lodgingRooms !== undefined) existingVenue.lodgingRooms = lodgingRooms;
+      if (roomPrice !== undefined) existingVenue.roomPrice = roomPrice;
+      if (bookingCancellation !== undefined)
+        existingVenue.bookingCancellation = bookingCancellation;
 
-    // Save the updated Venue document
-    const updatedVenue = await existingVenue.save();
+      // Create a new Food entry
+      if (cateringProvidedByVenue !== undefined)
+        existingVenue.cateringProvidedByVenue = cateringProvidedByVenue;
+      if (outsideCatererAllowed !== undefined)
+        existingVenue.outsideCatererAllowed = outsideCatererAllowed;
+      if (nonVegAllowedAtVenue !== undefined)
+        existingVenue.nonVegAllowedAtVenue = nonVegAllowedAtVenue;
+      if (vegPricePerPlate !== undefined)
+        existingVenue.vegPricePerPlate = vegPricePerPlate;
+      if (NonvegPricePerPlate !== undefined)
+        existingVenue.NonvegPricePerPlate = NonvegPricePerPlate;
 
-    const subSchemaFieldsToUpdate = [
-      "food",
-      "alcohol",
-      "decoration",
-      "otherPolicies",
-      "address",
-      "manager",
-    ];
-    // Iterate through the sub-schema fields and update if non-null values are present in req.body
-    subSchemaFieldsToUpdate.forEach(async (subSchemaId) => {
-      // Access the Address subdocument within the Venue
-      const newSubSchema = existingVenue[subSchemaId];
-      // Extract all possible fields = require(the Address sub-schema
-      const newSubSchemaFields = Object.keys(newSubSchema._doc);
-      // Iterate through the Address sub-schema fields and update if non-null values are present in req.body
-      newSubSchemaFields.forEach((field) => {
-        if (req.body[field] !== undefined && req.body[field] !== null) {
-          newSubSchema[field] = req.body[field];
-        }
-      });
-      // Save the updated Address sub-document
-      await newSubSchema.save();
-    });
+      // Create a new Alcohol entry
+      if (alcoholProvidedByVenue !== undefined)
+        existingVenue.alcoholProvidedByVenue = alcoholProvidedByVenue;
+      if (outsideAlcoholAllowed !== undefined)
+        existingVenue.outsideAlcoholAllowed = outsideAlcoholAllowed;
 
-    // Return the response with the updated existingVenue details
-    return res.status(200).json({
+      // Create a new Decor entry
+      if (decorProvidedByVenue !== undefined)
+        existingVenue.decorProvidedByVenue = decorProvidedByVenue;
+      if (outsideDecoratersAllowed !== undefined)
+        existingVenue.outsideDecoratersAllowed = outsideDecoratersAllowed;
+
+      // Create a new OtherPolicies entry
+      if (isMusicAllowedLateAtNight !== undefined)
+        existingVenue.isMusicAllowedLateAtNight = isMusicAllowedLateAtNight;
+      if (isHallAirConditioned !== undefined)
+        existingVenue.isHallAirConditioned = isHallAirConditioned;
+      if (isBaaratAllowed !== undefined)
+        existingVenue.isBaaratAllowed = isBaaratAllowed;
+      if (fireCrackersAllowed !== undefined)
+        existingVenue.fireCrackersAllowed = fireCrackersAllowed;
+      if (isHawanAllowed !== undefined)
+        existingVenue.isHawanAllowed = isHawanAllowed;
+      if (isOverNightWeddingAllowed !== undefined)
+        existingVenue.isOverNightWeddingAllowed = isOverNightWeddingAllowed;
+      await existingVenue.save();
+    }
+
+    // Update address if they are defined
+    if (
+      !street ||
+      !landmark ||
+      !distanceFromLandmark ||
+      !village ||
+      !city ||
+      !pin ||
+      !coordinates
+    ) {
+      if (street !== undefined) existingVenue.address.street = street;
+      if (landmark !== undefined) existingVenue.address.landmark = landmark;
+      if (distanceFromLandmark !== undefined)
+        existingVenue.address.distanceFromLandmark = distanceFromLandmark;
+      if (village !== undefined) existingVenue.address.village = village;
+      if (city !== undefined) existingVenue.address.city = city;
+      if (pin !== undefined) existingVenue.address.pin = pin;
+      if (coordinates !== undefined)
+        existingVenue.address.location = {
+          type: "Point",
+          coordinates: JSON.parse(coordinates),
+        };
+      await existingVenue.address.save();
+    }
+
+    // Return new Function Hall and success response
+    return res.status(201).json({
       success: true,
-      message: "Venue Details Updated Successfully",
-      data: updatedVenue,
+      message: "Function Hall Created Successfully",
+      data: newVenueDetails,
     });
   } catch (error) {
     console.error(error);
     return res.status(500).json({
       success: false,
-      message: "Something went wrong while updating the existingVenue",
+      message: "Failed to create a new Function Hall",
       error: error.message,
     });
   }
@@ -405,79 +501,21 @@ exports.allAvailableVenues = async (req, res) => {
     // Validate and extract the inputs = require(the request body
     const { checkInUnixTimestamp, checkOutUnixTimestamp } = req.body;
 
-    const venues = await Venue.aggregate([
-      // Stage 1: Lookup BookingInfo documents based on allBookings field
-      {
-        $lookup: {
-          from: "BookingInfo",
-          localField: "allBookings",
-          foreignField: "_id",
-          as: "bookings",
-        },
-      },
-      // Stage 2: Unwind the bookings array for individual booking details
-      {
-        $unwind: "$bookings",
-      },
-      // Stage 3: Lookup BookingSlot documents for each booking
-      {
-        $lookup: {
-          from: "BookingSlot",
-          localField: "bookings.bookingSlot",
-          foreignField: "_id",
-          as: "bookingSlots",
-        },
-      },
-      // Stage 4: Filter Venues based on booking slot availability
-      {
-        $match: {
-          $or: [
-            { "bookingSlots.checkInTime": { $gte: checkOutUnixTimestamp } },
-            { "bookingSlots.checkOutTime": { $lte: checkInUnixTimestamp } },
-          ],
-        },
-      },
-      // Stage 5: Lookup Venue documents again
-      {
-        $lookup: {
-          from: "Venue",
-          localField: "_id",
-          foreignField: "_id",
-          as: "venueDetails",
-        },
-      },
-      // Stage 6: Unwind the result = require(the Venue collection
-      {
-        $unwind: "$venueDetails",
-      },
-      // Stage 7: Filter Venues by status "Published"
-      {
-        $match: {
-          "venueDetails.status": "Published",
-        },
-      },
-      // Stage 8: Project the desired fields for the final result
-      {
-        $project: {
-          _id: 1,
-          name: "$venueDetails.name",
-          aboutVenue: "$venueDetails.aboutVenue",
-          manager: "$venueDetails.manager",
-          images: "$venueDetails.images",
-          pricePerDay: "$venueDetails.pricePerDay",
-          guestCapacity: "$venueDetails.guestCapacity",
-          parkingSpace: "$venueDetails.parkingSpace",
-          lodgingRooms: "$venueDetails.lodgingRooms",
-          video: "$venueDetails.video",
-        },
-      },
-    ]);
+    // Find FunctionHalls that don't have conflicts
+    const availableFunctionHalls = await Venue.find({
+      $or: [
+        // Check-out before new booking's check-in
+        { "allBookings.checkOutTime": { $lt: checkInUnixTimestamp } },
+        // Check-in after new booking's check-out
+        { "allBookings.checkInTime": { $gt: checkOutUnixTimestamp } },
+      ],
+    });
 
     // Return a success response
     return res.status(200).json({
       success: true,
       message: "FUnction Halls open for booking fetched successfully",
-      data: venues,
+      data: availableFunctionHalls,
     });
   } catch (error) {
     console.error(error);

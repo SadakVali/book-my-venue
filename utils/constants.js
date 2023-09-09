@@ -13,7 +13,7 @@ exports.BOOKING_STATUS = {
   BOOKED: "Booked",
   CANCELLED: "Cancelled",
   ADVANCE_PAID: "AdvancePaid",
-  OCCATION_OVER: "OccationOver",
+  OCCATION_OVER: "OccasionOver",
 };
 
 exports.ADMIN_CONSTANTS = {
