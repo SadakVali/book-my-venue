@@ -18,7 +18,7 @@ exports.uploadFilesToCloudinary = async (
   public_ids
 ) => {
   try {
-    console.log("Hi Bro files are being uploaded", files);
+    // console.log("Hi Bro files are being uploaded", files);
     // Use the Cloudinary API to delete the images if exists
     if (public_ids) {
       for (const public_id of public_ids)

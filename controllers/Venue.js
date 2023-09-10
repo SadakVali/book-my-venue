@@ -54,6 +54,48 @@ exports.createVenue = async (req, res) => {
       coordinates,
     } = req.body;
 
+    // console.log({
+    //   name,
+    //   aboutVenue,
+    //   venuePricePerDay,
+    //   advancePercentage,
+    //   guestCapacity,
+    //   carParkingSpace,
+    //   numOfLodgingRooms,
+    //   lodgingRoomPrice,
+    //   isBookingCancellable,
+    //   // Food
+    //   isCateringProvidedByVenue,
+    //   isOutsideCatererAllowed,
+    //   isNonVegAllowedAtVenue,
+    //   vegPricePerPlate,
+    //   NonvegPricePerPlate,
+    //   // Alcohol
+    //   isAlcoholProvidedByVenue,
+    //   isOutsideAlcoholAllowed,
+    //   // Decor
+    //   isDecorProvidedByVenue,
+    //   isOutsideDecoratersAllowed,
+    //   // OtherPolicies
+    //   isMusicAllowedLateAtNight,
+    //   isHallAirConditioned,
+    //   isBaaratAllowed,
+    //   areFireCrackersAllowed,
+    //   isHawanAllowed,
+    //   isOverNightWeddingAllowed,
+    //   // Address
+    //   street,
+    //   landmark,
+    //   distanceFromLandmark,
+    //   village,
+    //   city,
+    //   pin,
+    //   // GPS
+    //   coordinates: JSON.parse(coordinates),
+    // });
+    // console.log(req?.files?.images);
+    // console.log(req?.files?.videos);
+
     // Validate required fields
     if (
       !req?.files?.images || // Use optional chaining for safer thumbnailImage access
@@ -94,7 +136,7 @@ exports.createVenue = async (req, res) => {
       !city ||
       !pin ||
       // GPS
-      !coordinates.length
+      !JSON.parse(coordinates).length
     )
       return res.status(400).json({
         success: false,
@@ -102,11 +144,9 @@ exports.createVenue = async (req, res) => {
       });
 
     // Check if the user is a manager
-    const managerDetails = await User.findById(req.user.id, {
-      role: ACCOUNT_TYPE.MANAGER,
-    });
+    const managerDetails = await User.findById(req.user.id);
     // console.log("Manager Details", managerDetails);
-    if (!managerDetails)
+    if (!managerDetails || managerDetails.role !== ACCOUNT_TYPE.MANAGER)
       return res.status(404).json({
         success: false,
         message: "Manager details not found",
@@ -114,7 +154,7 @@ exports.createVenue = async (req, res) => {
 
     // make sure there is no function hall registered with the given managerId earlier
     if (managerDetails.venue)
-      return req.status(401).json({
+      return res.status(401).json({
         success: false,
         message: "Venue is already registered with this ManagerId",
       });
@@ -126,7 +166,7 @@ exports.createVenue = async (req, res) => {
         req?.files?.images,
         process.env.FOLDER_NAME
       );
-      console.log("Uploaded Images Details", imagesResponse);
+      // console.log("Uploaded Images Details", imagesResponse);
     }
 
     // Upload videos to Cloudinary
@@ -136,7 +176,7 @@ exports.createVenue = async (req, res) => {
         req?.files?.videos,
         process.env.FOLDER_NAME
       );
-      console.log("Uploaded Video Details", videoResponse);
+      // console.log("Uploaded Video Details", videoResponse);
     }
 
     // Create a new Food entry
@@ -229,11 +269,13 @@ exports.createVenue = async (req, res) => {
     });
 
     // Add the new function hall to the user doc of Instructor
-    await User.findByIdAndUpdate(
+    console.log(newVenueDetails._id);
+    const result = await User.findByIdAndUpdate(
       req.user.id,
-      { $push: { venue: newVenueDetails._id } },
+      { venue: newVenueDetails._id },
       { new: true }
     );
+    console.log("RESULT ", result);
 
     // Return new Function Hall and success response
     return res.status(201).json({
