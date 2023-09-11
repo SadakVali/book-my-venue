@@ -41,6 +41,12 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    allBookings: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "BookingInfo",
+      },
+    ],
   },
   {
     timestamps: true, // Automatically adds "createdAt" and "updatedAt" fields to each document

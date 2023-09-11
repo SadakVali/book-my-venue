@@ -75,7 +75,7 @@ exports.signup = async (req, res) => {
       alternateContactNumber,
       role: ACCOUNT_TYPE.MANAGER,
       password,
-      image: `https://api.dicebear.com/5.x/initials/svg?seed=${name} ${name}`,
+      image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
     });
 
     return res.status(201).json({

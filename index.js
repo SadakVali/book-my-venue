@@ -6,7 +6,8 @@ const expressFileupload = require("express-fileupload");
 
 // // importing the routes
 const contactUsRoutes = require("./routes/contact");
-const venueRoutes = require("./routes/functionHall");
+const venueRoutes = require("./routes/venue");
+const bookingRoutes = require("./routes/booking");
 const userRoutes = require("./routes/user");
 
 // importing the configurations
@@ -49,6 +50,7 @@ app.use(
 // routes
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/venue", venueRoutes);
+app.use("/api/v1/booking", bookingRoutes);
 app.use("/api/v1/reach", contactUsRoutes);
 
 // define initial route

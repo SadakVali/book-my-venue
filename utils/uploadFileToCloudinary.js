@@ -13,16 +13,25 @@ const cloudinary = require("cloudinary").v2;
 exports.uploadFilesToCloudinary = async (
   files,
   folder,
+  publicIds,
   height,
-  quality,
-  public_ids
+  quality
 ) => {
   try {
     // console.log("Hi Bro files are being uploaded", files);
     // Use the Cloudinary API to delete the images if exists
-    if (public_ids) {
-      for (const public_id of public_ids)
-        await cloudinary.uploader.destroy(public_id);
+    console.log(publicIds);
+    if (publicIds) {
+      for (const public_id of publicIds) {
+        try {
+          const deletionResponse = await cloudinary.uploader.destroy(public_id);
+          console.log("Deletion response:", deletionResponse);
+          console.log("deletion completed");
+          console.log(public_id);
+        } catch (error) {
+          console.error("Error deleting video:", error);
+        }
+      }
     }
 
     // upload the images

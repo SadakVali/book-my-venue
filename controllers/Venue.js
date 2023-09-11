@@ -1,3 +1,6 @@
+// imports from packages
+const { ObjectId } = require("mongodb");
+
 // Importing the utility snippets
 const { uploadFilesToCloudinary } = require("../utils/uploadFileToCloudinary");
 
@@ -9,6 +12,32 @@ const Address = require("../models/Address");
 // const constants
 const { VENUE_STATUS } = require("../utils/constants");
 const { ACCOUNT_TYPE } = require("../utils/constants");
+
+// TODO: export these zip functions to the utility folder
+const zipImageArrays = (imagesResponse) => {
+  const urls = imagesResponse.map((res) => res.secure_url);
+  const publicIds = imagesResponse.map((res) => res.public_id);
+  const result = [];
+  // Assuming arr1 and arr2 have the same length
+  for (let i = 0; i < urls.length; i++)
+    result.push({ url: urls[i], publicId: publicIds[i] });
+  return result;
+};
+
+const zipVideoArrays = (videoResponse) => {
+  const urls = videoResponse.map((res) => res.secure_url);
+  const publicIds = videoResponse.map((res) => res.public_id);
+  const durations = videoResponse.map((res) => res.duration);
+  const result = [];
+  // Assuming arr1 and arr2 have the same length
+  for (let i = 0; i < urls.length; i++)
+    result.push({
+      url: urls[i],
+      publicId: publicIds[i],
+      duration: durations[i],
+    });
+  return result;
+};
 
 // Create a new venue handler function
 exports.createVenue = async (req, res) => {
@@ -164,7 +193,7 @@ exports.createVenue = async (req, res) => {
     if (req?.files?.images) {
       imagesResponse = await uploadFilesToCloudinary(
         req?.files?.images,
-        process.env.FOLDER_NAME
+        `${process.env.FOLDER_NAME}/${name}`
       );
       // console.log("Uploaded Images Details", imagesResponse);
     }
@@ -174,7 +203,7 @@ exports.createVenue = async (req, res) => {
     if (req?.files?.videos) {
       videoResponse = await uploadFilesToCloudinary(
         req?.files?.videos,
-        process.env.FOLDER_NAME
+        `${process.env.FOLDER_NAME}/${name}`
       );
       // console.log("Uploaded Video Details", videoResponse);
     }
@@ -221,31 +250,6 @@ exports.createVenue = async (req, res) => {
       location: { type: "Point", coordinates: JSON.parse(coordinates) },
     });
 
-    const zipImageArrays = (imagesResponse) => {
-      const urls = imagesResponse.map((res) => res.secure_url);
-      const publicIds = imagesResponse.map((res) => res.public_id);
-      const result = [];
-      // Assuming arr1 and arr2 have the same length
-      for (let i = 0; i < urls.length; i++)
-        result.push({ url: urls[i], publicId: publicIds[i] });
-      return result;
-    };
-
-    const zipVideoArrays = (videoResponse) => {
-      const urls = videoResponse.map((res) => res.secure_url);
-      const publicIds = videoResponse.map((res) => res.public_id);
-      const durations = videoResponse.map((res) => res.duration);
-      const result = [];
-      // Assuming arr1 and arr2 have the same length
-      for (let i = 0; i < urls.length; i++)
-        result.push({
-          url: urls[i],
-          publicId: publicIds[i],
-          duration: durations[i],
-        });
-      return result;
-    };
-
     // Create a new function hall entry
     const newVenueDetails = await Venue.create({
       name,
@@ -269,13 +273,13 @@ exports.createVenue = async (req, res) => {
     });
 
     // Add the new function hall to the user doc of Instructor
-    console.log(newVenueDetails._id);
+    // console.log(newVenueDetails._id);
     const result = await User.findByIdAndUpdate(
       req.user.id,
       { venue: newVenueDetails._id },
       { new: true }
     );
-    console.log("RESULT ", result);
+    // console.log("RESULT ", result);
 
     // Return new Function Hall and success response
     return res.status(201).json({
@@ -296,8 +300,12 @@ exports.createVenue = async (req, res) => {
 // Get all details of a single venue with detailed information instead of ObjectIds
 exports.getSingleVenueDetails = async (req, res) => {
   try {
+    console.log("Reaching controller correctly...");
     // Validate and extract the venueId = require(the request parameters
-    const { venueId } = req.body;
+    let { venueId } = req.body;
+    // console.log(req.body);
+    // console.log(venueId);
+    // console.log(typeof venueId);
     if (!venueId) {
       return res.status(400).json({
         success: false,
@@ -306,9 +314,11 @@ exports.getSingleVenueDetails = async (req, res) => {
     }
 
     // Fetch details of the published Venue
+    // Creating an ObjectId from a hexadecimal string representation
+    // venueId = new ObjectId(venueId);
     const venueDetails = await Venue.findById(venueId)
-      .where("status")
-      .equals("Published")
+      // .where("status")
+      // .equals("Published")
       .populate("address")
       .populate("manager")
       .exec();
@@ -340,6 +350,7 @@ exports.getSingleVenueDetails = async (req, res) => {
 // Edit a single venue details
 exports.editVenue = async (req, res) => {
   try {
+    console.log("REACHED CONTROLLER CORRECTLY...");
     // Destructure data = require(the request body
     const {
       name,
@@ -384,8 +395,6 @@ exports.editVenue = async (req, res) => {
 
     // Find the function hall by its venueId
     const existingVenue = await Venue.findById(venueId)
-      .where("status")
-      .equals("Published")
       .populate("address")
       .populate("manager")
       .exec();
@@ -395,9 +404,10 @@ exports.editVenue = async (req, res) => {
     if (req?.files?.images) {
       imagesResponse = await uploadFilesToCloudinary(
         (files = req?.files?.images),
-        (folder = process.env.FOLDER_NAME),
-        (publicIds = existingVenue.images.map((image) => image.publicId))
+        (folder = `${process.env.FOLDER_NAME}/${name}`),
+        (publicIds = existingVenue?.images.map((image) => image.publicId))
       );
+      imagesResponse = zipImageArrays(imagesResponse);
       console.log("Uploaded Images Details", imagesResponse);
     }
 
@@ -406,43 +416,50 @@ exports.editVenue = async (req, res) => {
     if (req?.files?.videos) {
       videoResponse = await uploadFilesToCloudinary(
         (files = req?.files?.videos),
-        (folder = process.env.FOLDER_NAME),
-        (publicIds = existingVenue.videos.map((vid) => vid.publicId))
+        (folder = `${process.env.FOLDER_NAME}/${name}`),
+        (publicIds = existingVenue?.videos.map((vid) => vid.publicId))
       );
+      videoResponse = zipVideoArrays(videoResponse);
       console.log("Uploaded Video Details", videoResponse);
     }
 
     // Update the main venue fields if they are defined
     if (
-      !name ||
-      !aboutVenue ||
-      !venuePricePerDay ||
-      !advancePercentage ||
-      !guestCapacity ||
-      !carParkingSpace ||
-      !numOfLodgingRooms ||
-      !lodgingRoomPrice ||
-      !isBookingCancellable ||
+      name ||
+      aboutVenue ||
+      venuePricePerDay ||
+      advancePercentage ||
+      guestCapacity ||
+      carParkingSpace ||
+      numOfLodgingRooms ||
+      lodgingRoomPrice ||
+      isBookingCancellable ||
       // Food
-      !isCateringProvidedByVenue ||
-      !isOutsideCatererAllowed ||
-      !isNonVegAllowedAtVenue ||
-      !vegPricePerPlate ||
-      !NonvegPricePerPlate ||
+      isCateringProvidedByVenue ||
+      isOutsideCatererAllowed ||
+      isNonVegAllowedAtVenue ||
+      vegPricePerPlate ||
+      NonvegPricePerPlate ||
       // Alcohol
-      !isAlcoholProvidedByVenue ||
-      !isOutsideAlcoholAllowed ||
+      isAlcoholProvidedByVenue ||
+      isOutsideAlcoholAllowed ||
       // Decor
-      !isDecorProvidedByVenue ||
-      !isOutsideDecoratersAllowed ||
+      isDecorProvidedByVenue ||
+      isOutsideDecoratersAllowed ||
       // OtherPolicies
-      !isMusicAllowedLateAtNight ||
-      !isHallAirConditioned ||
-      !isBaaratAllowed ||
-      !areFireCrackersAllowed ||
-      !isHawanAllowed ||
-      !isOverNightWeddingAllowed
+      isMusicAllowedLateAtNight ||
+      isHallAirConditioned ||
+      isBaaratAllowed ||
+      areFireCrackersAllowed ||
+      isHawanAllowed ||
+      isOverNightWeddingAllowed ||
+      // images and videos
+      imagesResponse ||
+      videoResponse
     ) {
+      if (imagesResponse !== undefined) existingVenue.images = imagesResponse;
+      if (videoResponse !== undefined) existingVenue.videos = videoResponse;
+
       if (name !== undefined) existingVenue.name = name;
       if (aboutVenue !== undefined) existingVenue.aboutVenue = aboutVenue;
       if (venuePricePerDay !== undefined)
@@ -462,53 +479,60 @@ exports.editVenue = async (req, res) => {
 
       // Create a new Food entry
       if (isCateringProvidedByVenue !== undefined)
-        existingVenue.isCateringProvidedByVenue = isCateringProvidedByVenue;
+        existingVenue.food.isCateringProvidedByVenue =
+          isCateringProvidedByVenue;
       if (isOutsideCatererAllowed !== undefined)
-        existingVenue.isOutsideCatererAllowed = isOutsideCatererAllowed;
+        existingVenue.food.isOutsideCatererAllowed = isOutsideCatererAllowed;
       if (isNonVegAllowedAtVenue !== undefined)
-        existingVenue.isNonVegAllowedAtVenue = isNonVegAllowedAtVenue;
+        existingVenue.food.isNonVegAllowedAtVenue = isNonVegAllowedAtVenue;
       if (vegPricePerPlate !== undefined)
-        existingVenue.vegPricePerPlate = vegPricePerPlate;
+        existingVenue.food.vegPricePerPlate = vegPricePerPlate;
       if (NonvegPricePerPlate !== undefined)
-        existingVenue.NonvegPricePerPlate = NonvegPricePerPlate;
+        existingVenue.food.NonvegPricePerPlate = NonvegPricePerPlate;
 
       // Create a new Alcohol entry
       if (isAlcoholProvidedByVenue !== undefined)
-        existingVenue.isAlcoholProvidedByVenue = isAlcoholProvidedByVenue;
+        existingVenue.alcohol.isAlcoholProvidedByVenue =
+          isAlcoholProvidedByVenue;
       if (isOutsideAlcoholAllowed !== undefined)
-        existingVenue.isOutsideAlcoholAllowed = isOutsideAlcoholAllowed;
+        existingVenue.alcohol.isOutsideAlcoholAllowed = isOutsideAlcoholAllowed;
 
       // Create a new Decor entry
       if (isDecorProvidedByVenue !== undefined)
-        existingVenue.isDecorProvidedByVenue = isDecorProvidedByVenue;
+        existingVenue.decoration.isDecorProvidedByVenue =
+          isDecorProvidedByVenue;
       if (isOutsideDecoratersAllowed !== undefined)
-        existingVenue.isOutsideDecoratersAllowed = isOutsideDecoratersAllowed;
+        existingVenue.decoration.isOutsideDecoratersAllowed =
+          isOutsideDecoratersAllowed;
 
       // Create a new OtherPolicies entry
       if (isMusicAllowedLateAtNight !== undefined)
-        existingVenue.isMusicAllowedLateAtNight = isMusicAllowedLateAtNight;
+        existingVenue.otherPolicies.isMusicAllowedLateAtNight =
+          isMusicAllowedLateAtNight;
       if (isHallAirConditioned !== undefined)
-        existingVenue.isHallAirConditioned = isHallAirConditioned;
+        existingVenue.otherPolicies.isHallAirConditioned = isHallAirConditioned;
       if (isBaaratAllowed !== undefined)
-        existingVenue.isBaaratAllowed = isBaaratAllowed;
+        existingVenue.otherPolicies.isBaaratAllowed = isBaaratAllowed;
       if (areFireCrackersAllowed !== undefined)
-        existingVenue.areFireCrackersAllowed = areFireCrackersAllowed;
+        existingVenue.otherPolicies.areFireCrackersAllowed =
+          areFireCrackersAllowed;
       if (isHawanAllowed !== undefined)
-        existingVenue.isHawanAllowed = isHawanAllowed;
+        existingVenue.otherPolicies.isHawanAllowed = isHawanAllowed;
       if (isOverNightWeddingAllowed !== undefined)
-        existingVenue.isOverNightWeddingAllowed = isOverNightWeddingAllowed;
+        existingVenue.otherPolicies.isOverNightWeddingAllowed =
+          isOverNightWeddingAllowed;
       await existingVenue.save();
     }
 
     // Update address if they are defined
     if (
-      !street ||
-      !landmark ||
-      !distanceFromLandmark ||
-      !village ||
-      !city ||
-      !pin ||
-      !coordinates
+      street ||
+      landmark ||
+      distanceFromLandmark ||
+      village ||
+      city ||
+      pin ||
+      coordinates
     ) {
       if (street !== undefined) existingVenue.address.street = street;
       if (landmark !== undefined) existingVenue.address.landmark = landmark;
@@ -529,7 +553,7 @@ exports.editVenue = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "Function Hall Created Successfully",
-      data: newVenueDetails,
+      data: existingVenue,
     });
   } catch (error) {
     console.error(error);
@@ -554,8 +578,22 @@ exports.allAvailableVenues = async (req, res) => {
         { "allBookings.checkOutTime": { $lt: checkInUnixTimestamp } },
         // Check-in after new booking's check-out
         { "allBookings.checkInTime": { $gt: checkOutUnixTimestamp } },
+        // Venues with no bookings at all (allBookings array doesn't exist or is empty)
+        { allBookings: { $exists: false } },
+        { allBookings: { $size: 0 } }, // Added for empty array case
       ],
-    });
+    }) // Populate the 'address' field
+      .populate(
+        "address",
+        "street landmark distanceFromLandmark village city pin"
+      )
+      .populate("manager", "contactNumber")
+      // Select specific fields from the Venue document (excluding allBookings)
+      // TODO: NonegPricePerPlate ===> nonegPricePerPlate
+      .select(
+        "food.vegPricePerPlate food.NonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
+      )
+      .exec();
 
     // Return a success response
     return res.status(200).json({

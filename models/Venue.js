@@ -144,11 +144,11 @@ const venueSchema = new mongoose.Schema(
       enum: [VENUE_STATUS.DRAFT, VENUE_STATUS.PUBLISHED],
       required: true,
     },
-  },
-  {
-    timestamps: true,
-    strictPopulate: false,
   }
+  // {
+  //   timestamps: true,
+  //   strictPopulate: false,
+  // }
 );
 
 const Venue = mongoose.model("Venue", venueSchema);
