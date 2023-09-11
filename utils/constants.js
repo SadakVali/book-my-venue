@@ -19,3 +19,8 @@ exports.BOOKING_STATUS = {
 exports.ADMIN_CONSTANTS = {
   EMAIL: "rebirth4vali@gmail.com",
 };
+
+exports.FILE_TYPES = {
+  VIDEO: "video",
+  IMAGE: "image",
+};

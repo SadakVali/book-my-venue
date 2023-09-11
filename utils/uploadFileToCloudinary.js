@@ -1,3 +1,5 @@
+const { FILE_TYPES } = require("./constants");
+
 // Importing the required packages
 const cloudinary = require("cloudinary").v2;
 
@@ -14,6 +16,7 @@ exports.uploadFilesToCloudinary = async (
   files,
   folder,
   publicIds,
+  fileType,
   height,
   quality
 ) => {
@@ -24,7 +27,16 @@ exports.uploadFilesToCloudinary = async (
     if (publicIds) {
       for (const public_id of publicIds) {
         try {
-          const deletionResponse = await cloudinary.uploader.destroy(public_id);
+          if (fileType === FILE_TYPES.VIDEO) {
+            const deletionResponse = await cloudinary.uploader.destroy(
+              public_id,
+              { resource_type: FILE_TYPES.VIDEO }
+            );
+          } else {
+            const deletionResponse = await cloudinary.uploader.destroy(
+              public_id
+            );
+          }
           console.log("Deletion response:", deletionResponse);
           console.log("deletion completed");
           console.log(public_id);

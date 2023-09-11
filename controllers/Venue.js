@@ -10,8 +10,9 @@ const Venue = require("../models/Venue");
 const Address = require("../models/Address");
 
 // const constants
-const { VENUE_STATUS } = require("../utils/constants");
+const { VENUE_STATUS, FILE_TYPES } = require("../utils/constants");
 const { ACCOUNT_TYPE } = require("../utils/constants");
+const { FILE_TYPES } = require("../utils/constants");
 
 // TODO: export these zip functions to the utility folder
 const zipImageArrays = (imagesResponse) => {
@@ -202,8 +203,10 @@ exports.createVenue = async (req, res) => {
     let videoResponse;
     if (req?.files?.videos) {
       videoResponse = await uploadFilesToCloudinary(
-        req?.files?.videos,
-        `${process.env.FOLDER_NAME}/${name}`
+        (files = req?.files?.videos),
+        (folder = `${process.env.FOLDER_NAME}/${name}`),
+        (publicIds = undefined),
+        (fileType = FILE_TYPES.VIDEO)
       );
       // console.log("Uploaded Video Details", videoResponse);
     }
