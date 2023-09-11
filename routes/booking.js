@@ -4,16 +4,8 @@ const express = require("express");
 // const controllers
 const {
   createNewBooking,
-  fetchSingleCustomerReciepts,
   fetchPaymentsDueTodayBookings,
-  fetchAllCancelledBookings,
-  fetchAdvancePaidBookings,
-  fetchAllBookedReciepts,
-  fetchAllBookingsPastOccation,
-  cancelSingleBooking,
-  changeStatusToBooked,
   bookingsOfVenueGivenMonth,
-  updatePaymentSummary,
 } = require("../controllers/Booking");
 
 // const middlewares
@@ -27,52 +19,10 @@ const router = express.Router();
 // #######################################################################
 // bookings should only be created by managers
 router.post("/create-booking", auth, isAuthorized, createNewBooking);
-// reciepts are allowed to see by anyone
-router.post("/fetch-reciepts", fetchSingleCustomerReciepts);
-// get all booking that need to be reminded for payment today
-router.get(
-  "/get-payment-due-today-bookings",
-  auth,
-  isAuthorized,
-  fetchPaymentsDueTodayBookings
-);
-// fetch the booking that are cancelled
-router.get(
-  "/get-cencelled-bookings",
-  auth,
-  isAuthorized,
-  fetchAllCancelledBookings
-);
-// get advance paid bookings whose payment due date is not today
-router.get(
-  "/get-advance-only-paid-bookings",
-  auth,
-  isAuthorized,
-  fetchAdvancePaidBookings
-);
-// get all bookings that completely paid money
-router.get(
-  "/get-completely-booked-reciepts",
-  auth,
-  isAuthorized,
-  fetchAllBookedReciepts
-);
-// get all the bookings whose Occation is already completed
-router.get(
-  "/get-past-bookings",
-  auth,
-  isAuthorized,
-  fetchAllBookingsPastOccation
-);
-
-// cancel a booking
-router.put("/cancel-booking", auth, isAuthorized, cancelSingleBooking);
-// chnage the stattus of the booking to completely paid
-router.put("/complete-a-booking", auth, isAuthorized, changeStatusToBooked);
 // fetch the booking history of a venue for a particular month and year
 router.post("/booking-history", auth, isAuthorized, bookingsOfVenueGivenMonth);
-// udate the summary of a booking reciept
-router.put("/update-summary", auth, isAuthorized, updatePaymentSummary);
+// reciepts are allowed to see by anyone
+router.post("/fetch-reciepts", fetchSingleCustomerReciepts);
 
 // export the course routes
 module.exports = router;
