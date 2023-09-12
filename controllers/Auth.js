@@ -109,12 +109,16 @@ exports.login = async (req, res) => {
 
     // check if user exists or not
     const user = await User.findOne({ contactNumber });
-    if (!user) {
+    if (!user)
       return res.status(401).json({
         success: false,
-        message: "User is not registered, Please signup to continue",
+        message: "Managers is not registered, Please signup to continue",
       });
-    }
+    if (user.role !== ACCOUNT_TYPE.MANAGER)
+      return res.status(403).json({
+        success: false,
+        message: "Access forbidden. Only Managers are allowed to log in.",
+      });
 
     // validate password using constant-time comparison
     const isPasswordValid = bcrypt.compareSync(password, user.password);
@@ -146,7 +150,7 @@ exports.login = async (req, res) => {
       res.cookie("token", token, options).status(200).json({
         success: true,
         data: user,
-        message: "User Logged in successfully",
+        message: "",
       });
     } catch (error) {
       throw new Error("Failed to generate token.");

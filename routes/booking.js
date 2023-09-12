@@ -4,7 +4,7 @@ const express = require("express");
 // const controllers
 const {
   createNewBooking,
-  fetchPaymentsDueTodayBookings,
+  fetchSingleCustomerReciepts,
   bookingsOfVenueGivenMonth,
 } = require("../controllers/Booking");
 

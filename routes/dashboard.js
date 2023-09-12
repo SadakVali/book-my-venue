@@ -3,7 +3,6 @@ const express = require("express");
 
 // const controllers
 const {
-  fetchSingleCustomerReciepts,
   fetchAllCancelledBookings,
   fetchAdvancePaidBookings,
   fetchAllBookedReciepts,
@@ -11,7 +10,8 @@ const {
   cancelSingleBooking,
   changeStatusToBooked,
   updatePaymentSummary,
-} = require("../controllers/Booking");
+  fetchPaymentsDueTodayBookings,
+} = require("../controllers/Dashboard");
 
 // const middlewares
 const { auth, isAuthorized } = require("../middlewares/Auth");

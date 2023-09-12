@@ -61,7 +61,7 @@ const venueSchema = new mongoose.Schema(
       vegPricePerPlate: {
         type: Number,
       },
-      NonvegPricePerPlate: {
+      nonvegPricePerPlate: {
         type: Number,
       },
     },

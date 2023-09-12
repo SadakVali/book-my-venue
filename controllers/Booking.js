@@ -98,7 +98,7 @@ exports.createNewBooking = async (req, res) => {
       customer.allBookings.push(newBookingDetails._id);
       customer.save();
     }
-    console.log(customer);
+    // console.log(customer);
     // Return a success response
     return res.status(200).json({
       success: true,
@@ -164,10 +164,15 @@ exports.fetchSingleCustomerReciepts = async (req, res) => {
       // Sort by 'checkInTime' in descending order.
       .sort({ checkInTime: -1 })
       .exec();
-    if (customerBookingReciepts.length === 0)
+    if (!customerBookingReciepts)
       return res.status(404).json({
         success: false,
         message: "Invalid customerContactNumber given",
+      });
+    if (customerBookingReciepts.length === 0)
+      return res.status(203).json({
+        success: success,
+        message: "No Bookings Available with this Number",
       });
 
     // Return a success response

@@ -5,7 +5,8 @@ const {
   createVenue,
   getSingleVenueDetails,
   editVenue,
-  allAvailableVenues,
+  fetchAvailableVenuesGivenDates,
+  fetchAllVenues,
 } = require("../controllers/Venue");
 
 // const middlewares
@@ -24,7 +25,9 @@ router.post("/venue-details", getSingleVenueDetails);
 // edit the venue details
 router.put("/edit-venue", auth, isAuthorized, editVenue);
 // fetch all availbale venues on a particular date
-router.get("/all-available-venues", allAvailableVenues);
+router.get("/all-available-venues", fetchAvailableVenuesGivenDates);
+// fetch all venues in the city
+router.get("/all-available-venues", fetchAllVenues);
 
 // export the course routes
 module.exports = router;

@@ -2,7 +2,11 @@
 const { ObjectId } = require("mongodb");
 
 // Importing the utility snippets
-const { uploadFilesToCloudinary } = require("../utils/uploadFileToCloudinary");
+const {
+  uploadFilesToCloudinary,
+  zipImageArrays,
+  zipVideoArrays,
+} = require("../utils/uploadFileToCloudinary");
 
 // Importing the models
 const User = require("../models/User");
@@ -12,33 +16,6 @@ const Address = require("../models/Address");
 // const constants
 const { VENUE_STATUS, FILE_TYPES } = require("../utils/constants");
 const { ACCOUNT_TYPE } = require("../utils/constants");
-const { FILE_TYPES } = require("../utils/constants");
-
-// TODO: export these zip functions to the utility folder
-const zipImageArrays = (imagesResponse) => {
-  const urls = imagesResponse.map((res) => res.secure_url);
-  const publicIds = imagesResponse.map((res) => res.public_id);
-  const result = [];
-  // Assuming arr1 and arr2 have the same length
-  for (let i = 0; i < urls.length; i++)
-    result.push({ url: urls[i], publicId: publicIds[i] });
-  return result;
-};
-
-const zipVideoArrays = (videoResponse) => {
-  const urls = videoResponse.map((res) => res.secure_url);
-  const publicIds = videoResponse.map((res) => res.public_id);
-  const durations = videoResponse.map((res) => res.duration);
-  const result = [];
-  // Assuming arr1 and arr2 have the same length
-  for (let i = 0; i < urls.length; i++)
-    result.push({
-      url: urls[i],
-      publicId: publicIds[i],
-      duration: durations[i],
-    });
-  return result;
-};
 
 // Create a new venue handler function
 exports.createVenue = async (req, res) => {
@@ -59,7 +36,7 @@ exports.createVenue = async (req, res) => {
       isOutsideCatererAllowed,
       isNonVegAllowedAtVenue,
       vegPricePerPlate,
-      NonvegPricePerPlate,
+      nonvegPricePerPlate,
       // Alcohol
       isAlcoholProvidedByVenue,
       isOutsideAlcoholAllowed,
@@ -99,7 +76,7 @@ exports.createVenue = async (req, res) => {
     //   isOutsideCatererAllowed,
     //   isNonVegAllowedAtVenue,
     //   vegPricePerPlate,
-    //   NonvegPricePerPlate,
+    //   nonvegPricePerPlate,
     //   // Alcohol
     //   isAlcoholProvidedByVenue,
     //   isOutsideAlcoholAllowed,
@@ -144,7 +121,7 @@ exports.createVenue = async (req, res) => {
       !isOutsideCatererAllowed ||
       !isNonVegAllowedAtVenue ||
       !vegPricePerPlate ||
-      !NonvegPricePerPlate ||
+      !nonvegPricePerPlate ||
       // Alcohol
       !isAlcoholProvidedByVenue ||
       !isOutsideAlcoholAllowed ||
@@ -169,7 +146,7 @@ exports.createVenue = async (req, res) => {
       !JSON.parse(coordinates).length
     )
       return res.status(400).json({
-        success: false,
+        success: true,
         message: "All fields are required",
       });
 
@@ -217,7 +194,7 @@ exports.createVenue = async (req, res) => {
       isOutsideCatererAllowed,
       isNonVegAllowedAtVenue,
       vegPricePerPlate,
-      NonvegPricePerPlate,
+      nonvegPricePerPlate,
     };
 
     // Create a new Alcohol entry
@@ -370,7 +347,7 @@ exports.editVenue = async (req, res) => {
       isOutsideCatererAllowed,
       isNonVegAllowedAtVenue,
       vegPricePerPlate,
-      NonvegPricePerPlate,
+      nonvegPricePerPlate,
       // Alcohol
       isAlcoholProvidedByVenue,
       isOutsideAlcoholAllowed,
@@ -420,7 +397,8 @@ exports.editVenue = async (req, res) => {
       videoResponse = await uploadFilesToCloudinary(
         (files = req?.files?.videos),
         (folder = `${process.env.FOLDER_NAME}/${name}`),
-        (publicIds = existingVenue?.videos.map((vid) => vid.publicId))
+        (publicIds = existingVenue?.videos.map((vid) => vid.publicId)),
+        (fileType = FILE_TYPES.VIDEO)
       );
       videoResponse = zipVideoArrays(videoResponse);
       console.log("Uploaded Video Details", videoResponse);
@@ -442,7 +420,7 @@ exports.editVenue = async (req, res) => {
       isOutsideCatererAllowed ||
       isNonVegAllowedAtVenue ||
       vegPricePerPlate ||
-      NonvegPricePerPlate ||
+      nonvegPricePerPlate ||
       // Alcohol
       isAlcoholProvidedByVenue ||
       isOutsideAlcoholAllowed ||
@@ -490,8 +468,8 @@ exports.editVenue = async (req, res) => {
         existingVenue.food.isNonVegAllowedAtVenue = isNonVegAllowedAtVenue;
       if (vegPricePerPlate !== undefined)
         existingVenue.food.vegPricePerPlate = vegPricePerPlate;
-      if (NonvegPricePerPlate !== undefined)
-        existingVenue.food.NonvegPricePerPlate = NonvegPricePerPlate;
+      if (nonvegPricePerPlate !== undefined)
+        existingVenue.food.nonvegPricePerPlate = nonvegPricePerPlate;
 
       // Create a new Alcohol entry
       if (isAlcoholProvidedByVenue !== undefined)
@@ -555,7 +533,7 @@ exports.editVenue = async (req, res) => {
     // Return new Function Hall and success response
     return res.status(201).json({
       success: true,
-      message: "Function Hall Created Successfully",
+      message: "Function Hall Updated Successfully",
       data: existingVenue,
     });
   } catch (error) {
@@ -569,7 +547,7 @@ exports.editVenue = async (req, res) => {
 };
 
 // Fetch available halls on specified dates, months & years
-exports.allAvailableVenues = async (req, res) => {
+exports.fetchAvailableVenuesGivenDates = async (req, res) => {
   try {
     // Validate and extract the inputs = require(the request body
     const { checkInUnixTimestamp, checkOutUnixTimestamp } = req.body;
@@ -592,9 +570,41 @@ exports.allAvailableVenues = async (req, res) => {
       )
       .populate("manager", "contactNumber")
       // Select specific fields from the Venue document (excluding allBookings)
-      // TODO: NonegPricePerPlate ===> nonegPricePerPlate
       .select(
-        "food.vegPricePerPlate food.NonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
+        "food.vegPricePerPlate food.nonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
+      )
+      .exec();
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: "Function Halls open for booking fetched successfully",
+      data: availableFunctionHalls,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong while fetching the available venues for booking",
+      error: error.message,
+    });
+  }
+};
+
+// Fetch all venues
+exports.fetchAllVenues = async (req, res) => {
+  try {
+    // Find FunctionHalls that don't have conflicts
+    const availableFunctionHalls = await Venue.find({})
+      .populate(
+        "address",
+        "street landmark distanceFromLandmark village city pin"
+      )
+      .populate("manager", "contactNumber")
+      // Select specific fields from the Venue document (excluding allBookings)
+      .select(
+        "food.vegPricePerPlate food.nonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
       )
       .exec();
 

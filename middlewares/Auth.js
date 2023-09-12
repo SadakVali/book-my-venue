@@ -29,13 +29,13 @@ exports.auth = async (req, res, next) => {
       // Store the decoded JWT payload in the request object for further use
       req.user = decoded;
       // console.log(req.user);
-      next();
     } catch (error) {
       return res.status(401).json({
         success: false,
         message: TOKEN_INVALID_MESSAGE,
       });
     }
+    next();
   } catch (error) {
     console.error(error);
     return res.status(401).json({
@@ -67,7 +67,7 @@ exports.isAuthorized = async (req, res, next) => {
     }
 
     // Proceed to the next middleware if the user is indeed manager of the functionhall that he claims
-    return next();
+    next();
   } catch (error) {
     console.error("Error verifying Manager Authorization:", error);
     return res.status(500).json({

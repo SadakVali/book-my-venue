@@ -131,7 +131,7 @@ exports.fetchAllCancelledBookings = async (req, res) => {
     if (allCancelledBookings.length === 0) {
       return res.status(404).json({
         success: false,
-        message: "No bookings with 'Booked' status found.",
+        message: "No bookings with 'Cancelled' status found.",
       });
     }
     // Return a success response
@@ -230,9 +230,9 @@ exports.fetchAllBookingsPastOccation = async (req, res) => {
       .exec();
     // Check if there are no matching bookings
     if (allOccasionCompletedBookings.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No bookings with 'OccasionOver' status found.",
+      return res.status(203).json({
+        success: true,
+        message: "",
       });
     }
     // Return a success response
@@ -259,7 +259,7 @@ exports.fetchPaymentsDueTodayBookings = async (req, res) => {
   try {
     console.log("Entered the controller correctly");
     const paymentDueReciepts = await BookingInfo.find({
-      // nextPaymentDueDate: { $lte: 1701424001 },
+      // nextPaymentDueDate: { $lte: 1701423000 },
       nextPaymentDueDate: { $lte: Math.floor(Date.now() / 1000) },
       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     }) // Sort by 'nextPaymentDueDate' in Ascending order.
@@ -270,8 +270,8 @@ exports.fetchPaymentsDueTodayBookings = async (req, res) => {
 
     if (paymentDueReciepts.length === 0)
       return res.status(203).json({
-        success: false,
-        message: "No Booking needs to be reminded for payment",
+        success: true,
+        message: "",
         data: paymentDueReciepts,
       });
 
