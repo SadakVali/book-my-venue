@@ -5,7 +5,7 @@ const {
   createVenue,
   getSingleVenueDetails,
   editVenue,
-  fetchAvailableVenuesGivenDates,
+  // fetchAvailableVenuesGivenDates,
   fetchAllVenues,
 } = require("../controllers/Venue");
 
@@ -24,10 +24,10 @@ router.post("/create-venue", auth, isAuthorized, createVenue);
 router.post("/venue-details", getSingleVenueDetails);
 // edit the venue details
 router.put("/edit-venue", auth, isAuthorized, editVenue);
-// fetch all availbale venues on a particular date
-router.get("/all-available-venues", fetchAvailableVenuesGivenDates);
+// // fetch all availbale venues on a particular date
+// router.get("/all-available-venues", fetchAvailableVenuesGivenDates);
 // fetch all venues in the city
-router.get("/all-available-venues", fetchAllVenues);
+router.get("/all-venues", fetchAllVenues);
 
 // export the course routes
 module.exports = router;

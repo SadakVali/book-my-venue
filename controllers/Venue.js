@@ -546,51 +546,51 @@ exports.editVenue = async (req, res) => {
   }
 };
 
-// Fetch available halls on specified dates, months & years
-exports.fetchAvailableVenuesGivenDates = async (req, res) => {
-  try {
-    // Validate and extract the inputs = require(the request body
-    const { checkInUnixTimestamp, checkOutUnixTimestamp } = req.body;
+// // Fetch available halls on specified dates, months & years
+// exports.fetchAvailableVenuesGivenDates = async (req, res) => {
+//   try {
+//     // Validate and extract the inputs = require(the request body
+//     const { checkInUnixTimestamp, checkOutUnixTimestamp } = req.body;
 
-    // Find FunctionHalls that don't have conflicts
-    const availableFunctionHalls = await Venue.find({
-      $or: [
-        // Check-out before new booking's check-in
-        { "allBookings.checkOutTime": { $lt: checkInUnixTimestamp } },
-        // Check-in after new booking's check-out
-        { "allBookings.checkInTime": { $gt: checkOutUnixTimestamp } },
-        // Venues with no bookings at all (allBookings array doesn't exist or is empty)
-        { allBookings: { $exists: false } },
-        { allBookings: { $size: 0 } }, // Added for empty array case
-      ],
-    }) // Populate the 'address' field
-      .populate(
-        "address",
-        "street landmark distanceFromLandmark village city pin"
-      )
-      .populate("manager", "contactNumber")
-      // Select specific fields from the Venue document (excluding allBookings)
-      .select(
-        "food.vegPricePerPlate food.nonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
-      )
-      .exec();
+//     // Find FunctionHalls that don't have conflicts
+//     const availableFunctionHalls = await Venue.find({
+//       $or: [
+//         // Check-out before new booking's check-in
+//         { "allBookings.checkOutTime": { $lt: checkInUnixTimestamp } },
+//         // Check-in after new booking's check-out
+//         { "allBookings.checkInTime": { $gt: checkOutUnixTimestamp } },
+//         // Venues with no bookings at all (allBookings array doesn't exist or is empty)
+//         { allBookings: { $exists: false } },
+//         { allBookings: { $size: 0 } }, // Added for empty array case
+//       ],
+//     }) // Populate the 'address' field
+//       .populate(
+//         "address",
+//         "street landmark distanceFromLandmark village city pin"
+//       )
+//       .populate("manager", "contactNumber")
+//       // Select specific fields from the Venue document (excluding allBookings)
+//       .select(
+//         "food.vegPricePerPlate food.nonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
+//       )
+//       .exec();
 
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message: "Function Halls open for booking fetched successfully",
-      data: availableFunctionHalls,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message:
-        "Something went wrong while fetching the available venues for booking",
-      error: error.message,
-    });
-  }
-};
+//     // Return a success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "Function Halls open for booking fetched successfully",
+//       data: availableFunctionHalls,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       success: false,
+//       message:
+//         "Something went wrong while fetching the available venues for booking",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // Fetch all venues
 exports.fetchAllVenues = async (req, res) => {
