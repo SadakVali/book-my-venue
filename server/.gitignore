@@ -1,0 +1,50 @@
+# specific file 
+NOTES.txt
+test.js 
+
+# Directories
+/node_modules
+/.pnp
+/.pnp.js
+
+# Environment variables
+/.env
+
+# Build output
+/build
+/dist
+
+# Logs
+/log
+/logs
+
+# Dependency lock files
+/yarn.lock
+/package-lock.json
+/pnpm-lock.yaml
+
+# Editor/IDE specific files
+/.vscode
+/.idea
+/.vs
+
+# Compiled files
+*.log
+*.log.*
+*.pid
+*.seed
+*.pid.lock
+*.modulemap
+*.tsbuildinfo
+
+# Runtime data
+/pnpify
+/.pnp.js
+
+# Testing
+/coverage
+
+# IDE configuration
+/.tern-port
+/.sailssass-cache
+/.eslintcache
