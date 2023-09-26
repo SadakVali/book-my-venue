@@ -6,6 +6,46 @@ const Venue = require("../models/Venue");
 // const constants
 const { BOOKING_STATUS } = require("../utils/constants");
 
+// get all reciepts of a single customer
+exports.fetchSingleCustomerReciepts = async (req, res) => {
+  try {
+    // Validate and extract the inputs
+    const { customerContactNumber } = req.body;
+    const customerBookingReciepts = await User.findOne({
+      contactNumber: customerContactNumber,
+    })
+      .populate("allBookings")
+      // Sort by 'checkInTime' in descending order.
+      .sort({ checkInTime: -1 })
+      .exec();
+    if (!customerBookingReciepts)
+      return res.status(404).json({
+        success: false,
+        message: "Invalid customerContactNumber given",
+      });
+    if (customerBookingReciepts.length === 0)
+      return res.status(203).json({
+        success: success,
+        message: "No Bookings Available with this Number",
+      });
+
+    // Return a success response
+    return res.status(200).json({
+      success: true,
+      message: "All Reciepts fetched successfully",
+      data: customerBookingReciepts,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message:
+        "Something went wrong while fetching the reciepts of the customer",
+      error: error.message,
+    });
+  }
+};
+
 // UPDATE THE SUMMARY OF THE BOOKING RECIEPT
 exports.updatePaymentSummary = async (req, res) => {
   try {

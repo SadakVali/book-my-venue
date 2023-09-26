@@ -277,55 +277,55 @@ exports.createVenue = async (req, res) => {
   }
 };
 
-// Get all details of a single venue with detailed information instead of ObjectIds
-exports.getSingleVenueDetails = async (req, res) => {
-  try {
-    console.log("Reaching controller correctly...");
-    // Validate and extract the venueId = require(the request parameters
-    let { venueId } = req.body;
-    // console.log(req.body);
-    // console.log(venueId);
-    // console.log(typeof venueId);
-    if (!venueId) {
-      return res.status(400).json({
-        success: false,
-        message: "venueId must be provided in the request body",
-      });
-    }
+// // Get all details of a single venue with detailed information instead of ObjectIds
+// exports.getCompleteSingleVenueDetails = async (req, res) => {
+//   try {
+//     console.log("Reaching controller correctly...");
+//     // Validate and extract the venueId = require(the request parameters
+//     let { venueId } = req.body;
+//     // console.log(req.body);
+//     // console.log(venueId);
+//     // console.log(typeof venueId);
+//     if (!venueId) {
+//       return res.status(400).json({
+//         success: false,
+//         message: "venueId must be provided in the request body",
+//       });
+//     }
 
-    // Fetch details of the published Venue
-    // Creating an ObjectId from a hexadecimal string representation
-    // venueId = new ObjectId(venueId);
-    const venueDetails = await Venue.findById(venueId)
-      // .where("status")
-      // .equals("Published")
-      .populate("address")
-      .populate("manager")
-      .exec();
+//     // Fetch details of the published Venue
+//     // Creating an ObjectId from a hexadecimal string representation
+//     // venueId = new ObjectId(venueId);
+//     const venueDetails = await Venue.findById(venueId)
+//       // .where("status")
+//       // .equals("Published")
+//       .populate("address")
+//       .populate("manager")
+//       .exec();
 
-    // Validation: Check if the venueDetails was found
-    if (!venueDetails) {
-      return res.status(404).json({
-        success: false,
-        message: `Venue with venueId ${venueId} not found`,
-      });
-    }
+//     // Validation: Check if the venueDetails was found
+//     if (!venueDetails) {
+//       return res.status(404).json({
+//         success: false,
+//         message: `Venue with venueId ${venueId} not found`,
+//       });
+//     }
 
-    // Return the response with function hall details and total duration
-    return res.status(200).json({
-      success: true,
-      message: "Venue details fetched successfully",
-      data: venueDetails,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while fetching a single Venue details",
-      error: error.message,
-    });
-  }
-};
+//     // Return the response with function hall details and total duration
+//     return res.status(200).json({
+//       success: true,
+//       message: "Venue details fetched successfully",
+//       data: venueDetails,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while fetching a single Venue details",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // Edit a single venue details
 exports.editVenue = async (req, res) => {

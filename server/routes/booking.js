@@ -4,7 +4,6 @@ const express = require("express");
 // const controllers
 const {
   createNewBooking,
-  fetchSingleCustomerReciepts,
   bookingsOfVenueGivenMonth,
 } = require("../controllers/Booking");
 
@@ -20,9 +19,12 @@ const router = express.Router();
 // bookings should only be created by managers
 router.post("/create-booking", auth, isAuthorized, createNewBooking);
 // fetch the booking history of a venue for a particular month and year
-router.post("/booking-history", auth, isAuthorized, bookingsOfVenueGivenMonth);
-// reciepts are allowed to see by anyone
-router.post("/fetch-reciepts", fetchSingleCustomerReciepts);
+router.post(
+  "bookings-given-month",
+  auth,
+  isAuthorized,
+  bookingsOfVenueGivenMonth
+);
 
 // export the course routes
 module.exports = router;

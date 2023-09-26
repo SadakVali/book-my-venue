@@ -21,12 +21,12 @@ exports.createNewBooking = async (req, res) => {
       managerAlternateContactNumber,
       advancePaid,
       advancePaidOn,
-      fullyPaidDate,
+      // fullyPaidDate,
       nextPaymentDueDate,
       checkInTime,
       checkOutTime,
       totalAmount,
-      paymentSummary,
+      // paymentSummary,
     } = req.body;
 
     // Validate required fields
@@ -46,7 +46,7 @@ exports.createNewBooking = async (req, res) => {
       !checkInTime ||
       !checkOutTime ||
       !totalAmount ||
-      !paymentSummary
+      // !paymentSummary
     )
       return res.status(400).json({
         success: false,
@@ -57,23 +57,22 @@ exports.createNewBooking = async (req, res) => {
 
     const newBookingDetails = await BookingInfo.create({
       //
-      customerName,
-      customerContactNumber,
-      customerAlternateContactNumber,
-      //
       venueName,
       venueAddress,
       managerContactNumber,
       managerAlternateContactNumber,
-      //
+      // // fullyPaidDate,
+      customerName,
+      customerContactNumber,
+      customerAlternateContactNumber,
       advancePaid,
       advancePaidOn,
-      fullyPaidDate,
       nextPaymentDueDate,
       checkInTime,
       checkOutTime,
       totalAmount,
       paymentSummary,
+      //
       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     });
     // updating the allBookings field of the venue
@@ -147,46 +146,6 @@ exports.bookingsOfVenueGivenMonth = async (req, res) => {
       success: false,
       message:
         "Something went wrong while fetching the booking history of a Venue",
-      error: error.message,
-    });
-  }
-};
-
-// get all reciepts of a single customer
-exports.fetchSingleCustomerReciepts = async (req, res) => {
-  try {
-    // Validate and extract the inputs
-    const { customerContactNumber } = req.body;
-    const customerBookingReciepts = await User.findOne({
-      contactNumber: customerContactNumber,
-    })
-      .populate("allBookings")
-      // Sort by 'checkInTime' in descending order.
-      .sort({ checkInTime: -1 })
-      .exec();
-    if (!customerBookingReciepts)
-      return res.status(404).json({
-        success: false,
-        message: "Invalid customerContactNumber given",
-      });
-    if (customerBookingReciepts.length === 0)
-      return res.status(203).json({
-        success: success,
-        message: "No Bookings Available with this Number",
-      });
-
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message: "All Reciepts fetched successfully",
-      data: customerBookingReciepts,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message:
-        "Something went wrong while fetching the reciepts of the customer",
       error: error.message,
     });
   }

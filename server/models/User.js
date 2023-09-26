@@ -1,8 +1,8 @@
-// const libraries
+// import from libraries
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
-// const constants
+// import constants
 const { ACCOUNT_TYPE } = require("../utils/constants");
 
 const userSchema = new mongoose.Schema(

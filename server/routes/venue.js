@@ -3,7 +3,7 @@ const express = require("express");
 
 const {
   createVenue,
-  getSingleVenueDetails,
+  // getCompleteSingleVenueDetails,
   editVenue,
   // fetchAvailableVenuesGivenDates,
   fetchAllVenues,
@@ -21,13 +21,13 @@ const router = express.Router();
 // create a venue
 router.post("/create-venue", auth, isAuthorized, createVenue);
 // venue details
-router.post("/venue-details", getSingleVenueDetails);
+// router.post("/venue-complete-details", getCompleteSingleVenueDetails);
 // edit the venue details
 router.put("/edit-venue", auth, isAuthorized, editVenue);
 // // fetch all availbale venues on a particular date
 // router.get("/all-available-venues", fetchAvailableVenuesGivenDates);
 // fetch all venues in the city
-router.get("/all-venues", fetchAllVenues);
+router.get("/get-details-of-all-venues", fetchAllVenues);
 
 // export the course routes
 module.exports = router;

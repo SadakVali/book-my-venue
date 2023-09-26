@@ -10,12 +10,23 @@ import "./index.css";
 // import components, pages
 import App from "./App";
 
+// redux based imports
+import { Provider } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import rootReducer from "./reducers";
+
+const store = configureStore({
+  reducer: rootReducer,
+});
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
-      <App />
-      <Toaster />
-    </BrowserRouter>
+    <Provider store={store}>
+      <BrowserRouter>
+        <App />
+        <Toaster />
+      </BrowserRouter>
+    </Provider>
   </React.StrictMode>
 );

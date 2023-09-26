@@ -3,6 +3,7 @@ const express = require("express");
 
 // const controllers
 const {
+  fetchSingleCustomerReciepts,
   fetchAllCancelledBookings,
   fetchAdvancePaidBookings,
   fetchAllBookedReciepts,
@@ -22,6 +23,8 @@ const router = express.Router();
 // #######################################################################
 //                                Dashboard Routes
 // #######################################################################
+// customer reciepts are allowed to see by anyone
+router.post("/fetch-customer-reciepts", fetchSingleCustomerReciepts);
 // fetch the booking that are cancelled
 router.get(
   "/get-cencelled-bookings",
@@ -46,7 +49,7 @@ router.get(
 
 // get all the bookings whose Occation is already completed
 router.get(
-  "/get-past-bookings",
+  "/get-bookings-past-occation",
   auth,
   isAuthorized,
   fetchAllBookingsPastOccation
