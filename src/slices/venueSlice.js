@@ -5,7 +5,6 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   loading: false,
   venues: JSON.parse(localStorage.getItem("venues")) || [],
-  // venue: JSON.parse(localStorage.getItem("venue")) || null,
 };
 
 // creating a new slice of information
@@ -17,11 +16,8 @@ const venueSlice = createSlice({
       state.loading = value.payload;
     },
     setVenues(state, value) {
-      state.venues.push(value.payload);
+      state.venues = value.payload;
     },
-    // setVenue(state, value) {
-    //   state.venue.push(value.payload);
-    // },
   },
 });
 

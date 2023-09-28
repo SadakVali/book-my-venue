@@ -45,7 +45,7 @@ exports.createNewBooking = async (req, res) => {
       !nextPaymentDueDate ||
       !checkInTime ||
       !checkOutTime ||
-      !totalAmount ||
+      !totalAmount
       // !paymentSummary
     )
       return res.status(400).json({

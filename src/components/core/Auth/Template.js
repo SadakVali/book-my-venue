@@ -6,9 +6,6 @@ import { useSelector } from "react-redux";
 import SignupForm from "./SignupForm";
 import LoginForm from "./LoginForm";
 
-// assets
-import frameImg from "../../../assets/Images/frame.png";
-
 const Template = ({ title, description1, description2, image, formType }) => {
   const { loading } = useSelector((state) => state.auth);
 
@@ -35,7 +32,7 @@ const Template = ({ title, description1, description2, image, formType }) => {
           </div>
           <div className="relative mx-auto w-11/12 max-w-[450px] md:mx-0">
             <img
-              src={frameImg}
+              // src={frameImg}
               alt="Pattern"
               width={558}
               height={504}

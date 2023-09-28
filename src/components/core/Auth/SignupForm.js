@@ -1,7 +1,7 @@
 // imports from packages
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+// import { useDispatch } from "react-redux";
+// import { useNavigate } from "react-router-dom";
 import { toast } from "react-hot-toast";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
@@ -9,15 +9,15 @@ import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { ACCOUNT_TYPE } from "../../../utils/constants";
 
 // components imports
-import Tab from "../../common/Tab";
+// import Tab from "../../common/Tab";
 
 // redux state management imports
-import { sendOtp } from "../../../services/operations/authAPI";
-import { setSignupData } from "../../../slices/authSlice";
+// import { sendOtp } from "../../../services/operations/authAPI";
+// import { setSignupData } from "../../../slices/authSlice";
 
 const SignupForm = () => {
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  // const dispatch = useDispatch();
 
   // student or instructor
   const [accountType, setAccountType] = useState(ACCOUNT_TYPE.STUDENT);
@@ -55,9 +55,9 @@ const SignupForm = () => {
       accountType,
     };
     // setting signup data to state. To be used after OTP verification
-    dispatch(setSignupData(signupData));
+    // dispatch(setSignupData(signupData));
     // send OTP to user for verification
-    dispatch(sendOtp(formData.email, navigate));
+    // dispatch(sendOtp(formData.email, navigate));
     // reset form
     setFormData({
       firstName: "",
@@ -71,14 +71,14 @@ const SignupForm = () => {
   };
 
   // data to pass to tab component
-  const tabData = [
-    { id: 1, tabName: "Student", type: ACCOUNT_TYPE.STUDENT },
-    { id: 2, tabName: "Instructor", type: ACCOUNT_TYPE.INSTRUCTOR },
-  ];
+  // const tabData = [
+  //   { id: 1, tabName: "Student", type: ACCOUNT_TYPE.STUDENT },
+  //   { id: 2, tabName: "Instructor", type: ACCOUNT_TYPE.INSTRUCTOR },
+  // ];
 
   return (
     <div>
-      <Tab tabData={tabData} field={accountType} setField={setAccountType} />
+      {/* <Tab tabData={tabData} field={accountType} setField={setAccountType} /> */}
       <form onSubmit={handleOnSubmit} className="flex w-full flex-col gap-y-4">
         <div className="flex gap-x-4">
           <label>
@@ -186,12 +186,3 @@ const SignupForm = () => {
 };
 
 export default SignupForm;
-
-// onClickDay
-// returnValue
-// showFixedNumberOfWeeks
-// showNeighboringMonth
-// selectRange
-// tileClassName
-// tileContent
-// tileDisabled
