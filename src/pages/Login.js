@@ -9,8 +9,13 @@ import { useSelector } from "react-redux";
 import { login } from "../services/operations/authAPI";
 import FirstFancyBTN from "../components/common/FirstFancyBTN";
 
+import { ReactComponent as Tick } from "../assets/Icons/Tick.svg";
+import { setSidebarFlag } from "../slices/authSlice";
+
 const Login = () => {
   const { loading } = useSelector((state) => state.auth);
+
+  const [tickFlagState, setTickFlagState] = useState(false);
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -22,75 +27,102 @@ const Login = () => {
   const { contactNumber, password } = formData;
   const [showPassword, setShowPassword] = useState(false);
 
-  const handleOnChange = (event) =>
+  function isNaturalNumberWith10Digits(input) {
+    // Check if the input is a string containing exactly 10 digits
+    const digitRegex = /^\d{10}$/; // Regular expression for 10 digits
+    return digitRegex.test(input);
+  }
+
+  const handleOnChange = (event) => {
     setFormData((prevData) => ({
       ...prevData,
       [event.target.name]: event.target.value,
     }));
+    if (event.target.name === "contactNumber") {
+      if (isNaturalNumberWith10Digits(event.target.value))
+        setTickFlagState(true);
+      else setTickFlagState(false);
+    }
+  };
 
   const handleOnSubmit = (event) => {
     event.preventDefault();
     dispatch(login(contactNumber, password, navigate));
   };
   return (
-    <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
+    <div className="my-auto grid place-items-center">
       {loading ? (
         <div className="spinner"></div>
       ) : (
         <form
           onSubmit={handleOnSubmit}
-          className="mt-6 flex w-full max-w-fit flex-col gap-y-4"
+          className="flex w-full max-w-fit flex-col gap-y-6"
         >
           <label className="w-full">
-            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
-              Contact Number <sup className="text6-pink-200">*</sup>
-            </p>
-            <input
-              required
-              type="text"
-              name="contactNumber"
-              value={contactNumber}
-              onChange={handleOnChange}
-              placeholder="Enter Contact Number"
-              className="form-style w-full"
-            />
+            <p className="mb-3 text-[1.25rem] text-[#949BA5]">Contact Number</p>
+            <div className="mb-2 flex justify-between items-center gap-4">
+              <input
+                required
+                type="text"
+                name="contactNumber"
+                value={contactNumber}
+                onChange={handleOnChange}
+                placeholder="Enter Contact Number"
+                className="w-full bg-transparent border-nonefocus:border-none 
+                focus:outline-none text-[#28374B] placeholder-[#28374B] 
+                text-[1.23rem]"
+              />
+              {tickFlagState && <Tick />}
+            </div>
+            <div className="h-[0.0625rem] bg-[#4135F3]"></div>
           </label>
-          <label className="relative">
-            <p className="mb-1 text-[0.875rem] leading-[1.375rem] text-richblack-5">
-              Password <sup className="text-pink-200">*</sup>
-            </p>
-            <input
-              required
-              type={showPassword ? "text" : "password"}
-              name="password"
-              value={password}
-              onChange={handleOnChange}
-              placeholder="Enter Password"
-              className="form-style w-full !pr-10"
-            />
-            <span
-              onClick={() => setShowPassword((prev) => !prev)}
-              className="absolute right-3 top-[38px] z-[10] cursor-pointer"
-            >
-              {showPassword ? (
-                <AiOutlineEyeInvisible fontSize={24} fill="#AFB2BF" />
-              ) : (
-                <AiOutlineEye fontSize={24} fill="#AFB2BF" />
-              )}
-            </span>
+
+          <label className="w-full">
+            <p className="mb-3 text-[1.25rem] text-[#949BA5]">Password</p>
+            <div className="mb-2 flex justify-between items-center gap-4">
+              <input
+                required
+                type={showPassword ? "text" : "password"}
+                name="password"
+                value={password}
+                onChange={handleOnChange}
+                placeholder="Enter Password"
+                className="w-full bg-transparent border-nonefocus:border-none 
+                focus:outline-none text-[#28374B] placeholder-[#28374B] 
+                text-[1.23rem]"
+              />
+              <span
+                onClick={() => setShowPassword((prev) => !prev)}
+                className="cursor-pointer"
+              >
+                {showPassword ? (
+                  <AiOutlineEyeInvisible fontSize={24} fill="#28374B" />
+                ) : (
+                  <AiOutlineEye fontSize={24} fill="#28374B" />
+                )}
+              </span>
+            </div>
+            <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+          </label>
+          <div className="flex justify-between items-center">
             <Link to="/forgot-password">
-              <p className="mt-1 ml-auto max-w-max text-xs text-blue-100">
-                Forgot Password
+              <p
+                className="font-inter text-[#2B47FC] text-base leading-normal 
+                font-normal"
+              >
+                Forgot Password?
               </p>
             </Link>
-          </label>
+            <Link onClick={() => dispatch(setSidebarFlag(true))}>
+              <p
+                className="font-inter text-[#2B47FC] text-base leading-normal 
+                font-normal"
+              >
+                Create Account?
+              </p>
+            </Link>
+          </div>
           <FirstFancyBTN text="Sign In" />
-          {/* <button
-            type="submit"
-            className="mt-6 rounded-[8px] bg-yellow-50 py-[8px] px-[12px] font-medium text-richblack-900"
-          >
-            Sign In
-          </button> */}
         </form>
       )}
     </div>

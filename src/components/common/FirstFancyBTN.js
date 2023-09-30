@@ -1,6 +1,6 @@
 import React from "react";
 
-import { FaArrowRightLong } from "react-icons/fa6";
+import { ReactComponent as RightArrow } from "../../assets/Icons/RightArrow.svg";
 
 const FirstFancyBTN = ({ text, onClick }) => {
   return (
@@ -13,7 +13,7 @@ const FirstFancyBTN = ({ text, onClick }) => {
       type="submit"
     >
       <p className="font-montserrat">{text}</p>
-      <FaArrowRightLong />
+      <RightArrow />
       <div
         className="w-[9rem] aspect-square absolute rounded-full 
         right-0 top-0 translate-x-[40%] -translate-y-[80%] bg-gradient-to-t 
