@@ -5,6 +5,7 @@ module.exports = {
   theme: {
     fontFamily: {
       primary: [
+        "Inter",
         "-apple-system",
         "BlinkMacSystemFont",
         "Segoe UI",
@@ -21,6 +22,7 @@ module.exports = {
       accent: ["Dancing Script", "cursive"],
       // old fonts
       inter: ["Inter", "sans-serif"],
+      montserrat: ["Montserrat"],
       "edu-sa": ["Edu SA Beginner", "cursive"],
       mono: ["Roboto Mono", "monospace"],
     },

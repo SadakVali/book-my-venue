@@ -1,21 +1,23 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, matchPath, useLocation } from "react-router-dom";
 import logo from "../../assets/Logo/logo.png";
-import { NavbarLinks } from "../../assets/data/navbar-links";
+import { NavbarLinks } from "../../assets/data/NavbarLinks";
 import ProfileDropDown from "../core/Auth/ProfileDropDown";
+import { setSidebarFlag } from "../../slices/authSlice";
 
 const Navbar = () => {
   const { token } = useSelector((state) => state.auth);
   const location = useLocation();
   const matchRoute = (route) => matchPath({ path: route }, location.pathname);
+  const dispatch = useDispatch();
   return (
     <div className="py-2 shadow">
       <div className="flex justify-between items-center w-11/12 max-w-maxContent mx-auto">
         {/* company Logo and name */}
         <Link to="/" className="flex items-center justify-center">
           <img src={logo} alt="Logo" loading="lazy" width={80} />
-          <p className="text-gradient">
+          <p className="text-gradient text-[4rem]">
             BookMyVenue<sub>.</sub>
           </p>
         </Link>
@@ -28,7 +30,7 @@ const Navbar = () => {
                   <p
                     className={`${
                       matchRoute(link?.path) && "font-bold"
-                    } text-[#4135F3] text-[1.125rem]`}
+                    } text-[#4135F3] text-[1.125rem] font-inter`}
                   >{`${link.text}`}</p>
                 </Link>
               </li>
@@ -39,13 +41,26 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-x-4 text-[#4135F3]">
           {token === null && (
             <Link to="/login">
-              <button className="rounded-lg border px-4 py-2">LogIn</button>
+              <button className={`rounded-lg border px-4 py-2 `}>
+                <p
+                  className={`${
+                    matchRoute("/login") && "font-bold font-inter"
+                  }`}
+                >
+                  LogIn
+                </p>
+              </button>
             </Link>
           )}
           {token === null && (
-            <Link to="/signup">
-              <button className="rounded-lg border px-4 py-2">SignUp</button>
-            </Link>
+            <button
+              className={`rounded-lg border px-4 py-2 ${
+                matchRoute("/signup") && "font-bold font-inter"
+              }`}
+              onClick={() => dispatch(setSidebarFlag(true))}
+            >
+              SignUp
+            </button>
           )}
           {token !== null && <ProfileDropDown />}
         </div>

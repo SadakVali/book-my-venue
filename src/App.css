@@ -16,6 +16,11 @@ https://andy-bell.co.uk/a-modern-css-reset/
   src: url("./assets/fonts/Valencia.ttf") format("truetype");
 }
 
+@font-face {
+  font-family: "Montserrat";
+  src: url("./assets/fonts/Montserrat.ttf") format("truetype");
+}
+
 :root {
   --ff-primary: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
     "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
@@ -109,8 +114,9 @@ code {
 
 .text-gradient {
   font-family: Valencia;
+  /* font-family: "Dancing Script"; */
   letter-spacing: 2px;
-  font-size: 4rem;
+  /* font-size: 4rem; */
   font-style: normal;
   font-weight: lighter;
   line-height: normal;

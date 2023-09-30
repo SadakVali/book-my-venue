@@ -27,96 +27,105 @@ import ManagerReciept from "./components/core/Dashboard/ManagerReciept";
 import CancelledBookings from "./components/core/Dashboard/CancelledBookings";
 import AdvancePaidBookings from "./components/core/Dashboard/AdvancePaidBookings";
 import BookedBookings from "./components/core/Dashboard/BookedBookings";
+import SignupSidebar from "./components/common/SignupSidebar";
+import { useSelector } from "react-redux";
 
-const App = () => (
-  <div className="w-screen min-h-screen flex flex-col bg-[#E2E5EA]">
-    <Navbar />
-    <Routes>
-      {/* routes for any type of users */}
-      <Route path="/" element=<Home /> />
-      <Route path="/about" element=<About /> />
-      <Route path="/contact" element=<Contact /> />
-      <Route path="/venues/:venueId" element=<VenueDetails /> />
-      <Route path="/customer-bookings" element=<CustomerBookings /> />
-      <Route path="/customer-bookings/:bookingId" element=<CustomerReciept /> />
-      {/* routes for stricktly non-authorized managers */}
-      <Route
-        path="/signup"
-        element={
-          <OpenRoute>
-            <Signup />
-          </OpenRoute>
-        }
-      />
-      <Route
-        path="/login"
-        element={
-          <OpenRoute>
-            <Login />
-          </OpenRoute>
-        }
-      />
-      {/* routes only for authorized managers */}
-      <Route
-        path="/manager-home"
-        element={
-          <PrivateRoute>
-            <ManagerHome />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        path="/venue-form"
-        element={
-          <PrivateRoute>
-            <VenueForm />
-          </PrivateRoute>
-        }
-      />
-      <Route
-        element={
-          <PrivateRoute>
-            <Dashboard />
-          </PrivateRoute>
-        }
-      >
+const App = () => {
+  const { sidebarFlag } = useSelector((state) => state.auth);
+  return (
+    <div className="w-screen min-h-screen flex flex-col bg-[#E2E5EA]">
+      <Navbar />
+      {sidebarFlag && <SignupSidebar />}
+      <Routes>
+        {/* routes for any type of users */}
+        <Route path="/" element=<Home /> />
+        <Route path="/about" element=<About /> />
+        <Route path="/contact" element=<Contact /> />
+        <Route path="/venues/:venueId" element=<VenueDetails /> />
+        <Route path="/customer-bookings" element=<CustomerBookings /> />
         <Route
-          path="/dashboard/payment-due-today-bookings"
-          element=<PaymentDueTodayBookings />
+          path="/customer-bookings/:bookingId"
+          element=<CustomerReciept />
+        />
+        {/* routes for stricktly non-authorized managers */}
+        <Route
+          path="/signup"
+          element={
+            <OpenRoute>
+              <Signup />
+            </OpenRoute>
+          }
         />
         <Route
-          path="/dashboard/payment-due-today-bookings/:bookingId"
-          element=<ManagerReciept />
+          path="/login"
+          element={
+            <OpenRoute>
+              <Login />
+            </OpenRoute>
+          }
+        />
+        {/* routes only for authorized managers */}
+        <Route
+          path="/manager-home"
+          element={
+            <PrivateRoute>
+              <ManagerHome />
+            </PrivateRoute>
+          }
         />
         <Route
-          path="/dashboard/cancelled-bookings"
-          element=<CancelledBookings />
+          path="/venue-form"
+          element={
+            <PrivateRoute>
+              <VenueForm />
+            </PrivateRoute>
+          }
         />
         <Route
-          path="/dashboard/cancelled-bookings/:bookingId"
-          element=<ManagerReciept />
-        />
-        <Route
-          path="/dashboard/advance-paid-bookings"
-          element=<AdvancePaidBookings />
-        />
-        <Route
-          path="/dashboard/advance-paid-bookings/:bookingId"
-          element=<ManagerReciept />
-        />
-        <Route
-          path="/dashboard/completely-paid-bookings"
-          element=<BookedBookings />
-        />
-        <Route
-          path="/dashboard/completely-paid-bookings/:bookingId"
-          element=<ManagerReciept />
-        />
-      </Route>
-      {/* 404 Error Page */}
-      <Route path="*" element=<Error /> />
-    </Routes>
-  </div>
-);
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        >
+          <Route
+            path="/dashboard/payment-due-today-bookings"
+            element=<PaymentDueTodayBookings />
+          />
+          <Route
+            path="/dashboard/payment-due-today-bookings/:bookingId"
+            element=<ManagerReciept />
+          />
+          <Route
+            path="/dashboard/cancelled-bookings"
+            element=<CancelledBookings />
+          />
+          <Route
+            path="/dashboard/cancelled-bookings/:bookingId"
+            element=<ManagerReciept />
+          />
+          <Route
+            path="/dashboard/advance-paid-bookings"
+            element=<AdvancePaidBookings />
+          />
+          <Route
+            path="/dashboard/advance-paid-bookings/:bookingId"
+            element=<ManagerReciept />
+          />
+          <Route
+            path="/dashboard/completely-paid-bookings"
+            element=<BookedBookings />
+          />
+          <Route
+            path="/dashboard/completely-paid-bookings/:bookingId"
+            element=<ManagerReciept />
+          />
+        </Route>
+        {/* 404 Error Page */}
+        <Route path="*" element=<Error /> />
+      </Routes>
+    </div>
+  );
+};
 
 export default App;
