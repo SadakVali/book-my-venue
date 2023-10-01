@@ -17,7 +17,7 @@ const SignupSidebar = () => {
   return !step2 ? (
     <div
       className="flex flex-col items-center gap-y-4 fixed right-[0%] top-[50%] 
-      -translate-y-[50%] bg-richblack-5 px-4 min-h-screen justify-center
+      -translate-y-[50%] bg-[#E2E5EA] px-4 min-h-screen justify-center
       z-[1000]"
       ref={ref}
     >
@@ -37,17 +37,14 @@ const SignupSidebar = () => {
         </p>
         <FirstFancyBTN
           text="Function Hall Manager ?"
-          onClick={() => {
-            navigator("/signup");
-            dispatch(setSidebarFlag(false));
-          }}
+          onClick={() => dispatch(setSidebarFlag(false))}
         />
       </div>
     </div>
   ) : (
     <div
       className="gap-y-4 fixed right-[0%] top-[50%] -translate-y-[50%] 
-      bg-richblack-5 px-4 min-h-screen z-[1000] flex flex-col items-center 
+      bg-[#E2E5EA] px-4 min-h-screen z-[1000] flex flex-col items-center 
         justify-center"
       ref={ref}
     >

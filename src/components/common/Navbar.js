@@ -12,7 +12,7 @@ const Navbar = () => {
   const matchRoute = (route) => matchPath({ path: route }, location.pathname);
   const dispatch = useDispatch();
   return (
-    <div className="py-2 shadow">
+    <div className="py-2 shadow bg-[#E2E5EA]">
       <div className="flex justify-between items-center w-11/12 max-w-maxContent mx-auto">
         {/* company Logo and name */}
         <Link to="/" className="flex items-center justify-center">
@@ -23,7 +23,7 @@ const Navbar = () => {
         </Link>
         {/* Navigation Links */}
         <nav className="hidden md:block">
-          <ul className="flex space-x-6">
+          <ul className="flex gap-x-6">
             {NavbarLinks.map((link, index) => (
               <li key={index}>
                 <Link to={`${link.path}`}>
@@ -41,26 +41,28 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-x-4 text-[#4135F3]">
           {token === null && (
             <Link to="/login">
-              <button className={`rounded-lg border px-4 py-2 `}>
-                <p
-                  className={`${
-                    matchRoute("/login") && "font-bold font-inter"
-                  }`}
-                >
-                  LogIn
-                </p>
+              <button
+                className={`${
+                  matchRoute("/login") && "font-bold bg-[#ECEFF4]"
+                } rounded-lg border px-4 py-2 hover:bg-[#ECEFF4]`}
+              >
+                <p>LogIn</p>
               </button>
             </Link>
           )}
           {token === null && (
-            <button
-              className={`rounded-lg border px-4 py-2 ${
-                matchRoute("/signup") && "font-bold font-inter"
-              }`}
-              onClick={() => dispatch(setSidebarFlag(true))}
-            >
-              SignUp
-            </button>
+            <Link to="/signup">
+              <button
+                className={`${
+                  matchRoute("/signup") && "font-bold bg-[#ECEFF4]"
+                } rounded-lg border px-4 py-2 hover:bg-[#ECEFF4]`}
+                onClick={() => {
+                  dispatch(setSidebarFlag(true));
+                }}
+              >
+                <p>SignUp</p>
+              </button>
+            </Link>
           )}
           {token !== null && <ProfileDropDown />}
         </div>
