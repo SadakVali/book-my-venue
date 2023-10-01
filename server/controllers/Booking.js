@@ -14,11 +14,9 @@ exports.createNewBooking = async (req, res) => {
       venueId,
       customerName,
       customerContactNumber,
-      customerAlternateContactNumber,
       venueName,
       venueAddress,
       managerContactNumber,
-      managerAlternateContactNumber,
       advancePaid,
       advancePaidOn,
       // fullyPaidDate,
@@ -34,11 +32,9 @@ exports.createNewBooking = async (req, res) => {
       !venueId ||
       !customerName ||
       !customerContactNumber ||
-      !customerAlternateContactNumber ||
       !venueName ||
       !venueAddress ||
       !managerContactNumber ||
-      !managerAlternateContactNumber ||
       !advancePaid ||
       !advancePaidOn ||
       // !fullyPaidDate ||
@@ -60,11 +56,9 @@ exports.createNewBooking = async (req, res) => {
       venueName,
       venueAddress,
       managerContactNumber,
-      managerAlternateContactNumber,
       // // fullyPaidDate,
       customerName,
       customerContactNumber,
-      customerAlternateContactNumber,
       advancePaid,
       advancePaidOn,
       nextPaymentDueDate,
@@ -87,7 +81,6 @@ exports.createNewBooking = async (req, res) => {
       customer = await User.create({
         name: customerName,
         contactNumber: customerContactNumber,
-        alternateContactNumber: customerAlternateContactNumber,
         role: ACCOUNT_TYPE.CUSTOMER,
         image: `https://api.dicebear.com/5.x/initials/svg?seed=${customerName}}`,
         allBookings: [newBookingDetails._id],

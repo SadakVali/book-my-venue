@@ -32,6 +32,7 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);
   return (
     <div className="w-screen min-h-screen flex flex-col bg-[#E2E5EA]">
       <Navbar />
@@ -65,14 +66,16 @@ const App = () => {
           }
         />
         {/* routes only for authorized managers */}
-        <Route
-          path="/manager-home"
-          element={
-            <PrivateRoute>
-              <ManagerHome />
-            </PrivateRoute>
-          }
-        />
+        {!!user?.venue && (
+          <Route
+            path="/manager-home"
+            element={
+              <PrivateRoute>
+                <ManagerHome />
+              </PrivateRoute>
+            }
+          />
+        )}
         <Route
           path="/venue-form"
           element={

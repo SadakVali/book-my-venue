@@ -18,12 +18,6 @@ const userSchema = new mongoose.Schema(
       unique: true,
       trim: true,
     },
-    alternateContactNumber: {
-      type: String,
-      required: true,
-      unique: true,
-      trim: true,
-    },
     password: {
       type: String,
       minlength: 6,

@@ -11,51 +11,13 @@ const { ACCOUNT_TYPE } = require("../utils/constants");
 exports.signup = async (req, res) => {
   try {
     // Destructure data = require(the body of the request
-    const {
-      name,
-      contactNumber,
-      confirmContactNumber,
-      alternateContactNumber,
-      confirmAlternateContactNumber,
-      password,
-      confirmPassword,
-    } = req.body;
+    const { name, contactNumber, password } = req.body;
 
     // Validate the data
-    if (
-      !name ||
-      !contactNumber ||
-      !confirmContactNumber ||
-      !alternateContactNumber ||
-      !confirmAlternateContactNumber ||
-      !password ||
-      !confirmPassword
-    ) {
+    if (!name || !contactNumber || !password) {
       return res.status(400).json({
         success: false,
         message: "All the fields are required",
-      });
-    }
-
-    if (contactNumber !== confirmContactNumber) {
-      return res.status(400).json({
-        success: false,
-        message: "contactNumber and confirmContactNumber values do not match.",
-      });
-    }
-
-    if (alternateContactNumber !== confirmAlternateContactNumber) {
-      return res.status(400).json({
-        success: false,
-        message:
-          "alternateContactNumber and confirmAlternateContactNumber values do not match.",
-      });
-    }
-
-    if (password !== confirmPassword) {
-      return res.status(400).json({
-        success: false,
-        message: "Password and ConfirmPassword values do not match.",
       });
     }
 
@@ -72,7 +34,6 @@ exports.signup = async (req, res) => {
     const user = await User.create({
       name,
       contactNumber,
-      alternateContactNumber,
       role: ACCOUNT_TYPE.MANAGER,
       password,
       image: `https://api.dicebear.com/5.x/initials/svg?seed=${name}`,
@@ -81,7 +42,6 @@ exports.signup = async (req, res) => {
     return res.status(201).json({
       success: true,
       message: "User registered successfully",
-      data: user,
     });
   } catch (error) {
     console.error(error);
@@ -108,7 +68,7 @@ exports.login = async (req, res) => {
     }
 
     // check if user exists or not
-    const user = await User.findOne({ contactNumber });
+    const user = await User.findOne({ contactNumber }).exec();
     if (!user)
       return res.status(401).json({
         success: false,
@@ -121,7 +81,7 @@ exports.login = async (req, res) => {
       });
 
     // validate password using constant-time comparison
-    const isPasswordValid = bcrypt.compareSync(password, user.password);
+    const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
       return res.status(401).json({
         success: false,
@@ -130,31 +90,36 @@ exports.login = async (req, res) => {
     }
 
     // generate JWT token
-    try {
-      const payload = {
-        id: user._id,
-        contactNumber: user.contactNumber,
-        role: user.role,
-      };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, {
-        expiresIn: "24h",
-      });
-      user.token = token;
-      user.password = undefined;
+    const payload = {
+      id: user._id,
+      contactNumber: user.contactNumber,
+      role: user.role,
+    };
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "24h",
+    });
 
-      // set cookie for token and send success response
-      const options = {
-        expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
-        httpOnly: true,
-      };
-      res.cookie("token", token, options).status(200).json({
+    // set cookie for token and send success response
+    const options = {
+      expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
+      httpOnly: true,
+    };
+    res
+      .cookie("token", token, options)
+      .status(200)
+      .json({
         success: true,
-        data: user,
+        data: {
+          token,
+          id: user._id,
+          role: user.role,
+          name: user.name,
+          contactNumber: user.contactNumber,
+          image: user.image,
+          bookings: user.bookings,
+        },
         message: "",
       });
-    } catch (error) {
-      throw new Error("Failed to generate token.");
-    }
   } catch (error) {
     // return 500 internal server error status code with generic error message
     console.error("Login Failed:", error);

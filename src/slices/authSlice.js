@@ -5,7 +5,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   loading: false,
   sidebarFlag: false,
-  token: JSON.parse(localStorage.getItem("token")) || null,
+  token: !!localStorage.getItem("token")
+    ? JSON.parse(localStorage.getItem("token"))
+    : null,
 };
 
 // creating the slice

@@ -20,34 +20,20 @@ import {
   setOccasionPastBookings,
   setPaymentDueToadyBookings,
 } from "../../slices/dashboardSlice";
-const { SIGNIN_API, SIGNUP_API } = authEndPoints;
+const { LOGIN_API, SIGNUP_API } = authEndPoints;
 
 export const signup =
-  (
-    name,
-    contactNumber,
-    confirmContactNumber,
-    alternateContactNumber,
-    confirmAlternateContactNumber,
-    password,
-    confirmPassword,
-    navigate
-  ) =>
-  async (dispatch) => {
+  (name, contactNumber, password, navigate) => async (dispatch) => {
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
       const response = await apiConnector("POST", SIGNUP_API, {
         name,
         contactNumber,
-        confirmContactNumber,
-        alternateContactNumber,
-        confirmAlternateContactNumber,
         password,
-        confirmPassword,
       });
-      console.log("SIGNUP API RESPONSE......", response);
-      if (!response.data.sucess) throw new Error(response.data.message);
+      console.log("SIGNUP API RESPONSE......", response?.data);
+      if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("signup successful");
       navigate("/login");
     } catch (error) {
@@ -64,16 +50,24 @@ export const login =
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", SIGNIN_API, {
+      const response = await apiConnector("POST", LOGIN_API, {
         contactNumber,
         password,
       });
-      console.log("LOGIN API RESPONSE......", response);
-      if (!response.data.success) throw new Error(response.data.message);
+      // console.log("LOGIN API RESPONSE......", response);
+      if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("Login Successfull");
-      dispatch(setUser(response.data.data.user));
-      localStorage.setItem("token", JSON.stringify(response.data.data.token));
-      navigate("/");
+      // console.log("USER DATA...", response?.data?.data);
+      dispatch(setUser(response?.data?.data));
+      if (!!response?.data?.data?.token)
+        localStorage.setItem(
+          "token",
+          JSON.stringify(response?.data?.data?.token)
+        );
+      const address = !!response?.data?.data.hasOwnProperty("venue")
+        ? "/manager-home"
+        : "/venue-form";
+      navigate(address);
     } catch (error) {
       console.log("LOGIN API ERROR......", error);
       toast.error("Login Failed");

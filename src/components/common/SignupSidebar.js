@@ -27,7 +27,10 @@ const SignupSidebar = () => {
       <div className="flex items-center gap-x-8">
         <FirstFancyBTN
           text="Function Hall Customer ?"
-          onClick={() => setStep2(true)}
+          onClick={() => {
+            navigator("/");
+            setStep2(true);
+          }}
         />
         <p className="text-gradient w-fit text-[6rem]">
           <sub>.</sub>OR<sub>...</sub>

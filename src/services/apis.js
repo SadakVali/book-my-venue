@@ -3,7 +3,7 @@ const BACKEND_BASE_URL = process.env.REACT_APP_BASE_URL;
 // AUTH END POINTS
 export const authEndPoints = {
   SIGNUP_API: BACKEND_BASE_URL + "/auth/signup",
-  SIGNIN_API: BACKEND_BASE_URL + "/auth/sigin",
+  LOGIN_API: BACKEND_BASE_URL + "/auth/login",
 };
 
 // CONTACTUS API

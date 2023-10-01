@@ -11,11 +11,6 @@ const bookingInfoSchema = new mongoose.Schema({
     required: true,
     // unique: true,
   },
-  customerAlternateContactNumber: {
-    type: Number,
-    required: true,
-    // unique: true,
-  },
   venueName: {
     type: String,
     required: true,
@@ -25,11 +20,6 @@ const bookingInfoSchema = new mongoose.Schema({
     required: true,
   },
   managerContactNumber: {
-    type: Number,
-    required: true,
-    // unique: true,
-  },
-  managerAlternateContactNumber: {
     type: Number,
     required: true,
     // unique: true,
