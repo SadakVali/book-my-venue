@@ -34,7 +34,7 @@ const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
   return (
-    <div className="w-screen min-h-screen flex flex-col bg-[#E2E5EA]">
+    <div className="w-screen min-h-screen flex flex-col bg-[#ECEFF4]">
       <Navbar />
       {sidebarFlag && <SignupSidebar />}
       <Routes>

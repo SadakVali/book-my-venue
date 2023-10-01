@@ -57,13 +57,16 @@ export const login =
       // console.log("LOGIN API RESPONSE......", response);
       if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("Login Successfull");
-      // console.log("USER DATA...", response?.data?.data);
+      console.log("USER DATA...", response?.data?.data);
       dispatch(setUser(response?.data?.data));
+      dispatch(setToken(response?.data?.data?.token));
       if (!!response?.data?.data?.token)
         localStorage.setItem(
           "token",
           JSON.stringify(response?.data?.data?.token)
         );
+      if (!!response?.data?.data?.token)
+        localStorage.setItem("user", JSON.stringify(response?.data?.data));
       const address = !!response?.data?.data.hasOwnProperty("venue")
         ? "/manager-home"
         : "/venue-form";

@@ -14,7 +14,10 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, value) {
+      console.log("Entered the setUser reducer...");
+      console.log(value.payload);
       state.user = value.payload;
+      console.log("setUser Reducer End...", state.user);
     },
   },
 });

@@ -10,6 +10,7 @@ import { logout } from "../../../services/operations/authAPI";
 
 const ProfileDropDown = () => {
   const { user } = useSelector((state) => state.user);
+  // console.log({ user });
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
   const dispatch = useDispatch();
@@ -18,7 +19,7 @@ const ProfileDropDown = () => {
   if (!user) return null;
   return (
     <button className="relative" onClick={() => setOpen(true)}>
-      <div className="">
+      <div className="flex items-end justify-center gap-x-[1px]">
         <img
           src={user?.image}
           alt={`profile-${user?.name}`}
@@ -31,35 +32,36 @@ const ProfileDropDown = () => {
         <div
           ref={ref}
           onClick={(e) => e.stopPropagation()}
-          className="flex justify-center items-center flex-col text-[#4135F3] 
-          absolute top-[118%] right-0 z-[1000] divide-y-[1px] overflow-hidden 
-          rounded-md border-[1px]"
+          className="flex justify-center items-start flex-col text-[#4135F3] 
+          absolute top-[100%] p-2 right-0 z-[1000] overflow-hidden 
+          bg-[#E2E5EA]"
         >
           <Link
             to="/venue-form"
             onClick={() => setOpen(false)}
             className="w-ful flex justify-center items-center gap-x-1 py-[10px] 
-            px-[12px] text-sm hover:font-bold"
+            px-[12px] hover:bg-[#ECEFF4]"
           >
             <AiOutlineProfile className="text-lg" />
-            <p>Venue Details</p>
+            <p className=" whitespace-nowrap">Venue Details</p>
           </Link>
           <Link
             to="/dashboard/payment-due-today-bookings"
             onClick={() => setOpen(false)}
-            className="shadow w-ful flex justify-center items-center gap-x-1 
-            py-[10px] px-[12px] text-sm hover:font-bold"
+            className="w-ful flex justify-center items-center gap-x-1 
+            py-[10px] px-[12px] hover:bg-[#ECEFF4]"
           >
             <BsDatabaseAdd className="text-lg" />
             <p>Dashboard</p>
           </Link>
           <Link
+            to="/"
             onClick={() => {
               setOpen(false);
               dispatch(logout(navigator));
             }}
             className="flex justify-center items-center gap-x-1 py-[10px] px-[12px] 
-            text-sm hover:font-bold"
+            hover:bg-[#ECEFF4]"
           >
             <MdOutlineLogout className="text-lg" />
             <p>Logout</p>
