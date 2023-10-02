@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // initialize variables
 const initialState = {
-  user: !!localStorage.getItem("user")
+  user: localStorage.getItem("user")
     ? JSON.parse(localStorage.getItem("user"))
     : null,
 };
@@ -14,10 +14,7 @@ const userSlice = createSlice({
   initialState,
   reducers: {
     setUser(state, value) {
-      console.log("Entered the setUser reducer...");
-      console.log(value.payload);
       state.user = value.payload;
-      console.log("setUser Reducer End...", state.user);
     },
   },
 });

@@ -57,20 +57,21 @@ export const login =
       // console.log("LOGIN API RESPONSE......", response);
       if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("Login Successfull");
-      console.log("USER DATA...", response?.data?.data);
-      dispatch(setUser(response?.data?.data));
-      dispatch(setToken(response?.data?.data?.token));
-      if (!!response?.data?.data?.token)
+      // console.log("USER DATA...", response?.data?.data);
+      if (!!response?.data?.data?.token) {
+        dispatch(setToken(response?.data?.data?.token));
         localStorage.setItem(
           "token",
           JSON.stringify(response?.data?.data?.token)
         );
-      if (!!response?.data?.data?.token)
+      }
+      if (!!response?.data?.data?.token) {
+        dispatch(setUser(response?.data?.data));
         localStorage.setItem("user", JSON.stringify(response?.data?.data));
-      const address = !!response?.data?.data.hasOwnProperty("venue")
-        ? "/manager-home"
-        : "/venue-form";
-      navigate(address);
+      }
+      if (response?.data?.data?.venue) navigate("/manager-home");
+      else navigate("/venue-form");
+      console.log("Login API end...");
     } catch (error) {
       console.log("LOGIN API ERROR......", error);
       toast.error("Login Failed");

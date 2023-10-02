@@ -14,12 +14,27 @@ const SignupSidebar = () => {
     dispatch(setSidebarFlag(false));
     setStep2(false);
   });
-  return !step2 ? (
+  return step2 ? (
+    <div
+      className="gap-y-4 fixed right-[0%] top-[50%] -translate-y-[50%] 
+      bg-[#E2E5EA] px-4 min-h-screen z-[1000] flex flex-col items-center 
+      justify-center"
+      ref={ref}
+    >
+      <div
+        className="text-gradient w-fit text-[4rem] flex flex-col items-center 
+        justify-center !font-accent"
+      >
+        <p>You Don't Need to</p>
+        <p>LogIn / SignUp</p>
+        <p>to Use Our Platform</p>
+      </div>
+    </div>
+  ) : (
     <div
       className="flex flex-col items-center gap-y-4 fixed right-[0%] top-[50%] 
       -translate-y-[50%] bg-[#E2E5EA] px-4 min-h-screen justify-center
       z-[1000]"
-      ref={ref}
     >
       <p className="text-gradient w-fit text-[6rem]">
         Are You a<sub>.</sub>
@@ -39,22 +54,6 @@ const SignupSidebar = () => {
           text="Function Hall Manager ?"
           onClick={() => dispatch(setSidebarFlag(false))}
         />
-      </div>
-    </div>
-  ) : (
-    <div
-      className="gap-y-4 fixed right-[0%] top-[50%] -translate-y-[50%] 
-      bg-[#E2E5EA] px-4 min-h-screen z-[1000] flex flex-col items-center 
-        justify-center"
-      ref={ref}
-    >
-      <div
-        className="text-gradient w-fit text-[4rem] flex flex-col items-center 
-        justify-center !font-accent"
-      >
-        <p>You Don't Need to</p>
-        <p>LogIn / SignUp</p>
-        <p>to Use Our Platform</p>
       </div>
     </div>
   );

@@ -11,16 +11,16 @@ const venueSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-    aboutVenue: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    manager: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
+    // aboutVenue: {
+    //   type: String,
+    //   required: true,
+    //   trim: true,
+    // },
+    // manager: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "User",
+    //   required: true,
+    // },
     advancePercentage: {
       type: Number,
       required: true,
@@ -111,11 +111,11 @@ const venueSchema = new mongoose.Schema(
         required: true,
       },
     },
-    address: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Address",
-      required: true,
-    },
+    // address: {
+    //   type: mongoose.Schema.Types.ObjectId,
+    //   ref: "Address",
+    //   required: true,
+    // },
     images: [
       {
         url: { type: String, required: true, trim: true },
@@ -129,10 +129,10 @@ const venueSchema = new mongoose.Schema(
         duration: { type: String, required: true, trim: true },
       },
     ],
-    venuePricePerDay: {
-      type: Number,
-      required: true,
-    },
+    // venuePricePerDay: {
+    //   type: Number,
+    //   required: true,
+    // },
     allBookings: [
       {
         type: mongoose.Schema.Types.ObjectId,
