@@ -13,7 +13,6 @@ const addressSchema = new mongoose.Schema({
   },
   distanceFromLandmark: {
     type: String,
-    required: true,
     trim: true,
   },
   village: {
@@ -36,7 +35,6 @@ const addressSchema = new mongoose.Schema({
       type: String,
       enum: ["Point"], // Only allow the "Point" type
       default: "Point", // Set the default value to "Point"
-      required: true,
     },
     coordinates: {
       type: [Number], // longitude first, and then latitude

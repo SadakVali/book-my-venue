@@ -66,6 +66,11 @@ const venueSchema = new mongoose.Schema(
       },
     },
     alcohol: {
+      // TODO: Newly added field
+      isItAllowed: {
+        type: Boolean,
+        required: true,
+      },
       isAlcoholProvidedByVenue: {
         type: Boolean,
         required: true,

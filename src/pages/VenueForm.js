@@ -1,10 +1,39 @@
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
-import { ReactComponent as Tick } from "../assets/Icons/Tick.svg";
-import { useState } from "react";
+import TextInputField from "../components/core/VenueForm/TextInputField";
+
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import FirstFancyBTN from "../components/common/FirstFancyBTN";
+import CheckboxInputField from "../components/core/VenueForm/CheckboxInputField";
 
 const VenueForm = () => {
   const { user } = useSelector((state) => state.user);
+
+  const schema = yup.object({
+    name: yup
+      .string()
+      .required("Function Hall Name is Required")
+      .min(3, "Minimum 3 Characters Required")
+      .trim(),
+    advancePercentage: yup.number().required().min(0).max(100),
+    guestCapacity: yup.number().required().min(0),
+    carParkingSpace: yup.number().required().min(0),
+    numOfLodgingRooms: yup.number().required().min(0),
+    lodgingRoomPrice: yup.number().required().min(0),
+    street: yup.string().required().min(3),
+    landmark: yup.string().required().min(3),
+    distanceFromLandmark: yup.string().required().min(5),
+    village: yup.string().required().min(3),
+    city: yup.string().required().min(3),
+    pin: yup.number().required().min(0),
+    cancellation: yup.bool(),
+    cancellationCharges: yup.bool(),
+    isItAlloved: yup.bool(),
+    isAlcoholProvidedByVenue: yup.bool(),
+    isOutsideAlcoholAllowed: yup.bool(),
+  });
+
   const {
     register,
     handleSubmit,
@@ -12,18 +41,38 @@ const VenueForm = () => {
     setValue,
     getValues,
     formState: { errors, isSubmitSuccessful },
-  } = useForm({ mode: "onBlur" });
+  } = useForm({
+    mode: "onChange",
+    resolver: yupResolver(schema),
+    defaultValues: {
+      name: "",
+      advancePercentage: "",
+      guestCapacity: "",
+      carParkingSpace: "",
+      numOfLodgingRooms: "",
+      lodgingRoomPrice: "",
+      street: "",
+      landmark: "",
+      distanceFromLandmark: "",
+      village: "",
+      city: "",
+      pin: "",
+      cancellation: false,
+      cancellationCharges: false,
+      isItAlloved: false,
+      isAlcoholProvidedByVenue: false,
+      isOutsideAlcoholAllowed: false,
+    },
+  });
 
   const onSubmit = (data) => {
     console.log("Hi Buddy");
     console.log(data);
   };
 
-  const [nameFlag, setNameFlag] = useState(false);
-
   return (
     <div
-      className="my-12 w-11/12 max-w-maxContent mx-auto flex flex-col 
+      className="my-16 w-11/12 max-w-maxContentTab mx-auto flex flex-col 
       justify-center gap-y-8"
     >
       {!user?.venue && (
@@ -40,258 +89,142 @@ const VenueForm = () => {
         className="flex flex-col justify-center gap-y-6"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <label className="flex flex-col gap-4">
-          <p
-            className={`${
-              errors.name ? "text-[#FD2727]" : "text-[#949BA5]"
-            } text-[1rem]`}
-          >
-            Name of the Function Hall
-          </p>
-          <div className="flex flex-col gap-x-2">
-            <div className="mr-4 flex justify-between items-center gap-4">
-              <input
-                required
-                type="text"
-                name="name"
-                onMouseLeave={() => setNameFlag(true)}
-                // onBlur={() => setNameFlag(true)}
-                placeholder="Enter Your Full Name"
-                className="w-full bg-transparent border-nonefocus:border-none 
-                  focus:outline-none text-[#28374B] placeholder-[#28374B] 
-                  text-[1.25rem]"
-                {...register("name", {
-                  required: {
-                    value: true,
-                    message: "Please Enter You Full Name",
-                  },
-                  minLength: {
-                    value: 3,
-                    message: "Name should consists of atleast 3 characters",
-                  },
-                })}
-              />
-              {!errors.name && nameFlag && <Tick />}
-            </div>
-            <div
-              className={`${
-                errors.name ? "bg-[#FD2727]" : "bg-[#4135F3]"
-              } h-[0.0625rem]`}
-            ></div>
-            {errors.name && (
-              <p className="text-[1rem] text-[#FD2727]">
-                {errors.name.message}
-              </p>
-            )}
-          </div>
-        </label>
-
-        <label className="flex flex-col gap-4">
-          <p
-            className={`${
-              errors.advancePercentage ? "text-[#FD2727]" : "text-[#949BA5]"
-            } text-[1rem]`}
-          >
-            Advance Payment Percentage (example 45%)
-          </p>
-          <div className="flex flex-col gap-x-2">
-            <div className="mr-4 flex justify-between items-center gap-4">
-              <input
-                required
-                type="text"
-                name="advancePercentage"
-                placeholder="Enter Percentage Value"
-                className="w-full bg-transparent border-nonefocus:border-none 
-                  focus:outline-none text-[#28374B] placeholder-[#28374B] 
-                  text-[1.25rem]"
-                {...register("advancePercentage", {
-                  required: {
-                    value: true,
-                    message: "Please Enter You Full Name",
-                  },
-                  minLength: {
-                    value: 3,
-                    message:
-                      "Please Enter Function Hall Advance Percentage Value",
-                  },
-                })}
-              />
-              {!errors.advancePercentage && getValues("advancePercentage") && (
-                <Tick />
-              )}
-            </div>
-            <div
-              className={`${
-                errors.advancePercentage ? "bg-[#FD2727]" : "bg-[#4135F3]"
-              } h-[0.0625rem]`}
-            ></div>
-            {errors.advancePercentage && (
-              <p className="text-[1rem] text-[#FD2727]">
-                {errors.advancePercentage.message}
-              </p>
-            )}
-          </div>
-        </label>
-
-        <label className="flex flex-col gap-4">
-          <p
-            className={`${
-              errors.guestCapacity ? "text-[#FD2727]" : "text-[#949BA5]"
-            } text-[1rem]`}
-          >
-            Guest Capacity
-          </p>
-          <div className="flex flex-col gap-x-2">
-            <div className="mr-4 flex justify-between items-center gap-4">
-              <input
-                required
-                type="text"
-                name="guestCapacity"
-                placeholder="Number of Guests Venue can Accommodate"
-                className="w-full bg-transparent border-nonefocus:border-none 
-                  focus:outline-none text-[#28374B] placeholder-[#28374B] 
-                  text-[1.25rem]"
-                {...register("guestCapacity", {
-                  required: {
-                    value: true,
-                    message: "Please Enter Function Hall Guest Capacity",
-                  },
-                })}
-              />
-              {!errors.guestCapacity && getValues("guestCapacity") && <Tick />}
-            </div>
-            <div
-              className={`${
-                errors.guestCapacity ? "bg-[#FD2727]" : "bg-[#4135F3]"
-              } h-[0.0625rem]`}
-            ></div>
-            {errors.guestCapacity && (
-              <p className="text-[1rem] text-[#FD2727]">
-                {errors.guestCapacity.message}
-              </p>
-            )}
-          </div>
-        </label>
-
-        <label className="flex flex-col gap-4">
-          <p
-            className={`${
-              errors.carParkingSpace ? "text-[#FD2727]" : "text-[#949BA5]"
-            } text-[1rem]`}
-          >
-            How many Cars can be Parked in your Parking Space?
-          </p>
-          <div className="flex flex-col gap-x-2">
-            <div className="mr-4 flex justify-between items-center gap-4">
-              <input
-                required
-                type="text"
-                name="carParkingSpace"
-                placeholder="Number of Cars Venue Parking Space can Accommodate"
-                className="w-full bg-transparent border-nonefocus:border-none 
-                  focus:outline-none text-[#28374B] placeholder-[#28374B] 
-                  text-[1.25rem]"
-                {...register("carParkingSpace", {
-                  required: {
-                    value: true,
-                    message: "Please Enter Function Hall Parking Area Capacity",
-                  },
-                })}
-              />
-              {!errors.carParkingSpace && getValues("carParkingSpace") && (
-                <Tick />
-              )}
-            </div>
-            <div
-              className={`${
-                errors.carParkingSpace ? "bg-[#FD2727]" : "bg-[#4135F3]"
-              } h-[0.0625rem]`}
-            ></div>
-            {errors.carParkingSpace && (
-              <p className="text-[1rem] text-[#FD2727]">
-                {errors.carParkingSpace.message}
-              </p>
-            )}
-          </div>
-        </label>
-
-        <label className="flex flex-col gap-4">
-          <p
-            className={`${
-              errors.carParkingSpace ? "text-[#FD2727]" : "text-[#949BA5]"
-            } text-[1rem]`}
-          >
-            Lodging Rooms in the Venue
-          </p>
-          <div className="ml-4 flex flex-col gap-y-3">
-            <div className="flex flex-col gap-x-2">
-              <div className="mr-4 flex justify-between items-center gap-4">
-                <input
-                  required
-                  type="text"
-                  name="numOfLodgingRooms"
-                  placeholder="Number of Lodging Rooms in the Venue"
-                  className="w-full bg-transparent border-nonefocus:border-none 
-                  focus:outline-none text-[#28374B] placeholder-[#28374B] 
-                  text-[1.25rem]"
-                  {...register("numOfLodgingRooms", {
-                    required: {
-                      value: true,
-                      message:
-                        "Please Enter the Number of Rooms Available in the Function Hall",
-                    },
-                  })}
-                />
-                {!errors.numOfLodgingRooms &&
-                  getValues("numOfLodgingRooms") && <Tick />}
-              </div>
-              <div
-                className={`${
-                  errors.numOfLodgingRooms ? "bg-[#FD2727]" : "bg-[#4135F3]"
-                } h-[0.0625rem]`}
-              ></div>
-              {errors.numOfLodgingRooms && (
-                <p className="text-[1rem] text-[#FD2727]">
-                  {errors.numOfLodgingRooms.message}
-                </p>
-              )}
-            </div>
-            <div className="flex flex-col gap-x-2">
-              <div className="mr-4 flex justify-between items-center gap-4">
-                <input
-                  required
-                  type="text"
-                  name="lodgingRoomPrice"
-                  placeholder="Price of each Room in the Venue"
-                  className="w-full bg-transparent border-nonefocus:border-none 
-                  focus:outline-none text-[#28374B] placeholder-[#28374B] 
-                  text-[1.25rem]"
-                  {...register("lodgingRoomPrice", {
-                    required: {
-                      value: true,
-                      message: "Please Enter Each Room Price Per Day",
-                    },
-                  })}
-                />
-                {!errors.lodgingRoomPrice && getValues("lodgingRoomPrice") && (
-                  <Tick />
-                )}
-              </div>
-              <div
-                className={`${
-                  errors.lodgingRoomPrice ? "bg-[#FD2727]" : "bg-[#4135F3]"
-                } h-[0.0625rem]`}
-              ></div>
-              {errors.lodgingRoomPrice && (
-                <p className="text-[1rem] text-[#FD2727]">
-                  {errors.lodgingRoomPrice.message}
-                </p>
-              )}
-            </div>
-          </div>
-        </label>
-
-        {/* <button type="submit">send</button> */}
+        <TextInputField
+          errors={errors}
+          register={register}
+          label="Name of the Venue (example KTR Function Hall)"
+          inTagDisabledState={false}
+          inTagsNamePlaceholderObject={[
+            {
+              inTagName: "name",
+              inTagPlaceholder: "Enter Your Venue Name",
+            },
+          ]}
+        />
+        <TextInputField
+          errors={errors}
+          register={register}
+          label="Advance Payment Percentage (example 45%)"
+          inTagDisabledState={false}
+          inTagsNamePlaceholderObject={[
+            {
+              inTagName: "advancePercentage",
+              inTagPlaceholder: "Enter Percentage Value",
+            },
+          ]}
+        />
+        <TextInputField
+          errors={errors}
+          register={register}
+          label="Guest Capacity (example 500)"
+          inTagDisabledState={false}
+          inTagsNamePlaceholderObject={[
+            {
+              inTagName: "guestCapacity",
+              inTagPlaceholder: "Number of Guests Venue can Accommodate",
+            },
+          ]}
+        />
+        <TextInputField
+          errors={errors}
+          register={register}
+          label="How many Cars can be Parked in your Parking Space? (example 500)"
+          inTagDisabledState={false}
+          inTagsNamePlaceholderObject={[
+            {
+              inTagName: "carParkingSpace",
+              inTagPlaceholder:
+                "Number of Cars Your Parking Space can Accommodate",
+            },
+          ]}
+        />
+        <TextInputField
+          errors={errors}
+          register={register}
+          label="How many Cars can be Parked in your Parking Space? (example 500)"
+          inTagDisabledState={false}
+          inTagsNamePlaceholderObject={[
+            {
+              inTagName: "numOfLodgingRooms",
+              inTagPlaceholder: "Number of Lodging Rooms in the Venue",
+            },
+            {
+              inTagName: "lodgingRoomPrice",
+              inTagPlaceholder: "Price of each Room in the Venue",
+            },
+          ]}
+        />
+        <CheckboxInputField
+          errors={errors}
+          register={register}
+          title="Booking Cancellation Details"
+          inTagDisabledState={false}
+          inTagsNameLabelObject={[
+            {
+              inTagName: "cancellation",
+              label: "Cancellable",
+            },
+            {
+              inTagName: "cancellationCharges",
+              label: "Cancellation Charges Applicable",
+            },
+          ]}
+        />
+        <CheckboxInputField
+          errors={errors}
+          register={register}
+          title="Alcohol Consumption in the Venue Details"
+          inTagDisabledState={false}
+          inTagsNameLabelObject={[
+            {
+              inTagName: "isItAlloved",
+              label: "Do You Allow Consumption of Alcohol in the venue?",
+            },
+            {
+              inTagName: "isAlcoholProvidedByVenue",
+              label: "Allowed & Alcohol is Provided By the Venue",
+            },
+            {
+              inTagName: "isOutsideAlcoholAllowed",
+              label: "Outside Alcohol is Allowed in the Venue",
+            },
+          ]}
+        />
+        <TextInputField
+          errors={errors}
+          register={register}
+          label="Address of Your Function Hall"
+          inTagDisabledState={false}
+          inTagsNamePlaceholderObject={[
+            {
+              inTagName: "street",
+              inTagPlaceholder: "Area / Street",
+            },
+            {
+              inTagName: "landmark",
+              inTagPlaceholder: "Landmark",
+            },
+            {
+              inTagName: "distanceFromLandmark",
+              inTagPlaceholder: "Distance from Landmark",
+            },
+            {
+              inTagName: "village",
+              inTagPlaceholder: "Village / Town",
+            },
+            {
+              inTagName: "city",
+              inTagPlaceholder: "Town / City",
+            },
+            {
+              inTagName: "pin",
+              inTagPlaceholder: "Pincode",
+            },
+          ]}
+        />
+        <div className="mt-16 mx-auto">
+          <FirstFancyBTN text="Save" />
+        </div>
       </form>
     </div>
   );
