@@ -5,13 +5,13 @@ const TextInputTag = ({
   errors,
   register,
   inTagDisabledState,
-  inTagsNamePlaceholderObject,
+  inTagsNamePlaceholderValueObject,
 }) => {
   const [userInteractionArr, setUserInteractionArr] = useState(
-    new Array(inTagsNamePlaceholderObject.length).fill(false)
+    new Array(inTagsNamePlaceholderValueObject.length).fill(false)
   );
-  return inTagsNamePlaceholderObject.map(
-    ({ inTagName, inTagPlaceholder }, index) => (
+  return inTagsNamePlaceholderValueObject.map(
+    ({ inTagName, inTagPlaceholder, inTagValue }, index) => (
       <div className="flex flex-col" key={index}>
         <div className="mr-4 flex justify-between items-center gap-4">
           <input
@@ -23,6 +23,7 @@ const TextInputTag = ({
                 return newStateArr;
               })
             }
+            value={inTagValue}
             disabled={inTagDisabledState}
             type="text"
             name={inTagName}

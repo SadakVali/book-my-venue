@@ -130,3 +130,8 @@ code {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
+
+/* Webkit scrollbar */
+textarea::-webkit-scrollbar {
+  display: none; /* Hide the scrollbar */
+}

@@ -20,7 +20,7 @@ const TextInputField = ({
             key={index}
             htmlFor={inTagName}
             className="relative w-fit cursor-pointer flex justify-start 
-              items-center gap-4"
+            items-center gap-4"
             onClick={() =>
               setUserInteractionArr((prevState) => {
                 const newStateArr = [...prevState];

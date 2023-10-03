@@ -54,6 +54,11 @@ const venueSchema = new mongoose.Schema(
         type: Boolean,
         required: true,
       },
+      // TODO: Newly added field
+      outsideCatererAllowingCharges: {
+        type: Boolean,
+        required: true,
+      },
       isNonVegAllowedAtVenue: {
         type: Boolean,
         required: true,
@@ -79,9 +84,19 @@ const venueSchema = new mongoose.Schema(
         type: Boolean,
         required: true,
       },
+      // TODO: Newly added field
+      outsideAlcoholAllowingCharges: {
+        type: Boolean,
+        required: true,
+      },
     },
     decoration: {
       isDecorProvidedByVenue: {
+        type: Boolean,
+        required: true,
+      },
+      // TODO: Newly added field
+      outsideDecorAllowingCharges: {
         type: Boolean,
         required: true,
       },
