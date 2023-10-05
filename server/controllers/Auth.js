@@ -68,7 +68,9 @@ exports.login = async (req, res) => {
     }
 
     // check if user exists or not
-    const user = await User.findOne({ contactNumber }).exec();
+    const user = await User.findOne({ contactNumber })
+      .populate({ path: "venue", populate: { path: "address" } })
+      .exec();
     if (!user)
       return res.status(401).json({
         success: false,
@@ -104,19 +106,24 @@ exports.login = async (req, res) => {
       expires: new Date(Date.now() + 24 * 60 * 60 * 1000),
       httpOnly: true,
     };
+    const userRes = {
+      token,
+      id: user._id,
+      role: user.role,
+      name: user.name,
+      contactNumber: user.contactNumber,
+      image: user.image,
+      // bookings: user.bookings,
+    };
     res
       .cookie("token", token, options)
       .status(200)
       .json({
         success: true,
         data: {
+          user: userRes,
+          venue: user.venue,
           token,
-          id: user._id,
-          role: user.role,
-          name: user.name,
-          contactNumber: user.contactNumber,
-          image: user.image,
-          bookings: user.bookings,
         },
         message: "",
       });

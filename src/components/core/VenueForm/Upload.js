@@ -14,6 +14,7 @@ export default function Upload({
   video = false,
   viewData = null,
   editData = null,
+  setState,
 }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewSource, setPreviewSource] = useState(
@@ -34,6 +35,7 @@ export default function Upload({
     if (file) {
       previewFile(file);
       setSelectedFile(acceptedFiles);
+      setState(true);
     }
   };
 
@@ -75,6 +77,7 @@ export default function Upload({
                 setPreviewSource("");
                 setSelectedFile(null);
                 setValue(name, null);
+                setState(false);
               }}
               className="text-[#28374B] flex justify-center items-center 
               text-[1.5rem] w-14 rounded-full bg-white aspect-square 
@@ -88,7 +91,13 @@ export default function Upload({
             className="flex w-full h-full flex-col justify-center items-center"
             {...getRootProps()}
           >
-            <input {...getInputProps()} ref={inputRef} />
+            <input
+              {...getInputProps()}
+              type="file"
+              ref={inputRef}
+              name={name}
+              id={name}
+            />
             <div
               className="grid aspect-square w-14 place-items-center rounded-full 
               bg-pure-greys-800"

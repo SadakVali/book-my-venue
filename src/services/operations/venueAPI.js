@@ -2,7 +2,7 @@
 import { toast } from "react-hot-toast";
 
 // redux related imports
-import { setLoading, setVenues } from "../../slices/venueSlice";
+import { setLoading, setVenue, setVenues } from "../../slices/venueSlice";
 
 // API call related imports
 import { apiConnector } from "../apiConnector";
@@ -10,93 +10,83 @@ import { venueEndPoints } from "../apis";
 const { CREATE_NEW_VENUE_API, EDIT_VENUE_DETAILS_API, FETCH_ALL_VENUES_API } =
   venueEndPoints;
 
-export const createVenue =
-  (
-    name,
-    aboutVenue,
-    venuePricePerDay,
-    advancePercentage,
-    guestCapacity,
-    carParkingSpace,
-    numOfLodgingRooms,
-    lodgingRoomPrice,
-    isBookingCancellable,
-    // Food
-    isCateringProvidedByVenue,
-    isOutsideCatererAllowed,
-    isNonVegAllowedAtVenue,
-    vegPricePerPlate,
-    nonvegPricePerPlate,
-    // Alcohol
-    isAlcoholProvidedByVenue,
-    isOutsideAlcoholAllowed,
-    // Decor
-    isDecorProvidedByVenue,
-    isOutsideDecoratersAllowed,
-    // OtherPolicies
-    isMusicAllowedLateAtNight,
-    isHallAirConditioned,
-    isBaaratAllowed,
-    areFireCrackersAllowed,
-    isHawanAllowed,
-    isOverNightWeddingAllowed,
-    // Address
-    street,
-    landmark,
-    distanceFromLandmark,
-    village,
-    city,
-    pin,
-    // GPS
-    coordinates,
-    // other parameters
-    navigate
-  ) =>
-  async (dispatch) => {
+// {
+//   name,
+//   aboutVenue,
+//   venuePricePerDay,
+//   advancePercentage,
+//   guestCapacity,
+//   carParkingSpace,
+//   numOfLodgingRooms,
+//   lodgingRoomPrice,
+//   isBookingCancellable,
+//   // Food
+//   isCateringProvidedByVenue,
+//   isOutsideCatererAllowed,
+//   isNonVegAllowedAtVenue,
+//   vegPricePerPlate,
+//   nonvegPricePerPlate,
+//   // Alcohol
+//   isAlcoholProvidedByVenue,
+//   isOutsideAlcoholAllowed,
+//   // Decor
+//   isDecorProvidedByVenue,
+//   isOutsideDecoratersAllowed,
+//   // OtherPolicies
+//   isMusicAllowedLateAtNight,
+//   isHallAirConditioned,
+//   isBaaratAllowed,
+//   areFireCrackersAllowed,
+//   isHawanAllowed,
+//   isOverNightWeddingAllowed,
+//   // Address
+//   street,
+//   landmark,
+//   distanceFromLandmark,
+//   village,
+//   city,
+//   pin,
+//   // GPS
+//   coordinates,
+//   // other parameters
+
+//   images,
+//   videos,
+// }
+
+const flattenObject = (inputObj) => {
+  const flatObj = {};
+  for (const key in inputObj) {
+    if (Array.isArray(inputObj[key]) && key === "coordinates") {
+      flatObj["longitude"] = inputObj[key][0];
+      flatObj["latitude"] = inputObj[key][1];
+    } else if (typeof inputObj[key] === "object" && inputObj[key] !== null) {
+      // Recursively flatten nested objects
+      const nestedFlatObj = flattenObject(inputObj[key]);
+      Object.assign(flatObj, nestedFlatObj);
+    } else {
+      // Add non-object values directly
+      flatObj[key] = inputObj[key];
+    }
+  }
+  return flatObj;
+};
+
+export const createVenue = (data, navigate, token) => {
+  return async (dispatch) => {
+    // console.log({ images: data.images, videos: data.videos, token });
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("POST", CREATE_NEW_VENUE_API, {
-        name,
-        aboutVenue,
-        venuePricePerDay,
-        advancePercentage,
-        guestCapacity,
-        carParkingSpace,
-        numOfLodgingRooms,
-        lodgingRoomPrice,
-        isBookingCancellable,
-        // Food
-        isCateringProvidedByVenue,
-        isOutsideCatererAllowed,
-        isNonVegAllowedAtVenue,
-        vegPricePerPlate,
-        nonvegPricePerPlate,
-        // Alcohol
-        isAlcoholProvidedByVenue,
-        isOutsideAlcoholAllowed,
-        // Decor
-        isDecorProvidedByVenue,
-        isOutsideDecoratersAllowed,
-        // OtherPolicies
-        isMusicAllowedLateAtNight,
-        isHallAirConditioned,
-        isBaaratAllowed,
-        areFireCrackersAllowed,
-        isHawanAllowed,
-        isOverNightWeddingAllowed,
-        // Address
-        street,
-        landmark,
-        distanceFromLandmark,
-        village,
-        city,
-        pin,
-        // GPS
-        coordinates,
+      console.log(data);
+      const response = await apiConnector("POST", CREATE_NEW_VENUE_API, data, {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       });
       console.log("CREATE VENUE API RESPONSE......", response);
-      if (!response.data.sucess) throw new Error(response.data.message);
+      const flattenedResponse = flattenObject(response.data.data);
+      dispatch(setVenue(flattenedResponse));
+      if (!response.data.success) throw new Error(response.data.message);
       toast.success("new venue creation successful");
       navigate("/");
     } catch (error) {
@@ -107,6 +97,7 @@ export const createVenue =
     dispatch(setLoading(false));
     toast.dismiss(toastId);
   };
+};
 
 export const editVenue =
   (
@@ -148,51 +139,60 @@ export const editVenue =
     // GPS
     coordinates,
     // other parameters
-    navigate
+    navigate,
+    token
   ) =>
   async (dispatch) => {
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     try {
-      const response = await apiConnector("PUT", EDIT_VENUE_DETAILS_API, {
-        name,
-        aboutVenue,
-        venuePricePerDay,
-        advancePercentage,
-        guestCapacity,
-        carParkingSpace,
-        numOfLodgingRooms,
-        lodgingRoomPrice,
-        isBookingCancellable,
-        // Food
-        isCateringProvidedByVenue,
-        isOutsideCatererAllowed,
-        isNonVegAllowedAtVenue,
-        vegPricePerPlate,
-        nonvegPricePerPlate,
-        // Alcohol
-        isAlcoholProvidedByVenue,
-        isOutsideAlcoholAllowed,
-        // Decor
-        isDecorProvidedByVenue,
-        isOutsideDecoratersAllowed,
-        // OtherPolicies
-        isMusicAllowedLateAtNight,
-        isHallAirConditioned,
-        isBaaratAllowed,
-        areFireCrackersAllowed,
-        isHawanAllowed,
-        isOverNightWeddingAllowed,
-        // Address
-        street,
-        landmark,
-        distanceFromLandmark,
-        village,
-        city,
-        pin,
-        // GPS
-        coordinates,
-      });
+      const response = await apiConnector(
+        "PUT",
+        EDIT_VENUE_DETAILS_API,
+        {
+          name,
+          aboutVenue,
+          venuePricePerDay,
+          advancePercentage,
+          guestCapacity,
+          carParkingSpace,
+          numOfLodgingRooms,
+          lodgingRoomPrice,
+          isBookingCancellable,
+          // Food
+          isCateringProvidedByVenue,
+          isOutsideCatererAllowed,
+          isNonVegAllowedAtVenue,
+          vegPricePerPlate,
+          nonvegPricePerPlate,
+          // Alcohol
+          isAlcoholProvidedByVenue,
+          isOutsideAlcoholAllowed,
+          // Decor
+          isDecorProvidedByVenue,
+          isOutsideDecoratersAllowed,
+          // OtherPolicies
+          isMusicAllowedLateAtNight,
+          isHallAirConditioned,
+          isBaaratAllowed,
+          areFireCrackersAllowed,
+          isHawanAllowed,
+          isOverNightWeddingAllowed,
+          // Address
+          street,
+          landmark,
+          distanceFromLandmark,
+          village,
+          city,
+          pin,
+          // GPS
+          coordinates,
+        },
+        {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        }
+      );
       console.log("EDIT VENUE DETAILS API RESPONSE......", response);
       if (!response.data.sucess) throw new Error(response.data.message);
       toast.success("editing venue successful");

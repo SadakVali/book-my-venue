@@ -4,7 +4,7 @@ import { ReactComponent as Tick } from "../../../assets/Icons/Tick.svg";
 const TextInputTag = ({
   errors,
   register,
-  inTagDisabledState,
+  // inTagDisabledState,
   inTagsNamePlaceholderValueObject,
 }) => {
   const [userInteractionArr, setUserInteractionArr] = useState(
@@ -28,7 +28,7 @@ const TextInputTag = ({
             }}
             onChangeCapture={() =>
               setUserInteractionArr((prevState) => {
-                console.log("Hi BUddy here");
+                // console.log("Hi BUddy here");
                 const newStateArr = [...prevState];
                 newStateArr[index] = true;
                 if (["latitude", "longitude"].includes(inTagName)) {
@@ -39,7 +39,7 @@ const TextInputTag = ({
               })
             }
             // value={inTagValue}
-            disabled={inTagDisabledState}
+            // disabled={inTagDisabledState}
             type="text"
             name={inTagName}
             placeholder={inTagPlaceholder}

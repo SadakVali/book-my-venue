@@ -25,7 +25,7 @@ const TextInputField = ({
         <TextInputTag
           errors={errors}
           register={register}
-          inTagDisabledState={inTagDisabledState}
+          // inTagDisabledState={inTagDisabledState}
           inTagsNamePlaceholderValueObject={inTagsNamePlaceholderValueObject}
         />
       </div>

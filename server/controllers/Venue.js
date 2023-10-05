@@ -18,6 +18,12 @@ const { VENUE_STATUS, FILE_TYPES } = require("../utils/constants");
 const { ACCOUNT_TYPE } = require("../utils/constants");
 
 // Create a new venue handler function
+// TODO: Add these variables into the postman
+// Path `decoration.outsideDecorAllowingCharges` is required.,
+// Path `alcohol.outsideAlcoholAllowingCharges` is required.,
+// Path `alcohol.isItAllowed` is required.,
+// Path `food.outsideCatererAllowingCharges` is required.,
+// Path `cancellationCharges` is required.
 exports.createVenue = async (req, res) => {
   try {
     // Destructure data = require(the request body
@@ -31,16 +37,21 @@ exports.createVenue = async (req, res) => {
       numOfLodgingRooms,
       lodgingRoomPrice,
       isBookingCancellable,
+      cancellationCharges,
       // Food
       isCateringProvidedByVenue,
       isOutsideCatererAllowed,
       isNonVegAllowedAtVenue,
       vegPricePerPlate,
       nonvegPricePerPlate,
+      outsideCatererAllowingCharges,
       // Alcohol
+      isItAllowed,
+      outsideAlcoholAllowingCharges,
       isAlcoholProvidedByVenue,
       isOutsideAlcoholAllowed,
       // Decor
+      outsideDecorAllowingCharges,
       isDecorProvidedByVenue,
       isOutsideDecoratersAllowed,
       // OtherPolicies
@@ -61,47 +72,57 @@ exports.createVenue = async (req, res) => {
       coordinates,
     } = req.body;
 
-    // console.log({
-    //   name,
-    //   aboutVenue,
-    //   venuePricePerDay,
-    //   advancePercentage,
-    //   guestCapacity,
-    //   carParkingSpace,
-    //   numOfLodgingRooms,
-    //   lodgingRoomPrice,
-    //   isBookingCancellable,
-    //   // Food
-    //   isCateringProvidedByVenue,
-    //   isOutsideCatererAllowed,
-    //   isNonVegAllowedAtVenue,
-    //   vegPricePerPlate,
-    //   nonvegPricePerPlate,
-    //   // Alcohol
-    //   isAlcoholProvidedByVenue,
-    //   isOutsideAlcoholAllowed,
-    //   // Decor
-    //   isDecorProvidedByVenue,
-    //   isOutsideDecoratersAllowed,
-    //   // OtherPolicies
-    //   isMusicAllowedLateAtNight,
-    //   isHallAirConditioned,
-    //   isBaaratAllowed,
-    //   areFireCrackersAllowed,
-    //   isHawanAllowed,
-    //   isOverNightWeddingAllowed,
-    //   // Address
-    //   street,
-    //   landmark,
-    //   distanceFromLandmark,
-    //   village,
-    //   city,
-    //   pin,
-    //   // GPS
-    //   coordinates: JSON.parse(coordinates),
-    // });
-    // console.log(req?.files?.images);
-    // console.log(req?.files?.videos);
+    console.log({
+      name,
+      aboutVenue,
+      venuePricePerDay,
+      advancePercentage,
+      guestCapacity,
+      carParkingSpace,
+      numOfLodgingRooms,
+      lodgingRoomPrice,
+      isBookingCancellable,
+      // Food
+      isCateringProvidedByVenue,
+      isOutsideCatererAllowed,
+      isNonVegAllowedAtVenue,
+      vegPricePerPlate,
+      nonvegPricePerPlate,
+      // Alcohol
+      isItAllowed,
+      outsideAlcoholAllowingCharges,
+      isAlcoholProvidedByVenue,
+      isOutsideAlcoholAllowed,
+      // Decor
+      isDecorProvidedByVenue,
+      isOutsideDecoratersAllowed,
+      // OtherPolicies
+      isMusicAllowedLateAtNight,
+      isHallAirConditioned,
+      isBaaratAllowed,
+      areFireCrackersAllowed,
+      isHawanAllowed,
+      isOverNightWeddingAllowed,
+      // Address
+      street,
+      landmark,
+      distanceFromLandmark,
+      village,
+      city,
+      pin,
+      // GPS
+      // HI
+      coordinates, //: JSON.parse(coordinates),
+    });
+    // console.log({ req });
+    // console.log({ images: req?.files["images[]"] });
+    // console.log({ videos: req?.files["videos[]"] });
+    // console.log({ images: req?.files["images"] });
+    // console.log({ videos: req?.files["videos"] });
+    // console.log({ images: req?.body?.images });
+    // console.log({ videos: req?.files?.videos });
+    // console.log(req?.body?.videos[0]);
+    // console.log({ images: req?.files?.images });
 
     // Validate required fields
     if (
@@ -116,16 +137,21 @@ exports.createVenue = async (req, res) => {
       !numOfLodgingRooms ||
       !lodgingRoomPrice ||
       !isBookingCancellable ||
+      !cancellationCharges ||
       // Food
+      !outsideCatererAllowingCharges ||
       !isCateringProvidedByVenue ||
       !isOutsideCatererAllowed ||
       !isNonVegAllowedAtVenue ||
       !vegPricePerPlate ||
       !nonvegPricePerPlate ||
       // Alcohol
+      !isItAllowed ||
+      !outsideAlcoholAllowingCharges ||
       !isAlcoholProvidedByVenue ||
       !isOutsideAlcoholAllowed ||
       // Decor
+      !outsideDecorAllowingCharges ||
       !isDecorProvidedByVenue ||
       !isOutsideDecoratersAllowed ||
       // OtherPolicies
@@ -143,7 +169,8 @@ exports.createVenue = async (req, res) => {
       !city ||
       !pin ||
       // GPS
-      !JSON.parse(coordinates).length
+      // !JSON.parse(coordinates).length
+      !coordinates
     )
       return res.status(400).json({
         success: true,
@@ -195,16 +222,20 @@ exports.createVenue = async (req, res) => {
       isNonVegAllowedAtVenue,
       vegPricePerPlate,
       nonvegPricePerPlate,
+      outsideCatererAllowingCharges,
     };
 
     // Create a new Alcohol entry
     const newAlcoholEntry = {
       isAlcoholProvidedByVenue,
       isOutsideAlcoholAllowed,
+      outsideAlcoholAllowingCharges,
+      isItAllowed,
     };
 
     // Create a new Decor entry
     const newDecorEntry = {
+      outsideDecorAllowingCharges,
       isDecorProvidedByVenue,
       isOutsideDecoratersAllowed,
     };
@@ -227,7 +258,8 @@ exports.createVenue = async (req, res) => {
       village,
       city,
       pin,
-      location: { type: "Point", coordinates: JSON.parse(coordinates) },
+      // location: { type: "Point", coordinates: JSON.parse(coordinates) },
+      location: { type: "Point", coordinates: coordinates },
     });
 
     // Create a new function hall entry
@@ -237,6 +269,7 @@ exports.createVenue = async (req, res) => {
       venuePricePerDay,
       manager: req.user.id,
       advancePercentage,
+      cancellationCharges,
       images: zipImageArrays(imagesResponse),
       videos: zipVideoArrays(videoResponse),
       guestCapacity,

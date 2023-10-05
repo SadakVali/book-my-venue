@@ -4,6 +4,48 @@ const mongoose = require("mongoose");
 // const constants
 const { VENUE_STATUS } = require("../utils/constants");
 
+// aboutVenue: "verNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is AllowedverNight wedding is Allowed"
+// advancePercentage: 32
+// areFireCrackersAllowed: false
+// isBookingCancellable: true
+// cancellationCharges: false
+// carParkingSpace: 3213
+
+// city: "Anantapuramu"
+// distanceFromLandmark: "32 kms"
+// landmark: "Near Old Town Post Office"
+// latitude: 14.6767872
+// longitude: 77.5913472
+// pin: 515001
+// street: "Anantapur"
+// village: "Anantapuramu"
+
+// guestCapacity: 32
+// images: [File]
+// isAlcoholProvidedByVenue: false
+// isBaaratAllowed: false
+// isCateringProvidedByVenue: false
+// isDecorProvidedByVenue: false
+// isHallAirConditioned: false
+// isHawanAllowed: false
+// isItAllowed: false
+// isMusicAllowedLateAtNight: false
+// isNonVegAllowedAtVenue: false
+// isOutsideAlcoholAllowed: false
+// isOutsideCatererAllowed: false
+// isOutsideDecoratersAllowed: false
+// isOverNightWeddingAllowed: false
+// lodgingRoomPrice: 32132
+// name: "Sadak Vali Illuru"
+// nonvegPricePerPlate: 432423
+// numOfLodgingRooms: 32131
+// outsideAlcoholAllowingCharges: true
+// outsideCatererAllowingCharges: false
+// outsideDecorAllowingCharges: false
+// vegPricePerPlate: 432
+// venuePricePerDay: 432
+// videos: [File]
+
 const venueSchema = new mongoose.Schema(
   {
     name: {
@@ -45,6 +87,10 @@ const venueSchema = new mongoose.Schema(
       type: Boolean,
       required: true,
     },
+    cancellationCharges: {
+      type: Boolean,
+      required: true,
+    },
     food: {
       isCateringProvidedByVenue: {
         type: Boolean,
@@ -65,9 +111,11 @@ const venueSchema = new mongoose.Schema(
       },
       vegPricePerPlate: {
         type: Number,
+        required: true,
       },
       nonvegPricePerPlate: {
         type: Number,
+        required: true,
       },
     },
     alcohol: {

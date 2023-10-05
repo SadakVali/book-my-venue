@@ -20,7 +20,31 @@ import {
   setOccasionPastBookings,
   setPaymentDueToadyBookings,
 } from "../../slices/dashboardSlice";
+import { setVenue } from "../../slices/venueSlice";
 const { LOGIN_API, SIGNUP_API } = authEndPoints;
+
+const flattenObject = (inputObj) => {
+  const flatObj = {};
+  for (const key in inputObj) {
+    if (Array.isArray(inputObj[key])) {
+      if (key === "coordinates") {
+        flatObj["longitude"] = inputObj[key][0];
+        flatObj["latitude"] = inputObj[key][1];
+      }
+      if (["images", "videos"].includes(key)) {
+        flatObj[key] = inputObj[key];
+      }
+    } else if (typeof inputObj[key] === "object" && inputObj[key] !== null) {
+      // Recursively flatten nested objects
+      const nestedFlatObj = flattenObject(inputObj[key]);
+      Object.assign(flatObj, nestedFlatObj);
+    } else {
+      // Add non-object values directly
+      flatObj[key] = inputObj[key];
+    }
+  }
+  return flatObj;
+};
 
 export const signup =
   (name, contactNumber, password, navigate) => async (dispatch) => {
@@ -57,7 +81,7 @@ export const login =
       // console.log("LOGIN API RESPONSE......", response);
       if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("Login Successfull");
-      // console.log("USER DATA...", response?.data?.data);
+      console.log("USER DATA...", response?.data?.data);
       if (!!response?.data?.data?.token) {
         dispatch(setToken(response?.data?.data?.token));
         localStorage.setItem(
@@ -65,10 +89,18 @@ export const login =
           JSON.stringify(response?.data?.data?.token)
         );
       }
-      if (!!response?.data?.data?.token) {
-        dispatch(setUser(response?.data?.data));
-        localStorage.setItem("user", JSON.stringify(response?.data?.data));
-      }
+      dispatch(setVenue(flattenObject(response?.data?.data?.venue)));
+      dispatch(setUser(response?.data?.data?.user));
+      localStorage.setItem("user", JSON.stringify(response?.data?.data?.user));
+      localStorage.setItem(
+        "venue",
+        JSON.stringify(flattenObject(response?.data?.data?.venue))
+      );
+      localStorage.setItem(
+        "token",
+        JSON.stringify(response?.data?.data?.token)
+      );
+
       if (response?.data?.data?.venue) navigate("/manager-home");
       else navigate("/venue-form");
       console.log("Login API end...");
@@ -83,6 +115,7 @@ export const login =
 export const logout = (navigate) => (dispatch) => {
   dispatch(setToken(null));
   dispatch(setUser(null));
+  dispatch(setVenue(null));
   dispatch(setVenueBookingsGivenMonth(null));
   dispatch(setBookingInfo(null));
   dispatch(setBookingMonth(null));
@@ -93,6 +126,7 @@ export const logout = (navigate) => (dispatch) => {
   dispatch(setOccasionPastBookings(null));
   localStorage.removeItem("token");
   localStorage.removeItem("user");
+  localStorage.removeItem("venue");
   toast.success("Logged Out");
   navigate("/");
 };

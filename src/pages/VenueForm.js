@@ -1,45 +1,53 @@
 import { useForm } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import TextInputField from "../components/core/VenueForm/TextInputField";
-import { FiUploadCloud } from "react-icons/fi";
+import { toast } from "react-hot-toast";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import FirstFancyBTN from "../components/common/FirstFancyBTN";
 import CheckboxInputField from "../components/core/VenueForm/CheckboxInputField";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 import Upload from "../components/core/VenueForm/Upload";
+import { createVenue, editVenue } from "../services/operations/venueAPI";
+import { useNavigate } from "react-router-dom";
 
 const VenueForm = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { token } = useSelector((state) => state.auth);
   const { user } = useSelector((state) => state.user);
+  const { venue } = useSelector((state) => state.venue);
+  console.log(venue);
 
-  const flattenObject = (inputObj) => {
-    const flatObj = {};
-    for (const key in inputObj) {
-      if (
-        !["manager", "images", "videos", "allBookings", "status"].includes(key)
-      ) {
-        if (Array.isArray(inputObj[key]) && key === "coordinates") {
-          flatObj["longitude"] = inputObj[key][0];
-          flatObj["latitude"] = inputObj[key][1];
-        } else if (
-          typeof inputObj[key] === "object" &&
-          inputObj[key] !== null
-        ) {
-          // Recursively flatten nested objects
-          const nestedFlatObj = flattenObject(inputObj[key]);
-          Object.assign(flatObj, nestedFlatObj);
-        } else {
-          // Add non-object values directly
-          flatObj[key] = inputObj[key];
-        }
-      }
-    }
-    return flatObj;
-  };
+  const [areImagesUpdated, setAreImagesUpdated] = useState(false);
+  const [areVideosUpdated, setAreVideosUpdated] = useState(false);
 
-  const defaultValues = flattenObject(user.venue);
+  // const flattenObject = (inputObj) => {
+  //   const flatObj = {};
+  //   for (const key in inputObj) {
+  //     if (
+  //       !["manager", "images", "videos", "allBookings", "status"].includes(key)
+  //     ) {
+  //       if (Array.isArray(inputObj[key]) && key === "coordinates") {
+  //         flatObj["longitude"] = inputObj[key][0];
+  //         flatObj["latitude"] = inputObj[key][1];
+  //       } else if (
+  //         typeof inputObj[key] === "object" &&
+  //         inputObj[key] !== null
+  //       ) {
+  //         // Recursively flatten nested objects
+  //         const nestedFlatObj = flattenObject(inputObj[key]);
+  //         Object.assign(flatObj, nestedFlatObj);
+  //       } else {
+  //         // Add non-object values directly
+  //         flatObj[key] = inputObj[key];
+  //       }
+  //     }
+  //   }
+  //   return flatObj;
+  // };
 
   const schema = yup.object({
     name: yup
@@ -104,11 +112,11 @@ const VenueForm = () => {
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
-    defaultValues: defaultValues,
+    defaultValues: venue,
     // defaultValues: { cancellation: false, cancellationCharges: false },
   });
 
-  const inTagDisabledState = !!user.venue;
+  const inTagDisabledState = !!venue;
 
   const [latitude, setLatitude] = useState(
     "Click Here to Fetch Venue Latitude"
@@ -119,6 +127,8 @@ const VenueForm = () => {
 
   const [fetchedGPScoordinatesFlag, setFetchedGPScoordinatesFlag] =
     useState(false);
+
+  console.log(getValues());
 
   const getCurrentLocation = () => {
     if (!fetchedGPScoordinatesFlag) {
@@ -150,16 +160,91 @@ const VenueForm = () => {
     }
   };
 
-  const onSubmit = (data) => {
-    console.log("Hi Buddy");
-    console.log(data);
-    // if user.venue is null
-    // make a createVenue API call
-    // if user.venue exists
-    // Check whether the data is updated  or not
-    // if not updated create toast to say it
-    // if updated then make an editVenue API call
+  const isDataUpdated = () => {
+    if (areImagesUpdated || areVideosUpdated) return true;
+    const currentValues = getValues();
+    for (const key in currentValues) {
+      // TODO: add longitude and latidude update verification
+      if (!["images", "videos", "longitude", "latitude"].includes(key)) {
+        if (currentValues[key] !== venue[key]) return true;
+      }
+    }
+    return false;
   };
+
+  const createUpdatedFormObject = () => {
+    const currentValues = getValues();
+    const formData = new FormData();
+    formData.append("venueId", venue._id);
+    if (areImagesUpdated) formData.append("images", currentValues["images"]);
+    if (areVideosUpdated) formData.append("videos", currentValues["videos"]);
+
+    if (
+      currentValues["latitude"] !== venue["latitude"] ||
+      currentValues["longitude"] !== venue["longitude"]
+    )
+      formData.append("coordinates", [
+        currentValues["longitude"],
+        currentValues["latitude"],
+      ]);
+
+    for (const key in currentValues) {
+      if (!["images", "videos", "longitude", "latitude"].includes(key)) {
+        if (currentValues[key] !== venue[key])
+          formData.append(key, currentValues[key]);
+      }
+    }
+    return formData;
+  };
+
+  const createFormData = (data) => {
+    const currentValues = getValues();
+    const formData = new FormData();
+    formData.append("coordinates", data.longitude);
+    formData.append("coordinates", data.latitude);
+    // Append the images and videos with their respective field names
+    for (const iterator of data.images) formData.append("images", iterator);
+    for (const iterator of data.videos) formData.append("videos", iterator);
+    for (const key in currentValues) {
+      if (!["images", "videos", "longitude", "latitude"].includes(key)) {
+        formData.append(key, data[key]);
+      }
+    }
+    return formData;
+  };
+
+  const onSubmit = (data) => {
+    // console.log("Hi Buddy");
+    // console.log(data);
+    // if venue is null
+    if (!venue) {
+      // console.log({ token });
+      // make a createVenue API call
+      // setValue(
+      //   "coordinates",
+      //   JSON.parse([getValues("longitude"), getValues("latitude")])
+      // );
+      // console.log("NOw see the cause");
+
+      dispatch(createVenue(createFormData(data), navigate, token));
+      // if venue exists
+    } else {
+      // Check whether the data is updated or not
+      if (isDataUpdated()) {
+        // if updated then make an editVenue API call
+        const updatedFormObject = createUpdatedFormObject();
+        dispatch(editVenue(updatedFormObject, navigate, token));
+      } else {
+        // if not updated create toast to say it
+        toast.error("No changes made to the form");
+      }
+    }
+    // reset();
+  };
+
+  // useEffect(() => {
+  //   if (isSubmitSuccessful) reset();
+  // }, [reset, isSubmitSuccessful]);
 
   return (
     <div
@@ -251,6 +336,7 @@ const VenueForm = () => {
           ]}
         />
         <CheckboxInputField
+          getValues={getValues}
           errors={errors}
           register={register}
           setValue={setValue}
@@ -258,7 +344,7 @@ const VenueForm = () => {
           inTagDisabledState={inTagDisabledState}
           inTagsNameLabelObject={[
             {
-              inTagName: "cancellation",
+              inTagName: "isBookingCancellable",
               label: "Booking is Cancellable",
             },
             {
@@ -268,6 +354,7 @@ const VenueForm = () => {
           ]}
         />
         <CheckboxInputField
+          getValues={getValues}
           errors={errors}
           register={register}
           setValue={setValue}
@@ -275,7 +362,7 @@ const VenueForm = () => {
           inTagDisabledState={inTagDisabledState}
           inTagsNameLabelObject={[
             {
-              inTagName: "isItAlloved",
+              inTagName: "isItAllowed",
               label: "Consumption of Alcohol is Allowed the Venue",
             },
             {
@@ -294,6 +381,7 @@ const VenueForm = () => {
           ]}
         />
         <CheckboxInputField
+          getValues={getValues}
           errors={errors}
           register={register}
           setValue={setValue}
@@ -341,6 +429,7 @@ const VenueForm = () => {
           />
         </div>
         <CheckboxInputField
+          getValues={getValues}
           errors={errors}
           setValue={setValue}
           register={register}
@@ -364,6 +453,7 @@ const VenueForm = () => {
           ]}
         />
         <CheckboxInputField
+          getValues={getValues}
           errors={errors}
           register={register}
           setValue={setValue}
@@ -495,12 +585,12 @@ const VenueForm = () => {
           >
             <Upload
               name="videos"
-              // label=""
               register={register}
               setValue={setValue}
               errors={errors}
-              editData={null}
+              editData={venue?.videos[0].url || null}
               video={true}
+              setState={setAreVideosUpdated}
             />
           </div>
         </div>
@@ -519,18 +609,19 @@ const VenueForm = () => {
           >
             <Upload
               name="images"
-              // label="Course Thumbnail"
               register={register}
               setValue={setValue}
               errors={errors}
-              editData={null}
+              editData={venue?.images[0].url || null}
+              video={false}
+              setState={setAreImagesUpdated}
             />
           </div>
         </div>
 
         <div className="mt-16 mx-auto">
           <FirstFancyBTN
-            text={`${!!!user.venue ? "Save" : "Update"} Venue Details`}
+            text={`${!!!venue ? "Save" : "Update"} Venue Details`}
           />
         </div>
       </form>

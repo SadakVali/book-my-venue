@@ -16,6 +16,8 @@ exports.auth = async (req, res, next) => {
       req.cookies.token ||
       req.body.token;
 
+    console.log({ input: req.headers.authorization });
+
     if (!token) {
       return res.status(401).json({
         success: false,
@@ -30,6 +32,7 @@ exports.auth = async (req, res, next) => {
       req.user = decoded;
       // console.log(req.user);
     } catch (error) {
+      console.log({ token });
       return res.status(401).json({
         success: false,
         message: TOKEN_INVALID_MESSAGE,
