@@ -16,14 +16,29 @@ const TextInputTag = ({
         <div className="mr-4 flex justify-between items-center gap-4">
           <input
             required
-            onChangeCapture={() =>
+            onClick={() => {
               setUserInteractionArr((prevState) => {
                 const newStateArr = [...prevState];
+                if (["latitude", "longitude"].includes(inTagName)) {
+                  newStateArr[0] = true;
+                  newStateArr[1] = true;
+                }
+                return newStateArr;
+              });
+            }}
+            onChangeCapture={() =>
+              setUserInteractionArr((prevState) => {
+                console.log("Hi BUddy here");
+                const newStateArr = [...prevState];
                 newStateArr[index] = true;
+                if (["latitude", "longitude"].includes(inTagName)) {
+                  newStateArr[0] = true;
+                  newStateArr[1] = true;
+                }
                 return newStateArr;
               })
             }
-            value={inTagValue}
+            // value={inTagValue}
             disabled={inTagDisabledState}
             type="text"
             name={inTagName}

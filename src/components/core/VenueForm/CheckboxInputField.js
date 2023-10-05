@@ -1,9 +1,11 @@
 import React, { useState } from "react";
 import { ReactComponent as Tick } from "../../../assets/Icons/Tick.svg";
+import { FiCloudLightning } from "react-icons/fi";
 
-const TextInputField = ({
+const CheckboxInputField = ({
   errors,
   register,
+  setValue,
   title,
   inTagDisabledState,
   inTagsNameLabelObject,
@@ -23,8 +25,11 @@ const TextInputField = ({
             items-center gap-4"
             onClick={() =>
               setUserInteractionArr((prevState) => {
+                console.log(prevState);
                 const newStateArr = [...prevState];
                 newStateArr[index] = !newStateArr[index];
+                console.log(newStateArr);
+                setValue(inTagName, newStateArr[index]);
                 return newStateArr;
               })
             }
@@ -33,10 +38,9 @@ const TextInputField = ({
               disabled={inTagDisabledState}
               type="checkbox"
               name={inTagName}
-              value={userInteractionArr[index]}
               checked={userInteractionArr[index]}
               className="relative appearance-none w-[1.9rem] aspect-square 
-                rounded-md bg-white"
+              rounded-md bg-white"
               {...register(inTagName)}
             />
             <p
@@ -56,4 +60,4 @@ const TextInputField = ({
   );
 };
 
-export default TextInputField;
+export default CheckboxInputField;

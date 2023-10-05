@@ -1,48 +1,45 @@
 import { useForm } from "react-hook-form";
 import { useSelector } from "react-redux";
 import TextInputField from "../components/core/VenueForm/TextInputField";
+import { FiUploadCloud } from "react-icons/fi";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import FirstFancyBTN from "../components/common/FirstFancyBTN";
 import CheckboxInputField from "../components/core/VenueForm/CheckboxInputField";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+
+import Upload from "../components/core/VenueForm/Upload";
 
 const VenueForm = () => {
   const { user } = useSelector((state) => state.user);
 
-  const inTagDisabledState = !!user.venue ? true : false;
-
-  const [latitude, setLatitude] = useState("Your Venue Latitude : ");
-  const [longitude, setLongitude] = useState("Your Venue Longitude : ");
-
-  const [fetchGPScoordinatesFlag, setFetchGPScoordinatesFlag] = useState(false);
-
-  const getCurrentLocation = () => {
-    if ("geolocation" in navigator) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          setLatitude((prev) => `${prev} ${position.coords.latitude}`);
-          setLongitude((prev) => `${prev} ${position.coords.longitude}`);
-          setFetchGPScoordinatesFlag(true);
-        },
-        (error) => {
-          if (error.code === error.PERMISSION_DENIED) {
-            alert("User denied the request for Geolocation.");
-          } else {
-            alert("An error occurred while getting your location.");
-          }
-        },
-        {
-          enableHighAccuracy: true,
-          timeout: 5000,
-          maximumAge: 0,
+  const flattenObject = (inputObj) => {
+    const flatObj = {};
+    for (const key in inputObj) {
+      if (
+        !["manager", "images", "videos", "allBookings", "status"].includes(key)
+      ) {
+        if (Array.isArray(inputObj[key]) && key === "coordinates") {
+          flatObj["longitude"] = inputObj[key][0];
+          flatObj["latitude"] = inputObj[key][1];
+        } else if (
+          typeof inputObj[key] === "object" &&
+          inputObj[key] !== null
+        ) {
+          // Recursively flatten nested objects
+          const nestedFlatObj = flattenObject(inputObj[key]);
+          Object.assign(flatObj, nestedFlatObj);
+        } else {
+          // Add non-object values directly
+          flatObj[key] = inputObj[key];
         }
-      );
-    } else {
-      alert("Geolocation is not available in your browser.");
+      }
     }
+    return flatObj;
   };
+
+  const defaultValues = flattenObject(user.venue);
 
   const schema = yup.object({
     name: yup
@@ -50,22 +47,51 @@ const VenueForm = () => {
       .required("Function Hall Name is Required")
       .min(3, "Minimum 3 Characters Required")
       .trim(),
-    advancePercentage: yup.number().required().min(0).max(100),
-    guestCapacity: yup.number().required().min(0),
-    carParkingSpace: yup.number().required().min(0),
-    numOfLodgingRooms: yup.number().required().min(0),
-    lodgingRoomPrice: yup.number().required().min(0),
-    street: yup.string().required().min(3),
-    landmark: yup.string().required().min(3),
-    distanceFromLandmark: yup.string().required().min(5),
-    village: yup.string().required().min(3),
-    city: yup.string().required().min(3),
-    pin: yup.number().required().min(0),
-    cancellation: yup.bool(),
-    cancellationCharges: yup.bool(),
-    isItAlloved: yup.bool(),
-    isAlcoholProvidedByVenue: yup.bool(),
-    isOutsideAlcoholAllowed: yup.bool(),
+    advancePercentage: yup
+      .number()
+      .required()
+      .min(0, "Should be >= 0")
+      .max(100, "It's a Percentage Value should be <= 100"),
+    guestCapacity: yup.number().required().min(1, "Should be > 0"),
+    carParkingSpace: yup.number().required().min(0, "Should be >= 0"),
+    venuePricePerDay: yup.number().required().min(0, "Should be >= 0"),
+    numOfLodgingRooms: yup.number().required().min(0, "Should be >= 0"),
+    lodgingRoomPrice: yup.number().required().min(0, "Should be >= 0"),
+    vegPricePerPlate: yup.number().required().min(0, "Should be >= 0"),
+    nonvegPricePerPlate: yup.number().required().min(0, "Should be >= 0"),
+    aboutVenue: yup
+      .string()
+      .required("About Function Hall Field is Required")
+      .min(200, "Minimum 200 Characters Required")
+      .trim(),
+    street: yup
+      .string()
+      .required("Field is Required")
+      .min(3, "Minimum 3 Characters Required")
+      .trim(),
+    landmark: yup
+      .string()
+      .required("Field is Required")
+      .min(3, "Minimum 3 Characters Required")
+      .trim(),
+    distanceFromLandmark: yup
+      .string()
+      .required("Field is Required")
+      .min(5, "Minimum 5 Characters Required")
+      .trim(),
+    village: yup
+      .string()
+      .required("Field is Required")
+      .min(3, "Minimum 3 Characters Required")
+      .trim(),
+    city: yup
+      .string()
+      .required("Field is Required")
+      .min(3, "Minimum 3 Characters Required")
+      .trim(),
+    pin: yup.number().required("Field is Required").min(0, "Must be > 0"),
+    latitude: yup.number().required("Field is Required"),
+    longitude: yup.number().required("Field is Required"),
   });
 
   const {
@@ -78,40 +104,61 @@ const VenueForm = () => {
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
-    defaultValues: {
-      name: inTagDisabledState ? user.venue.name : "",
-      advancePercentage: inTagDisabledState ? user.venue.advancePercentage : "",
-      guestCapacity: inTagDisabledState ? user.venue.guestCapacity : "",
-      carParkingSpace: inTagDisabledState ? user.venue.carParkingSpace : "",
-      numOfLodgingRooms: inTagDisabledState ? user.venue.numOfLodgingRooms : "",
-      lodgingRoomPrice: inTagDisabledState ? user.venue.lodgingRoomPrice : "",
-      street: inTagDisabledState ? user.venue.street : "",
-      landmark: inTagDisabledState ? user.venue.landmark : "",
-      distanceFromLandmark: inTagDisabledState
-        ? user.venue.distanceFromLandmark
-        : "",
-      village: inTagDisabledState ? user.venue.village : "",
-      city: inTagDisabledState ? user.venue.city : "",
-      pin: inTagDisabledState ? user.venue.pin : "",
-      cancellation: inTagDisabledState ? user.venue.pin : false,
-      cancellationCharges: inTagDisabledState
-        ? user.venue.cancellationCharges
-        : false,
-      isItAlloved: inTagDisabledState ? user.venue.isItAlloved : false,
-      isAlcoholProvidedByVenue: inTagDisabledState
-        ? user.venue.isAlcoholProvidedByVenue
-        : false,
-      isOutsideAlcoholAllowed: inTagDisabledState
-        ? user.venue.isOutsideAlcoholAllowed
-        : false,
-      latitude: inTagDisabledState ? user.venue.latitude : latitude,
-      longitude: inTagDisabledState ? user.venue.longitude : longitude,
-    },
+    defaultValues: defaultValues,
+    // defaultValues: { cancellation: false, cancellationCharges: false },
   });
+
+  const inTagDisabledState = !!user.venue;
+
+  const [latitude, setLatitude] = useState(
+    "Click Here to Fetch Venue Latitude"
+  );
+  const [longitude, setLongitude] = useState(
+    "Click Here to Fetch Venue Longitude"
+  );
+
+  const [fetchedGPScoordinatesFlag, setFetchedGPScoordinatesFlag] =
+    useState(false);
+
+  const getCurrentLocation = () => {
+    if (!fetchedGPScoordinatesFlag) {
+      if ("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            setLatitude((prev) => `${prev} ${position.coords.latitude}`);
+            setLongitude((prev) => `${prev} ${position.coords.longitude}`);
+            setFetchedGPScoordinatesFlag(true);
+            setValue("latitude", position.coords.latitude);
+            setValue("longitude", position.coords.longitude);
+          },
+          (error) => {
+            if (error.code === error.PERMISSION_DENIED) {
+              alert("User denied the request for Geolocation.");
+            } else {
+              alert("An error occurred while getting your location.");
+            }
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          }
+        );
+      } else {
+        alert("Geolocation is not available in your browser.");
+      }
+    }
+  };
 
   const onSubmit = (data) => {
     console.log("Hi Buddy");
     console.log(data);
+    // if user.venue is null
+    // make a createVenue API call
+    // if user.venue exists
+    // Check whether the data is updated  or not
+    // if not updated create toast to say it
+    // if updated then make an editVenue API call
   };
 
   return (
@@ -119,16 +166,9 @@ const VenueForm = () => {
       className="my-16 w-11/12 max-w-maxContentTab mx-auto flex flex-col 
       justify-center gap-y-8"
     >
-      {!user?.venue && (
-        <h1 className="font-inter text-3xl font-bold text-center text-[#28374B]">
-          Register Your Function Hall Details
-        </h1>
-      )}
-      {user?.venue && (
-        <h1 className="font-inter text-3xl font-bold text-center text-[#28374B]">
-          Update Your Function Hall Details
-        </h1>
-      )}
+      <h1 className="font-inter text-3xl font-bold text-center text-[#28374B]">
+        {`${!!!user?.venue ? "Register" : "Upadet"} Your Function Hall Details`}
+      </h1>
       <form
         className="flex flex-col justify-center gap-y-6"
         onSubmit={handleSubmit(onSubmit)}
@@ -148,7 +188,7 @@ const VenueForm = () => {
         <TextInputField
           errors={errors}
           register={register}
-          label="Advance Payment Percentage (example 45%)"
+          label="Advance Payment Percentage 0 - 100 (example 45)"
           inTagDisabledState={inTagDisabledState}
           inTagsNamePlaceholderValueObject={[
             {
@@ -213,6 +253,7 @@ const VenueForm = () => {
         <CheckboxInputField
           errors={errors}
           register={register}
+          setValue={setValue}
           title="Booking Cancellation Details"
           inTagDisabledState={inTagDisabledState}
           inTagsNameLabelObject={[
@@ -229,6 +270,7 @@ const VenueForm = () => {
         <CheckboxInputField
           errors={errors}
           register={register}
+          setValue={setValue}
           title="Alcohol Consumption in the Venue Details"
           inTagDisabledState={inTagDisabledState}
           inTagsNameLabelObject={[
@@ -254,6 +296,7 @@ const VenueForm = () => {
         <CheckboxInputField
           errors={errors}
           register={register}
+          setValue={setValue}
           title="Caterers with Venue Tieup Details"
           inTagDisabledState={inTagDisabledState}
           inTagsNameLabelObject={[
@@ -299,6 +342,7 @@ const VenueForm = () => {
         </div>
         <CheckboxInputField
           errors={errors}
+          setValue={setValue}
           register={register}
           title="Decorators with Venue Tieup Details"
           inTagDisabledState={inTagDisabledState}
@@ -322,6 +366,7 @@ const VenueForm = () => {
         <CheckboxInputField
           errors={errors}
           register={register}
+          setValue={setValue}
           title="Other Policies"
           inTagDisabledState={inTagDisabledState}
           inTagsNameLabelObject={[
@@ -374,7 +419,13 @@ const VenueForm = () => {
               boxShadow:
                 "-4px -4px 4px 0px rgba(0, 0, 0, 0.25), 4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
             }}
+            {...register("aboutVenue")}
           />
+          {errors["aboutVenue"] && (
+            <p className="text-[1rem] text-[#FD2727]">
+              {errors["aboutVenue"].message}
+            </p>
+          )}
         </div>
 
         <TextInputField
@@ -393,7 +444,7 @@ const VenueForm = () => {
             },
             {
               inTagName: "distanceFromLandmark",
-              inTagPlaceholder: "Distance from Landmark",
+              inTagPlaceholder: "Distance from Landmark (ex 10 Mins or 2 Kms)",
             },
             {
               inTagName: "village",
@@ -409,48 +460,49 @@ const VenueForm = () => {
             },
           ]}
         />
-        <div className="-mt-3">
+        <div className="-mt-3" onClick={getCurrentLocation}>
           <TextInputField
             errors={errors}
             register={register}
             label=""
-            // disabled true always
-            inTagDisabledState={inTagDisabledState}
+            inTagDisabledState={false}
             inTagsNamePlaceholderValueObject={[
               {
                 inTagName: "longitude",
-                inTagPlaceholder: "",
+                inTagPlaceholder: longitude,
                 inTagValue: longitude,
               },
               {
                 inTagName: "latitude",
-                inTagPlaceholder: "",
+                inTagPlaceholder: latitude,
                 inTagValue: latitude,
               },
             ]}
           />
         </div>
 
-        {!fetchGPScoordinatesFlag && (
-          <div className="flex justify-center">
-            <FirstFancyBTN
-              text="Fetch Venue GPS Coordinates"
-              onClick={getCurrentLocation}
-            ></FirstFancyBTN>
-          </div>
-        )}
-
         <div className="flex flex-col gap-y-6">
           <p className="text-[#949BA5] text-[1rem]">
             Add Function Hall Virtual Tour Video
           </p>
           <div
-            className="w-full h-[20rem] rounded-[1.25rem]"
+            className="w-full min-h-[20rem] overflow-hidden rounded-[1.25rem] 
+            flex flex-col justify-center items-center"
             style={{
               boxShadow:
                 "-4px -4px 4px 0px rgba(0, 0, 0, 0.25), 4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
             }}
-          ></div>
+          >
+            <Upload
+              name="videos"
+              // label=""
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              editData={null}
+              video={true}
+            />
+          </div>
         </div>
 
         <div className="flex flex-col gap-y-6">
@@ -458,16 +510,28 @@ const VenueForm = () => {
             Add Your Function Hall Best Images (at least 10)
           </p>
           <div
-            className="w-full h-[20rem] rounded-[1.25rem]"
+            className="w-full h-[20rem] rounded-[1.25rem] flex flex-col 
+            justify-center items-center"
             style={{
               boxShadow:
                 "-4px -4px 4px 0px rgba(0, 0, 0, 0.25), 4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
             }}
-          ></div>
+          >
+            <Upload
+              name="images"
+              // label="Course Thumbnail"
+              register={register}
+              setValue={setValue}
+              errors={errors}
+              editData={null}
+            />
+          </div>
         </div>
 
         <div className="mt-16 mx-auto">
-          <FirstFancyBTN text="Save Venue Details" />
+          <FirstFancyBTN
+            text={`${!!!user.venue ? "Save" : "Update"} Venue Details`}
+          />
         </div>
       </form>
     </div>
@@ -476,9 +540,6 @@ const VenueForm = () => {
 
 export default VenueForm;
 
-// 2. populate the input field and make them non-editable
-// 3. create a button to make the data editable & to update the venue details
-// 4. connect the API to store the data into DB
-// 5. add yup validations
-// 6. understand the image and video addition code from the StudyNotion Project
+// 5. connect the API to store the data into DB
 // 7. Test run the Save and the Upload venue details routes
+// 8. refactor the code into different sub sections

@@ -210,9 +210,7 @@ export const fetchAllVenues = () => async (dispatch) => {
   const toastId = toast.loading("Loading...");
   dispatch(setLoading(true));
   try {
-    const response = await apiConnector("POST", FETCH_ALL_VENUES_API, {
-      venueId,
-    });
+    const response = await apiConnector("POST", FETCH_ALL_VENUES_API);
     console.log("FETCH ALL VENUE DETAILS API RESPONSE......", response);
     if (!response.data.success) throw new Error(response.data.message);
     toast.success("Fetching All Venues Successfull");
