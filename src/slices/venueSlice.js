@@ -4,8 +4,12 @@ import { createSlice } from "@reduxjs/toolkit";
 // initialize variables
 const initialState = {
   loading: false,
-  venue: JSON.parse(localStorage.getItem("venue") || null),
-  venues: JSON.parse(localStorage.getItem("venues")) || [],
+  venue: localStorage.getItem("venue")
+    ? JSON.parse(localStorage.getItem("venue"))
+    : null,
+  venues: localStorage.getItem("venues")
+    ? JSON.parse(localStorage.getItem("venues"))
+    : [],
 };
 
 // creating a new slice of information

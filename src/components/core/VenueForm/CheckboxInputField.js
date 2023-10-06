@@ -6,18 +6,19 @@ const CheckboxInputField = ({
   register,
   setValue,
   getValues,
-  title,
-  inTagDisabledState,
-  inTagsNameLabelObject,
+  label,
+  inTagsNamePlaceholderObject,
 }) => {
   const [userInteractionArr, setUserInteractionArr] = useState(
-    inTagsNameLabelObject.map(({ inTagName }) => getValues(inTagName) || false)
+    inTagsNamePlaceholderObject.map(
+      ({ inTagName }) => getValues(inTagName) || false
+    )
   );
 
   useEffect(() => {
     // Set default values initially when they change
     setUserInteractionArr(
-      inTagsNameLabelObject.map(
+      inTagsNamePlaceholderObject.map(
         ({ inTagName }) => getValues(inTagName) || false
       )
     );
@@ -27,42 +28,48 @@ const CheckboxInputField = ({
     setUserInteractionArr((prevState) => {
       const newStateArr = [...prevState];
       newStateArr[index] = !newStateArr[index];
-      setValue(inTagsNameLabelObject[index].inTagName, newStateArr[index]);
+      setValue(
+        inTagsNamePlaceholderObject[index].inTagName,
+        newStateArr[index]
+      );
       return newStateArr;
     });
   };
 
   return (
     <div className="flex flex-col gap-4">
-      <p className="text-[#949BA5] text-[1rem]">{title}</p>
+      <p className="text-[#949BA5] text-[1rem]">{label}</p>
       <div className="ml-4 flex flex-col gap-2">
-        {inTagsNameLabelObject.map(({ inTagName, label }, index) => (
-          <label
-            key={index}
-            htmlFor={inTagName}
-            className="relative w-fit cursor-pointer flex justify-start items-center gap-4"
-            onClick={() => toggleCheckbox(index)}
-          >
-            <input
-              disabled={inTagDisabledState}
-              type="checkbox"
-              name={inTagName}
-              checked={userInteractionArr[index]}
-              className="relative appearance-none w-[1.9rem] aspect-square rounded-md bg-white"
-              {...register(inTagName)}
-            />
-            <p
-              className={`${
-                errors[inTagName] ? "text-[#FD2727]" : "text-[#28374B]"
-              } text-[1.25rem]`}
+        {inTagsNamePlaceholderObject.map(
+          ({ inTagName, inTagplaceholder }, index) => (
+            <label
+              key={index}
+              htmlFor={inTagName}
+              className="relative w-fit cursor-pointer flex justify-start 
+              items-center gap-4"
+              onClick={() => toggleCheckbox(index)}
             >
-              {label}
-            </p>
-            <div className="absolute left-[3px]">
-              {userInteractionArr[index] && <Tick />}
-            </div>
-          </label>
-        ))}
+              <input
+                type="checkbox"
+                name={inTagName}
+                checked={userInteractionArr[index]}
+                className="relative appearance-none w-[1.9rem] aspect-square 
+                rounded-md bg-white"
+                {...register(inTagName)}
+              />
+              <p
+                className={`${
+                  errors[inTagName] ? "text-[#FD2727]" : "text-[#28374B]"
+                } text-[1.25rem]`}
+              >
+                {inTagplaceholder}
+              </p>
+              <div className="absolute left-[3px]">
+                {userInteractionArr[index] && <Tick />}
+              </div>
+            </label>
+          )
+        )}
       </div>
     </div>
   );
@@ -78,18 +85,18 @@ export default CheckboxInputField;
 //   errors,
 //   register,
 //   setValue,
-//   title,
+//   label,
 //   inTagDisabledState,
-//   inTagsNameLabelObject,
+//   inTagsNamePlaceholderObject,
 // }) => {
 //   const [userInteractionArr, setUserInteractionArr] = useState(
-//     new Array(inTagsNameLabelObject.length).fill(false)
+//     new Array(inTagsNamePlaceholderObject.length).fill(false)
 //   );
 //   return (
 //     <div className="flex flex-col gap-4">
-//       <p className="text-[#949BA5] text-[1rem]">{title}</p>
+//       <p className="text-[#949BA5] text-[1rem]">{label}</p>
 //       <div className="ml-4 flex flex-col gap-2">
-//         {inTagsNameLabelObject.map(({ inTagName, label }, index) => (
+//         {inTagsNamePlaceholderObject.map(({ inTagName, inTagplaceholder }, index) => (
 //           <label
 //             key={index}
 //             htmlFor={inTagName}
@@ -120,7 +127,7 @@ export default CheckboxInputField;
 //                 errors[inTagName] ? "text-[#FD2727]" : "text-[#28374B]"
 //               } text-[1.25rem]`}
 //             >
-//               {label}
+//               {inTagplaceholder}
 //             </p>
 //             <div className="absolute left-[3px]">
 //               {userInteractionArr[index] && <Tick />}

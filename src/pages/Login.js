@@ -14,6 +14,9 @@ import { ReactComponent as Tick } from "../assets/Icons/Tick.svg";
 import { setSidebarFlag } from "../slices/authSlice";
 
 const Login = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
   const { loading } = useSelector((state) => state.auth);
   const [tickFlagState, setTickFlagState] = useState(false);
 
@@ -42,12 +45,12 @@ const Login = () => {
     }
   };
 
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-
   const handleOnSubmit = (event) => {
     event.preventDefault();
     dispatch(login(contactNumber, password, navigate));
+    console.log("START");
+    navigate("/venue-form");
+    console.log("END");
   };
 
   return (

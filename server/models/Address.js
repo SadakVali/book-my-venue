@@ -26,21 +26,23 @@ const addressSchema = new mongoose.Schema({
     trim: true,
   },
   pin: {
-    type: String,
+    type: Number,
     required: true,
     trim: true,
   },
-  location: {
-    type: {
-      type: String,
-      enum: ["Point"], // Only allow the "Point" type
-      default: "Point", // Set the default value to "Point"
-    },
-    coordinates: {
-      type: [Number], // longitude first, and then latitude
-      required: true,
-    },
-  },
+  longitude: { type: Number, required: true },
+  latitude: { type: Number, required: true },
+  // location: {
+  //   type: {
+  //     type: String,
+  //     enum: ["Point"], // Only allow the "Point" type
+  //     default: "Point", // Set the default value to "Point"
+  //   },
+  //   coordinates: {
+  //     type: [Number], // longitude first, and then latitude
+  //     required: true,
+  //   },
+  // },
 });
 
 const Address = mongoose.model("Address", addressSchema);

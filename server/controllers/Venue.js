@@ -69,7 +69,8 @@ exports.createVenue = async (req, res) => {
       city,
       pin,
       // GPS
-      coordinates,
+      longitude,
+      latitude,
     } = req.body;
 
     console.log({
@@ -112,7 +113,8 @@ exports.createVenue = async (req, res) => {
       pin,
       // GPS
       // HI
-      coordinates, //: JSON.parse(coordinates),
+      longitude,
+      latitude, //: JSON.parse(coordinates),
     });
     // console.log({ req });
     // console.log({ images: req?.files["images[]"] });
@@ -170,7 +172,8 @@ exports.createVenue = async (req, res) => {
       !pin ||
       // GPS
       // !JSON.parse(coordinates).length
-      !coordinates
+      !longitude ||
+      !latitude
     )
       return res.status(400).json({
         success: true,
@@ -259,7 +262,8 @@ exports.createVenue = async (req, res) => {
       city,
       pin,
       // location: { type: "Point", coordinates: JSON.parse(coordinates) },
-      location: { type: "Point", coordinates: coordinates },
+      longitude,
+      latitude,
     });
 
     // Create a new function hall entry
@@ -293,6 +297,7 @@ exports.createVenue = async (req, res) => {
       { new: true }
     );
     // console.log("RESULT ", result);
+    newVenueDetails.address = newAddressEntry;
 
     // Return new Function Hall and success response
     return res.status(201).json({

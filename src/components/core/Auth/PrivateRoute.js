@@ -5,8 +5,10 @@ import { Navigate } from "react-router-dom";
 // This will prevent non-authenticated users from accessing this route
 const PrivateRoute = ({ children }) => {
   const { token } = useSelector((state) => state.auth);
-  if (!!token) return children;
-  <Navigate to="/" />;
+  console.log(token);
+  console.log("entered private route");
+  if (token) return children;
+  return <Navigate to="/" />;
 };
 
 export default PrivateRoute;

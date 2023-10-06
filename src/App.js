@@ -32,7 +32,6 @@ import { useSelector } from "react-redux";
 
 const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
-  const { token } = useSelector((state) => state.auth);
 
   return (
     <div className="min-h-screen flex flex-col bg-[#ECEFF4]">
@@ -67,16 +66,14 @@ const App = () => {
           }
         />
         {/* routes only for authorized managers */}
-        {!!token && (
-          <Route
-            path="/manager-home"
-            element={
-              <PrivateRoute>
-                <ManagerHome />
-              </PrivateRoute>
-            }
-          />
-        )}
+        <Route
+          path="/manager-home"
+          element={
+            <PrivateRoute>
+              <ManagerHome />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/venue-form"
           element={

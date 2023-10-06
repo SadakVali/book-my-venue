@@ -12,13 +12,12 @@ export default function Upload({
   setValue,
   errors,
   video = false,
-  viewData = null,
   editData = null,
   setState,
 }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [previewSource, setPreviewSource] = useState(
-    viewData ? viewData : editData ? editData : ""
+    editData ? editData : null
   );
   const inputRef = useRef(null);
 
@@ -55,74 +54,89 @@ export default function Upload({
   }, [selectedFile, setValue]);
 
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full">
-      <label className="text-sm text-richblack-5" htmlFor={name}>
-        {/* {label} {!viewData && <sup className="text-pink-200">*</sup>} */}
+    <div className="flex flex-col gap-y-6">
+      <label className="text-[#949BA5] text-[1rem]" htmlFor={name}>
+        {label}
       </label>
-      <div className="flex h-full w-full cursor-pointer items-center justify-center">
-        {previewSource ? (
-          <div className="relative flex w-full h-full flex-col">
-            {video ? (
-              <Player playsInline src={previewSource} />
-            ) : (
-              <img
-                src={previewSource}
-                alt="Preview"
-                className="h-full w-full rounded-[1.25rem] object-cover"
-              />
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setPreviewSource("");
-                setSelectedFile(null);
-                setValue(name, null);
-                setState(false);
-              }}
-              className="text-[#28374B] flex justify-center items-center 
-              text-[1.5rem] w-14 rounded-full bg-white aspect-square 
-              absolute right-2 top-2 hover:scale-125"
-            >
-              <GiCrossedBones />
-            </button>
-          </div>
-        ) : (
-          <div
-            className="flex w-full h-full flex-col justify-center items-center"
-            {...getRootProps()}
-          >
-            <input
-              {...getInputProps()}
-              type="file"
-              ref={inputRef}
-              name={name}
-              id={name}
-            />
-            <div
-              className="grid aspect-square w-14 place-items-center rounded-full 
-              bg-pure-greys-800"
-            >
-              <FiUploadCloud className="text-2xl text-white" />
+      <div
+        className="w-full h-[20rem] rounded-[1.25rem] flex flex-col justify-center 
+        items-center overflow-hidden"
+        style={{
+          boxShadow:
+            "-4px -4px 4px 0px rgba(0, 0, 0, 0.25), 4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
+        }}
+      >
+        <div className="flex h-full w-full cursor-pointer items-center justify-center">
+          {previewSource ? (
+            <div className="relative h-full w-full flex flex-col rounded-[1.25rem]">
+              {video ? (
+                <Player
+                  playsInline
+                  src={previewSource}
+                  fluid={false}
+                  width="100%" // Constrain width to 100%
+                  height="100%" // Constrain height to 100%
+                />
+              ) : (
+                <img
+                  src={previewSource}
+                  alt="Preview"
+                  className="h-full w-full object-cover rounded-[1.25rem]"
+                />
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setPreviewSource("");
+                  setSelectedFile(null);
+                  setValue(name, null);
+                  setState(false);
+                }}
+                className="text-[#28374B] flex justify-center items-center 
+                text-[1.5rem] w-14 rounded-full bg-white aspect-square 
+                absolute right-2 top-2 hover:scale-125"
+              >
+                <GiCrossedBones />
+              </button>
             </div>
-            <p className="mt-2 text-center text-[#28374B]">
-              Drag and drop an {!video ? "image" : "video"}, or click <br />{" "}
-              here to <span className="font-semibold">Browse</span> a file
-            </p>
-            <ul
-              className="mt-4 flex flex-col list-none justify-between items-center 
-              text-[#28374B]"
+          ) : (
+            <div
+              className="flex w-full h-full flex-col justify-center items-center"
+              {...getRootProps()}
             >
-              <li>Aspect ratio 16:9</li>
-              <li>Recommended size 1024x576</li>
-            </ul>
-          </div>
+              <input
+                {...getInputProps()}
+                type="file"
+                ref={inputRef}
+                name={name}
+                id={name}
+              />
+              <div
+                className="grid aspect-square w-14 place-items-center rounded-full 
+                bg-pure-greys-800"
+              >
+                <FiUploadCloud className="text-2xl text-white" />
+              </div>
+              <p className="mt-2 text-center text-[#28374B]">
+                Drag and drop an {!video ? "image" : "video"}, or click <br />{" "}
+                here to <span className="font-semibold">Browse</span> a file
+              </p>
+              <ul
+                className="mt-4 flex flex-col list-none justify-between items-center 
+                text-[#28374B]"
+              >
+                <li>Aspect ratio 16:9</li>
+                <li>Recommended size 1024x576</li>
+              </ul>
+            </div>
+          )}
+        </div>
+        {errors[name] && (
+          <span className="ml-2 text-xs tracking-wide text-pink-200">
+            {name} is required
+          </span>
         )}
       </div>
-      {errors[name] && (
-        <span className="ml-2 text-xs tracking-wide text-pink-200">
-          {label} is required
-        </span>
-      )}
     </div>
   );
 }

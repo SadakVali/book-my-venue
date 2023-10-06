@@ -21,30 +21,11 @@ import {
   setPaymentDueToadyBookings,
 } from "../../slices/dashboardSlice";
 import { setVenue } from "../../slices/venueSlice";
-const { LOGIN_API, SIGNUP_API } = authEndPoints;
 
-const flattenObject = (inputObj) => {
-  const flatObj = {};
-  for (const key in inputObj) {
-    if (Array.isArray(inputObj[key])) {
-      if (key === "coordinates") {
-        flatObj["longitude"] = inputObj[key][0];
-        flatObj["latitude"] = inputObj[key][1];
-      }
-      if (["images", "videos"].includes(key)) {
-        flatObj[key] = inputObj[key];
-      }
-    } else if (typeof inputObj[key] === "object" && inputObj[key] !== null) {
-      // Recursively flatten nested objects
-      const nestedFlatObj = flattenObject(inputObj[key]);
-      Object.assign(flatObj, nestedFlatObj);
-    } else {
-      // Add non-object values directly
-      flatObj[key] = inputObj[key];
-    }
-  }
-  return flatObj;
-};
+// utility functions
+import { flattenObject } from "../../utils/utilities";
+
+const { LOGIN_API, SIGNUP_API } = authEndPoints;
 
 export const signup =
   (name, contactNumber, password, navigate) => async (dispatch) => {
@@ -89,20 +70,26 @@ export const login =
           JSON.stringify(response?.data?.data?.token)
         );
       }
-      dispatch(setVenue(flattenObject(response?.data?.data?.venue)));
+      if (response?.data?.data?.venue) {
+        const flattenedObj = flattenObject(response?.data?.data?.venue);
+        flattenedObj._id = response?.data?.data?.venue._id;
+        dispatch(setVenue(flattenedObj));
+        localStorage.setItem("venue", JSON.stringify(flattenedObj));
+      }
       dispatch(setUser(response?.data?.data?.user));
       localStorage.setItem("user", JSON.stringify(response?.data?.data?.user));
-      localStorage.setItem(
-        "venue",
-        JSON.stringify(flattenObject(response?.data?.data?.venue))
-      );
       localStorage.setItem(
         "token",
         JSON.stringify(response?.data?.data?.token)
       );
+      // console.log(navigate);
+      // navigate("/dashboard/payment-due-today-bookings");
 
-      if (response?.data?.data?.venue) navigate("/manager-home");
-      else navigate("/venue-form");
+      // if (response?.data?.data?.venue) navigate("/manager-home");
+      // else {
+      //   console.log("else part is being executed");
+      //   navigate("/venue-form");
+      // }
       console.log("Login API end...");
     } catch (error) {
       console.log("LOGIN API ERROR......", error);

@@ -4,29 +4,25 @@ import TextInputTag from "./TextInputTag";
 const TextInputField = ({
   errors,
   register,
+  getValues,
   label,
-  inTagDisabledState,
-  inTagsNamePlaceholderValueObject,
+  inTagsNamePlaceholderObject,
 }) => {
   return (
     <label className="flex flex-col gap-4">
-      <p
-        className={`${
-          label.length === 0 && "hidden"
-        } text-[#949BA5] text-[1rem]`}
-      >
-        {label}
-      </p>
+      {label.length !== 0 && (
+        <p className="text-[#949BA5] text-[1rem]">{label}</p>
+      )}
       <div
-        className={`${
-          inTagsNamePlaceholderValueObject.length > 1 && "ml-4"
-        } flex flex-col gap-y-3`}
+        className={`flex flex-col gap-y-3 ${
+          inTagsNamePlaceholderObject.length > 1 && "ml-4"
+        }`}
       >
         <TextInputTag
           errors={errors}
+          getValues={getValues}
           register={register}
-          // inTagDisabledState={inTagDisabledState}
-          inTagsNamePlaceholderValueObject={inTagsNamePlaceholderValueObject}
+          inTagsNamePlaceholderObject={inTagsNamePlaceholderObject}
         />
       </div>
     </label>

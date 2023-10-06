@@ -7,6 +7,10 @@ import { setLoading, setVenue, setVenues } from "../../slices/venueSlice";
 // API call related imports
 import { apiConnector } from "../apiConnector";
 import { venueEndPoints } from "../apis";
+
+// utility functions
+import { flattenObject } from "../../utils/utilities";
+
 const { CREATE_NEW_VENUE_API, EDIT_VENUE_DETAILS_API, FETCH_ALL_VENUES_API } =
   venueEndPoints;
 
@@ -54,24 +58,6 @@ const { CREATE_NEW_VENUE_API, EDIT_VENUE_DETAILS_API, FETCH_ALL_VENUES_API } =
 //   videos,
 // }
 
-const flattenObject = (inputObj) => {
-  const flatObj = {};
-  for (const key in inputObj) {
-    if (Array.isArray(inputObj[key]) && key === "coordinates") {
-      flatObj["longitude"] = inputObj[key][0];
-      flatObj["latitude"] = inputObj[key][1];
-    } else if (typeof inputObj[key] === "object" && inputObj[key] !== null) {
-      // Recursively flatten nested objects
-      const nestedFlatObj = flattenObject(inputObj[key]);
-      Object.assign(flatObj, nestedFlatObj);
-    } else {
-      // Add non-object values directly
-      flatObj[key] = inputObj[key];
-    }
-  }
-  return flatObj;
-};
-
 export const createVenue = (data, navigate, token) => {
   return async (dispatch) => {
     // console.log({ images: data.images, videos: data.videos, token });
@@ -84,15 +70,20 @@ export const createVenue = (data, navigate, token) => {
         Authorization: `Bearer ${token}`,
       });
       console.log("CREATE VENUE API RESPONSE......", response);
-      const flattenedResponse = flattenObject(response.data.data);
-      dispatch(setVenue(flattenedResponse));
-      if (!response.data.success) throw new Error(response.data.message);
+      if (!response?.data?.success) throw new Error(response?.data?.message);
+      if (response?.data?.data) {
+        const flattenedResponse = flattenObject(response?.data?.data);
+        flattenedResponse._id = response?.data?.data?._id;
+        dispatch(setVenue(flattenedResponse));
+        localStorage.setItem("venue", JSON.stringify(flattenedResponse));
+      }
       toast.success("new venue creation successful");
-      navigate("/");
+      // TODO: Route to manager home <=> venue.status === "published"
+      navigate("/manager-home");
     } catch (error) {
       console.log("CREATE VENUE API ERROR......", error);
       toast.error("New Venue Creation Failed");
-      // navigate("/");
+      navigate("/");
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);
