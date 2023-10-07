@@ -99,9 +99,9 @@ const VenueForm = () => {
       if (isFormDataUpdated(data)) {
         // if updated then make an editVenue API call
         // Display the values
-        for (const value of createUpdatedFormData(data).values())
-          console.log(value);
-        // dispatch(editVenue(createUpdatedFormData(data), navigate, token));
+        // for (const value of createUpdatedFormData(data).values())
+        //   console.log(value);
+        dispatch(editVenue(createUpdatedFormData(data), navigate, token));
       } else {
         // if not updated create toast to say it
         toast.error("No changes made to the form");

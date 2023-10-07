@@ -26,7 +26,8 @@ const { ACCOUNT_TYPE } = require("../utils/constants");
 // Path `cancellationCharges` is required.
 exports.createVenue = async (req, res) => {
   try {
-    // Destructure data = require(the request body
+    // Destructure data from the request body
+    console.log(req.body);
     const {
       name,
       aboutVenue,
@@ -73,62 +74,9 @@ exports.createVenue = async (req, res) => {
       latitude,
     } = req.body;
 
-    console.log({
-      name,
-      aboutVenue,
-      venuePricePerDay,
-      advancePercentage,
-      guestCapacity,
-      carParkingSpace,
-      numOfLodgingRooms,
-      lodgingRoomPrice,
-      isBookingCancellable,
-      // Food
-      isCateringProvidedByVenue,
-      isOutsideCatererAllowed,
-      isNonVegAllowedAtVenue,
-      vegPricePerPlate,
-      nonvegPricePerPlate,
-      // Alcohol
-      isItAllowed,
-      outsideAlcoholAllowingCharges,
-      isAlcoholProvidedByVenue,
-      isOutsideAlcoholAllowed,
-      // Decor
-      isDecorProvidedByVenue,
-      isOutsideDecoratersAllowed,
-      // OtherPolicies
-      isMusicAllowedLateAtNight,
-      isHallAirConditioned,
-      isBaaratAllowed,
-      areFireCrackersAllowed,
-      isHawanAllowed,
-      isOverNightWeddingAllowed,
-      // Address
-      street,
-      landmark,
-      distanceFromLandmark,
-      village,
-      city,
-      pin,
-      // GPS
-      // HI
-      longitude,
-      latitude, //: JSON.parse(coordinates),
-    });
-    // console.log({ req });
-    // console.log({ images: req?.files["images[]"] });
-    // console.log({ videos: req?.files["videos[]"] });
-    // console.log({ images: req?.files["images"] });
-    // console.log({ videos: req?.files["videos"] });
-    // console.log({ images: req?.body?.images });
-    // console.log({ videos: req?.files?.videos });
-    // console.log(req?.body?.videos[0]);
-    // console.log({ images: req?.files?.images });
-
     // Validate required fields
     if (
-      !req?.files?.images || // Use optional chaining for safer thumbnailImage access
+      !req?.files?.images || // Use optional chaining for safer Image access
       !req?.files?.videos ||
       !name ||
       !aboutVenue ||
@@ -368,8 +316,7 @@ exports.createVenue = async (req, res) => {
 // Edit a single venue details
 exports.editVenue = async (req, res) => {
   try {
-    console.log("REACHED CONTROLLER CORRECTLY...");
-    // Destructure data = require(the request body
+    // Destructure data from the request body
     const {
       name,
       aboutVenue,
@@ -380,16 +327,21 @@ exports.editVenue = async (req, res) => {
       numOfLodgingRooms,
       lodgingRoomPrice,
       isBookingCancellable,
+      cancellationCharges,
       // Food
       isCateringProvidedByVenue,
       isOutsideCatererAllowed,
       isNonVegAllowedAtVenue,
       vegPricePerPlate,
       nonvegPricePerPlate,
+      outsideCatererAllowingCharges,
       // Alcohol
+      isItAllowed,
+      outsideAlcoholAllowingCharges,
       isAlcoholProvidedByVenue,
       isOutsideAlcoholAllowed,
       // Decor
+      outsideDecorAllowingCharges,
       isDecorProvidedByVenue,
       isOutsideDecoratersAllowed,
       // OtherPolicies
@@ -407,7 +359,8 @@ exports.editVenue = async (req, res) => {
       city,
       pin,
       // GPS
-      coordinates,
+      longitude,
+      latitude,
       venueId,
     } = req.body;
 
@@ -443,6 +396,9 @@ exports.editVenue = async (req, res) => {
     }
 
     // Update the main venue fields if they are defined
+
+    // Address
+
     if (
       name ||
       aboutVenue ||
@@ -453,16 +409,21 @@ exports.editVenue = async (req, res) => {
       numOfLodgingRooms ||
       lodgingRoomPrice ||
       isBookingCancellable ||
+      cancellationCharges ||
       // Food
       isCateringProvidedByVenue ||
       isOutsideCatererAllowed ||
       isNonVegAllowedAtVenue ||
       vegPricePerPlate ||
       nonvegPricePerPlate ||
+      outsideCatererAllowingCharges ||
       // Alcohol
+      isItAllowed ||
+      outsideAlcoholAllowingCharges ||
       isAlcoholProvidedByVenue ||
       isOutsideAlcoholAllowed ||
       // Decor
+      outsideDecorAllowingCharges ||
       isDecorProvidedByVenue ||
       isOutsideDecoratersAllowed ||
       // OtherPolicies
@@ -495,6 +456,8 @@ exports.editVenue = async (req, res) => {
         existingVenue.lodgingRoomPrice = lodgingRoomPrice;
       if (isBookingCancellable !== undefined)
         existingVenue.isBookingCancellable = isBookingCancellable;
+      if (cancellationCharges !== undefined)
+        existingVenue.cancellationCharges = cancellationCharges;
 
       // Create a new Food entry
       if (isCateringProvidedByVenue !== undefined)
@@ -508,8 +471,16 @@ exports.editVenue = async (req, res) => {
         existingVenue.food.vegPricePerPlate = vegPricePerPlate;
       if (nonvegPricePerPlate !== undefined)
         existingVenue.food.nonvegPricePerPlate = nonvegPricePerPlate;
+      if (outsideCatererAllowingCharges !== undefined)
+        existingVenue.food.outsideCatererAllowingCharges =
+          outsideCatererAllowingCharges;
 
       // Create a new Alcohol entry
+      if (isItAllowed !== undefined)
+        existingVenue.alcohol.isItAllowed = isItAllowed;
+      if (outsideAlcoholAllowingCharges !== undefined)
+        existingVenue.alcohol.outsideAlcoholAllowingCharges =
+          outsideAlcoholAllowingCharges;
       if (isAlcoholProvidedByVenue !== undefined)
         existingVenue.alcohol.isAlcoholProvidedByVenue =
           isAlcoholProvidedByVenue;
@@ -517,6 +488,9 @@ exports.editVenue = async (req, res) => {
         existingVenue.alcohol.isOutsideAlcoholAllowed = isOutsideAlcoholAllowed;
 
       // Create a new Decor entry
+      if (outsideDecorAllowingCharges !== undefined)
+        existingVenue.decoration.outsideDecorAllowingCharges =
+          outsideDecorAllowingCharges;
       if (isDecorProvidedByVenue !== undefined)
         existingVenue.decoration.isDecorProvidedByVenue =
           isDecorProvidedByVenue;
@@ -551,7 +525,8 @@ exports.editVenue = async (req, res) => {
       village ||
       city ||
       pin ||
-      coordinates
+      longitude ||
+      latitude
     ) {
       if (street !== undefined) existingVenue.address.street = street;
       if (landmark !== undefined) existingVenue.address.landmark = landmark;
@@ -560,11 +535,13 @@ exports.editVenue = async (req, res) => {
       if (village !== undefined) existingVenue.address.village = village;
       if (city !== undefined) existingVenue.address.city = city;
       if (pin !== undefined) existingVenue.address.pin = pin;
-      if (coordinates !== undefined)
-        existingVenue.address.location = {
-          type: "Point",
-          coordinates: JSON.parse(coordinates),
-        };
+      if (longitude !== undefined) existingVenue.address.longitude = longitude;
+      if (latitude !== undefined) existingVenue.address.latitude = latitude;
+      // if (coordinates !== undefined)
+      //   existingVenue.address.location = {
+      //     type: "Point",
+      //     coordinates: JSON.parse(coordinates),
+      //   };
       await existingVenue.address.save();
     }
 
