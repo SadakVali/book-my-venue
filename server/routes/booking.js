@@ -20,7 +20,7 @@ const router = express.Router();
 router.post("/create-booking", auth, isAuthorized, createNewBooking);
 // fetch the booking history of a venue for a particular month and year
 router.post(
-  "bookings-given-month",
+  "/bookings-given-month",
   auth,
   isAuthorized,
   bookingsOfVenueGivenMonth

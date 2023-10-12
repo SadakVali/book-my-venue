@@ -4,7 +4,7 @@ import { toast } from "react-hot-toast";
 // redux related imports
 import {
   setLoading,
-  setBookingsHistoryGivenMonth,
+  setVenueBookingsGivenMonth,
 } from "../../slices/newBookingSlice";
 
 // API call related imports
@@ -27,8 +27,9 @@ export const createNewBooking =
     nextPaymentDueDate,
     checkInTime,
     checkOutTime,
-    totalAmount
+    totalAmount,
     // paymentSummary
+    navigate
   ) =>
   async (dispatch) => {
     const toastId = toast.loading("Loading...");
@@ -63,24 +64,23 @@ export const createNewBooking =
     toast.dismiss(toastId);
   };
 
-export const bookingsOfVenueGivenMonth =
-  (venueId, startingUnixTimeStamp, endingUnixTimeStamp) => async (dispatch) => {
-    const toastId = toast.loading("Loading...");
-    dispatch(setLoading(true));
-    try {
-      const response = await apiConnector(
-        "POST",
-        VENUE_BOOKINGS_GIVEN_MONTH_API,
-        { venueId, startingUnixTimeStamp, endingUnixTimeStamp }
-      );
-      console.log("VENUE BOOKINGS GIVEN MONTH API RESPONSE......", response);
-      if (!response.data.success) throw new Error(response.data.message);
-      dispatch(setBookingsHistoryGivenMonth(response.data.data));
-      toast.success("bookings fetched successfully");
-    } catch (error) {
-      console.log("VENUE BOOKINGS GIVEN MONTH API ERROR......", error);
-      toast.error("Fetching Bookings HIstory Given Month Failed");
-    }
-    dispatch(setLoading(false));
-    toast.dismiss(toastId);
-  };
+export const bookingsOfVenueGivenMonth = (data) => async (dispatch) => {
+  const toastId = toast.loading("Loading...");
+  dispatch(setLoading(true));
+  try {
+    const response = await apiConnector(
+      "POST",
+      VENUE_BOOKINGS_GIVEN_MONTH_API,
+      data
+    );
+    console.log("VENUE BOOKINGS GIVEN MONTH API RESPONSE......", response);
+    if (!response.data.success) throw new Error(response.data.message);
+    dispatch(setVenueBookingsGivenMonth(response.data.data));
+    toast.success("bookings fetched successfully");
+  } catch (error) {
+    console.log("VENUE BOOKINGS GIVEN MONTH API ERROR......", error);
+    toast.error("Fetching Bookings HIstory Given Month Failed");
+  }
+  dispatch(setLoading(false));
+  toast.dismiss(toastId);
+};

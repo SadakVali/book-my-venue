@@ -127,6 +127,8 @@ exports.bookingsOfVenueGivenMonth = async (req, res) => {
         booking.checkOutTime > startingUnixTimeStamp
     );
 
+    console.log({ venue, venueBookingHistoryDetails });
+
     // Return a success response
     return res.status(200).json({
       success: true,
