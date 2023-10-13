@@ -29,6 +29,7 @@ import AdvancePaidBookings from "./components/core/Dashboard/AdvancePaidBookings
 import BookedBookings from "./components/core/Dashboard/BookedBookings";
 import SignupSidebar from "./components/common/SignupSidebar";
 import { useSelector } from "react-redux";
+import BookingInfoForm from "./pages/BookingInfoForm";
 
 const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
@@ -66,6 +67,14 @@ const App = () => {
           }
         />
         {/* routes only for authorized managers */}
+        <Route
+          path="/booking-info-form"
+          element={
+            <PrivateRoute>
+              <BookingInfoForm />
+            </PrivateRoute>
+          }
+        />
         <Route
           path="/manager-home"
           element={

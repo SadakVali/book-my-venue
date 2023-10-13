@@ -275,6 +275,16 @@ export const generateBookingStatusOfEachDay = (
   //   start: [2024, 1, 12, 15]}
   //   ]
 
+  // TODO: Need to eliminate before productioinization
+  bookingStatus["15/12/2023"] = [
+    8,
+    [
+      [9, 13],
+      [14, 17],
+    ],
+    18,
+  ];
+
   setBookingStatus(bookingStatus);
   // console.log("END");
 };

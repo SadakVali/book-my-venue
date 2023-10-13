@@ -10,8 +10,6 @@ import { apiConnector } from "../apiConnector";
 import { authEndPoints } from "../apis";
 import {
   setBookingInfo,
-  setBookingMonth,
-  setBookingYear,
   setVenueBookingsGivenMonth,
 } from "../../slices/newBookingSlice";
 import {
@@ -105,8 +103,6 @@ export const logout = (navigate) => (dispatch) => {
   dispatch(setVenue(null));
   dispatch(setVenueBookingsGivenMonth(null));
   dispatch(setBookingInfo(null));
-  dispatch(setBookingMonth(null));
-  dispatch(setBookingYear(null));
   dispatch(setCancelledBookings(null));
   dispatch(setAdvancePaidBookings(null));
   dispatch(setPaymentDueToadyBookings(null));

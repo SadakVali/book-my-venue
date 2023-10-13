@@ -13,8 +13,6 @@ const initialState = {
     date: null,
     time: null,
   },
-  bookingMonth: null,
-  bookingYear: null,
   bookingInfo: null,
 };
 
@@ -37,12 +35,6 @@ const newBookingSlice = createSlice({
       state.checkOut.date = value.payload.date;
       state.checkOut.time = value.payload.time;
     },
-    setBookingMonth(state, value) {
-      state.bookingMonth = value.payload;
-    },
-    setBookingYear(state, value) {
-      state.bookingYear = value.payload;
-    },
     setBookingInfo(state, value) {
       state.bookingInfo = value.payload;
     },
@@ -54,8 +46,6 @@ export const {
   setVenueBookingsGivenMonth,
   setCheckIn,
   setCheckOut,
-  setBookingMonth,
-  setBookingYear,
   setBookingInfo,
 } = newBookingSlice.actions;
 export default newBookingSlice.reducer;

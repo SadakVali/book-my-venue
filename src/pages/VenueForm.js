@@ -114,7 +114,7 @@ const VenueForm = () => {
       className="my-16 w-11/12 max-w-maxContentTab mx-auto flex flex-col 
       justify-center gap-y-8"
     >
-      <h1 className="font-inter text-3xl font-bold text-center text-[#28374B]">
+      <h1 className="font-inter text-3xl font-bold text-center text-[#4135F3]">
         {`${venue ? "Update" : "Register"} Your Function Hall Details`}
       </h1>
       <form

@@ -4,6 +4,7 @@ const TextInputTag = ({
   errors,
   register,
   getValues,
+  trigger,
   inTagsNamePlaceholderObject,
 }) =>
   inTagsNamePlaceholderObject.map(({ inTagName, inTagPlaceholder }, index) => (
@@ -14,6 +15,7 @@ const TextInputTag = ({
           type="text"
           name={inTagName}
           placeholder={inTagPlaceholder}
+          onFocus={() => trigger([inTagName])}
           className="w-full bg-[#ECEFF4] border-none focus:border-none 
           focus:outline-none text-[#28374B] placeholder-[#28374B] text-[1.25rem]"
           {...register(inTagName)}

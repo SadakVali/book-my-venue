@@ -23,20 +23,35 @@ import { bookingsOfVenueGivenMonth } from "../services/operations/bookingsAPI";
 import { useDispatch, useSelector } from "react-redux";
 import TimePicker from "../components/core/ManagerHome/TimePicker";
 
+// redux related imports
+import { setCheckIn, setCheckOut } from "../slices/newBookingSlice";
+import { useNavigate } from "react-router-dom";
+
 // define the component level constants
 let oneTime = true;
 
 const ManagerHome = () => {
-  const [dateRange, setDateRange] = useState([]);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { venue } = useSelector((state) => state.venue);
+  const { token } = useSelector((state) => state.auth);
+  const { venueBookingsGivenMonth, checkIn, checkOut } = useSelector(
+    (state) => state.newBooking
+  );
+
+  const [dateRange, setDateRange] = useState(
+    checkIn.date && checkOut.date ? [checkIn.date, checkOut.date] : []
+  );
   const [selectedMonth, setSelectedMonth] = useState();
   const [selectedYear, setSelectedYear] = useState();
   const [currentMonth, setCurrentMonth] = useState();
   const [bookingStatus, setBookingStatus] = useState([]);
-
-  const dispatch = useDispatch();
-  const { venue } = useSelector((state) => state.venue);
-  const { token } = useSelector((state) => state.auth);
-  const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
+  const [checkInTime, setCheckInTime] = useState(
+    checkIn.time ? checkIn.time : null
+  );
+  const [checkOutTime, setCheckOutTime] = useState(
+    checkOut.time ? checkOut.time : null
+  );
 
   useEffect(() => {
     if (selectedMonth && selectedYear) {
@@ -137,9 +152,9 @@ const ManagerHome = () => {
         <Tippy
           interactive={true}
           content={
-            <div className="z-10 flex flex-col">
+            <div className="z-10 flex flex-col items-start">
               {bookingInfo[0] && (
-                <p>{`Booked from 12:00 AM to ${convertHour24HourToAMPM(
+                <p>{`Booked from 12 AM to ${convertHour24HourToAMPM(
                   bookingInfo[0]
                 )}`}</p>
               )}
@@ -163,6 +178,14 @@ const ManagerHome = () => {
           <div className="absolute z-10000 w-[2.86363rem] h-[2.5rem]"></div>
         </Tippy>
       );
+  };
+
+  const onClickHandler = () => {
+    dispatch(setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime }));
+    dispatch(
+      setCheckOut({ date: formatDate(dateRange[1]), time: checkOutTime })
+    );
+    navigate("/booking-info-form");
   };
 
   return (
@@ -238,17 +261,17 @@ const ManagerHome = () => {
             <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
               Check In Time
             </p>
-            <TimePicker />
+            <TimePicker setState={setCheckInTime} prevState={checkInTime} />
           </div>
           <div className="flex flex-col justify-center items-center gap-8">
             <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
               Check Out Time
             </p>
-            <TimePicker />
+            <TimePicker setState={setCheckOutTime} prevState={checkOutTime} />
           </div>
         </div>
       )}
-      <SecondFancyBTN text="Next" />
+      <SecondFancyBTN text="Next" onClick={onClickHandler} />
     </div>
   );
 };

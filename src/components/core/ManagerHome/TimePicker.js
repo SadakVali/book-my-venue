@@ -30,7 +30,7 @@ const inputArr = [
   "11 00 PM",
 ];
 
-function TimePicker() {
+function TimePicker({ setState, prevState }) {
   const minIndex = 0;
   const maxIndex = inputArr.length - 1;
   const stepSize = 0.1;
@@ -40,11 +40,14 @@ function TimePicker() {
   const itemHeightInPx = 60;
   const itemHeightInRem = 3.75; // make sure this value is divible by 1.5
 
-  const [visibleValueIndex, setVisibleValueIndex] = useState(minIndex);
+  const [visibleValueIndex, setVisibleValueIndex] = useState(
+    prevState ? prevState : minIndex
+  );
   const [touchStartY, setTouchStartY] = useState(null);
   const scrollableDivRef = useRef(null);
 
   const translateY = -1 * parseInt(visibleValueIndex) * itemHeightInPx;
+
   console.log({ selectedValue: inputArr[parseInt(visibleValueIndex)] });
   console.log({ selectedValue: parseInt(visibleValueIndex) });
 
@@ -64,6 +67,7 @@ function TimePicker() {
       if (Math.abs(parseInt(visibleValueIndex) - parseInt(temp)) === 1)
         audio.play();
       setVisibleValueIndex(temp);
+      setState(parseInt(temp));
       setTouchStartY(clientY);
     }
   };
@@ -78,6 +82,7 @@ function TimePicker() {
     if (Math.abs(parseInt(visibleValueIndex) - parseInt(temp)) === 1)
       audio.play();
     setVisibleValueIndex(temp);
+    setState(parseInt(temp));
   };
 
   useEffect(() => {

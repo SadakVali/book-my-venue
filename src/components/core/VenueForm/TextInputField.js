@@ -4,6 +4,7 @@ import TextInputTag from "./TextInputTag";
 const TextInputField = ({
   errors,
   register,
+  trigger,
   getValues,
   label,
   inTagsNamePlaceholderObject,
@@ -20,6 +21,7 @@ const TextInputField = ({
       >
         <TextInputTag
           errors={errors}
+          trigger={trigger}
           getValues={getValues}
           register={register}
           inTagsNamePlaceholderObject={inTagsNamePlaceholderObject}
