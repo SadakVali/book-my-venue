@@ -1,7 +1,17 @@
-import React from "react";
+// redux related imports
+import { useState } from "react";
+import BookingCalendar from "../components/core/Home/BookingCalendar";
 
 const VenueDetails = () => {
-  return <div>VenueDetails</div>;
+  const [dateRange, setDateRange] = useState([]);
+  return (
+    <div
+      className="w-11/12 max-w-maxContentTab mx-auto my-auto 
+      grid gap-y-16 place-items-center"
+    >
+      <BookingCalendar setDateRange={(dateRange, setDateRange)} />
+    </div>
+  );
 };
 
 export default VenueDetails;

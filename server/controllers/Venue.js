@@ -609,20 +609,17 @@ exports.editVenue = async (req, res) => {
 
 // Fetch all venues
 exports.fetchAllVenues = async (req, res) => {
+  console.log("ENTERED fetchAllVenues CONTROLLER CORRECTLY");
   try {
     // Find FunctionHalls that don't have conflicts
-    const availableFunctionHalls = await Venue.find({})
-      .populate(
-        "address",
-        "street landmark distanceFromLandmark village city pin"
-      )
+    const availableFunctionHalls = await Venue.find({
+      // status: VENUE_STATUS.PUBLISHED,
+    })
+      .populate("address")
       .populate("manager", "contactNumber")
       // Select specific fields from the Venue document (excluding allBookings)
-      .select(
-        "food.vegPricePerPlate food.nonvegPricePerPlate name images aboutVenue address guestCapacity carParkingSpace "
-      )
+      .select("-allBookings")
       .exec();
-
     // Return a success response
     return res.status(200).json({
       success: true,

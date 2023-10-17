@@ -1,9 +1,7 @@
 // importing from packages
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { toast } from "react-hot-toast";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 
@@ -12,7 +10,6 @@ import TextInputField from "../components/core/VenueForm/TextInputField";
 import SecondFancyBTN from "../components/common/SecondFancyBTN";
 
 // API call related imports
-import { createVenue, editVenue } from "../services/operations/venueAPI";
 
 const schema = yup.object({
   customerName: yup

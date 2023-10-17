@@ -14,10 +14,11 @@ const SignupSidebar = () => {
     dispatch(setSidebarFlag(false));
     setStep2(false);
   });
+
   return step2 ? (
     <div
       className="gap-y-4 fixed right-[0%] top-[50%] -translate-y-[50%] 
-      bg-[#E2E5EA] px-4 min-h-screen z-[1000] flex flex-col items-center 
+      bg-[#E2E5EA] px-4 min-h-screen z-[10000] flex flex-col items-center 
       justify-center"
       ref={ref}
     >

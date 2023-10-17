@@ -1,0 +1,220 @@
+.react-calendar {
+  background: transparent;
+  border: none;
+}
+
+.react-calendar__decade-view__years__year {
+  align-items: center !important;
+}
+
+.react-calendar__year-view__months__month {
+  align-items: center !important;
+}
+
+.react-calendar__month-view__weekdays__weekday,
+.react-calendar__navigation {
+  /* color: #28374b; */
+  color: #4135f3;
+  text-align: center;
+  font-family: monospace;
+  font-size: 1.125rem;
+  font-style: normal;
+  font-weight: 100;
+  line-height: 100%;
+}
+
+.react-calendar__month-view__weekdays {
+  margin-bottom: 0.5rem;
+}
+
+.react-calendar__month-view__days {
+  row-gap: 0.125rem;
+}
+
+abbr[title] {
+  border-bottom: none !important;
+  cursor: inherit !important;
+  text-decoration: none !important;
+}
+
+.react-calendar__tile {
+  display: flex;
+  width: 2.86363rem;
+  height: 2.5rem;
+  padding: 0.25rem;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-end;
+  gap: 0.625rem;
+  flex-shrink: 0;
+
+  border-radius: 1rem;
+  background: #fff;
+  color: #4135f3;
+  padding: 4px !important;
+}
+
+.react-calendar__tile--now {
+  background: #fff;
+}
+
+.react-calendar__tile--now:hover {
+  background: #e6e6e6 !important;
+}
+
+.react-calendar__month-view__days__day--neighboringMonth {
+  background: #c9cdd2;
+  color: #eceff4;
+}
+
+.partially--booked--right {
+  background: linear-gradient(
+    90deg,
+    white 0%,
+    white 60%,
+    #ffcfcc 60%,
+    #ffcfcc 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+.partially--booked--left {
+  background: linear-gradient(
+    90deg,
+    #ffcfcc 0,
+    #ffcfcc 40%,
+    white 40%,
+    white 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+.partially--booked--middle {
+  background: linear-gradient(
+    90deg,
+    white 0%,
+    white 30%,
+    #ffcfcc 30%,
+    #ffcfcc 70%,
+    white 70%,
+    white 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+.partially--booked--middle--right {
+  background: linear-gradient(
+    90deg,
+    white 0%,
+    white 40%,
+    #ffcfcc 40%,
+    #ffcfcc 60%,
+    white 60%,
+    white 80%,
+    #ffcfcc 80%,
+    #ffcfcc 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+.partially--booked--left--right {
+  background: linear-gradient(
+    90deg,
+    #ffcfcc 0,
+    #ffcfcc 30%,
+    white 30%,
+    white 70%,
+    #ffcfcc 70%,
+    #ffcfcc 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+.partially--booked--left--middle {
+  background: linear-gradient(
+    90deg,
+    #ffcfcc 0,
+    #ffcfcc 20%,
+    white 20%,
+    white 40%,
+    #ffcfcc 40%,
+    #ffcfcc 60%,
+    white 60%,
+    white 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+.partially--booked--left--middle--right {
+  background: linear-gradient(
+    90deg,
+    #ffcfcc 0,
+    #ffcfcc 20%,
+    white 20%,
+    white 40%,
+    #ffcfcc 40%,
+    #ffcfcc 60%,
+    white 60%,
+    white 80%,
+    #ffcfcc 80%,
+    #ffcfcc 100%
+  );
+  align-items: center !important;
+  color: #ff0e00 !important;
+}
+
+.react-calendar__tile:active,
+.react-calendar__tile:focus,
+.react-calendar__tile--active {
+  align-items: center;
+  background: #cfd !important;
+}
+
+.booked,
+.booked:focus,
+.booked:focus {
+  background: #ffcfcc !important;
+  align-items: center !important;
+  color: #ff0e00 !important;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.react-calendar__navigation__label {
+  pointer-events: none;
+  cursor: not-allowed;
+  color: rgb(22, 1, 1);
+}
+
+.react-calendar__navigation__label:hover {
+  background: #e6e6e6 !important;
+}
+
+.react-calendar__navigation__arrow {
+  border-radius: 1rem;
+  background: #fff !important;
+  color: #4135f3;
+  margin: 0.25rem !important;
+  padding: 0.25rem 1rem !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.react-calendar__navigation__arrow:hover {
+  background: #e6e6e6 !important;
+}
+
+/* Hide the prev2 and next2 buttons in the navigation bar */
+.react-calendar__navigation__prev2-button,
+.react-calendar__navigation__next2-button {
+  display: none;
+}
+
+/* Disable the prev2 and next2 buttons in the navigation bar */
+/* .react-calendar__navigation__prev-button,
+.react-calendar__navigation__next-button { */
+.disable-button {
+  pointer-events: none !important;
+  opacity: 0.5 !important; /* You can also adjust the opacity to visually indicate that they are disabled */
+}

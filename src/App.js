@@ -13,7 +13,7 @@ import CustomerBookings from "./pages/CustomerBookings";
 import CustomerReciept from "./pages/CustomerReciept";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import ManagerHome from "./pages/ManagerHome";
+import ManagerHome from "./components/core/Home/ManagerHome/ManagerHome";
 import VenueForm from "./pages/VenueForm";
 import Dashboard from "./pages/Dashboard";
 import Error from "./pages/Error";
@@ -30,11 +30,29 @@ import BookedBookings from "./components/core/Dashboard/BookedBookings";
 import SignupSidebar from "./components/common/SignupSidebar";
 import { useSelector } from "react-redux";
 import BookingInfoForm from "./pages/BookingInfoForm";
+import WelcomeScreen from "./components/core/Home/WelcomeScreen";
+import { useEffect, useState } from "react";
+import ForgotPassword from "./components/core/Auth/ForgotPassword";
 
 const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
+  const [disableWelcomeScreen, setDisableWelcomeScreen] = useState(false);
 
-  return (
+  useEffect(() => {
+    // Set a timeout to disable the WelcomeScreen image after 3 seconds
+    const timeout = setTimeout(() => {
+      setDisableWelcomeScreen(true);
+      // }, 5000);
+    }, 100);
+    // Clear the timeout when the component unmounts to avoid memory leaks
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
+
+  return !disableWelcomeScreen ? (
+    <WelcomeScreen disableWelcomeScreen={disableWelcomeScreen} />
+  ) : (
     <div className="min-h-screen flex flex-col bg-[#ECEFF4]">
       <Navbar />
       {sidebarFlag && <SignupSidebar />}
@@ -55,6 +73,14 @@ const App = () => {
           element={
             <OpenRoute>
               <Signup />
+            </OpenRoute>
+          }
+        />
+        <Route
+          path="/forgot-password"
+          element={
+            <OpenRoute>
+              <ForgotPassword />
             </OpenRoute>
           }
         />
@@ -139,3 +165,23 @@ const App = () => {
 };
 
 export default App;
+
+/* 
+
+HOME PAGE
+1. create steps based approach in the booking process of the managers
+2. 
+3. 
+4. Prepare Filters on the customer Home Page
+
+CUSTOMER RECIEPT
+5. Prepare Manager Dashboard
+6. 
+7. Customize the cutomer Reciept Page to disable the manager functionalities for customers
+8. Connect Manager Reciept Page with the Redux state memory
+9. Connect API call to the new Booking Page to store the Booking details
+
+10. WORK ON THE TIME PICKER SCROLL BARS
+11. impliment transition for authentication side bar
+
+*/

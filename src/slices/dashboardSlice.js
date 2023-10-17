@@ -3,7 +3,6 @@ import { createSlice } from "@reduxjs/toolkit";
 
 // initialize variables
 const initialState = {
-  customerBookings: null,
   cancelledBookings: null,
   paymentDueToadyBookings: null,
   advancePaidBookings: null,
@@ -17,9 +16,6 @@ const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
   reducers: {
-    setCustomerBookings(state, value) {
-      state.customerBookings = value.payload;
-    },
     setCancelledBookings(state, value) {
       state.cancelledBookings = value.payload;
     },

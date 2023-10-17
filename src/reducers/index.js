@@ -7,6 +7,7 @@ import dashboardReducer from "../slices/dashboardSlice";
 import userReducer from "../slices/userSlice";
 import venueReducer from "../slices/venueSlice";
 import newBookingReducer from "../slices/newBookingSlice";
+import customerReducer from "../slices/customerSlice";
 
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
   user: userReducer,
   venue: venueReducer,
   newBooking: newBookingReducer,
+  customer: customerReducer,
 });
 
 export default rootReducer;

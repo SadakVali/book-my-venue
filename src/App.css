@@ -6,6 +6,10 @@
 https://andy-bell.co.uk/a-modern-css-reset/
 */
 
+:root {
+  --min-col-size: 25rem;
+}
+
 @font-face {
   font-family: "Dancing Script";
   src: url("./assets/fonts/DancingScript.ttf") format("truetype");
@@ -134,4 +138,46 @@ code {
 /* Webkit scrollbar */
 textarea::-webkit-scrollbar {
   display: none; /* Hide the scrollbar */
+}
+
+.welcome-screen {
+  background: url("./assets/Images/WelComeScreen.png") center center/cover
+    no-repeat;
+  z-index: 100;
+}
+
+.swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+  text-align: center;
+  font-size: 18px;
+  background: #fff;
+
+  /* Center slide text vertically */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.swiper-slide img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.auto-adjust-reciept-cards {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.auto-adjust-reciept-cards > * {
+  flex: 1 1 var(--min-col-size);
+  max-width: 25rem;
 }

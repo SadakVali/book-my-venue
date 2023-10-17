@@ -11,8 +11,8 @@ exports.fetchSingleCustomerReciepts = async (req, res) => {
   try {
     // Validate and extract the inputs
     const { customerContactNumber } = req.body;
-    const customerBookingReciepts = await User.findOne({
-      contactNumber: customerContactNumber,
+    const customerBookingReciepts = await BookingInfo.find({
+      customerContactNumber,
     })
       .populate("allBookings")
       // Sort by 'checkInTime' in descending order.
@@ -25,8 +25,9 @@ exports.fetchSingleCustomerReciepts = async (req, res) => {
       });
     if (customerBookingReciepts.length === 0)
       return res.status(203).json({
-        success: success,
+        success: true,
         message: "No Bookings Available with this Number",
+        data: [],
       });
 
     // Return a success response

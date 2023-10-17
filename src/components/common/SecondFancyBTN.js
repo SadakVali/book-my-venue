@@ -2,7 +2,7 @@ import React from "react";
 
 import { ReactComponent as RightArrow } from "../../assets/Icons/RightArrow.svg";
 
-const FirstFancyBTN = ({ text, onClick }) => {
+const SecondFancyBTN = ({ text, onClick }) => {
   return (
     <button
       className="bg-[#4960F9] text-white rounded-3xl h-[5.25rem] text-[1.25rem]
@@ -12,19 +12,19 @@ const FirstFancyBTN = ({ text, onClick }) => {
       onClick={onClick}
       type="submit"
     >
-      <p className="font-montserrat">{text}</p>
-      <RightArrow />
+      <p className="font-montserrat font-semibold z-[1000]">{text}</p>
+      <RightArrow className="z-[1000]" />
       <div
         className="w-[9rem] aspect-square absolute rounded-full 
         right-0 bottom-0 translate-x-[30%] translate-y-[65%] bg-gradient-to-t 
-        from-[#C72FF800] to-[#C72FF8]"
+        from-[#C72FF800] to-[#C72FF8] z-0"
       ></div>
       <div
         className="w-[9rem] aspect-square absolute rounded-full 
-        left-0 top-0 -translate-x-[30%] -translate-y-[65%] bg-[#3AF9EF]"
+        left-0 top-0 -translate-x-[30%] -translate-y-[65%] bg-[#3AF9EF] z-0"
       ></div>
     </button>
   );
 };
 
-export default FirstFancyBTN;
+export default SecondFancyBTN;

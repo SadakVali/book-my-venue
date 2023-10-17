@@ -1,9 +1,15 @@
-import React from "react";
+import { useSelector } from "react-redux";
+import CustomerHome from "../components/core/Home/CustomerHome/CustomerHome";
+import ManagerHome from "../components/core/Home/ManagerHome/ManagerHome";
 
 const Home = () => {
+  const { token } = useSelector((state) => state.auth);
   return (
-    <div className="font-secondary text-[10rem] grid items-center justify-center my-auto">
-      Home
+    <div
+      className="flex flex-col justify-center items-center w-11/12 max-w-maxContent 
+      mx-auto my-16 gap-y-8"
+    >
+      {token ? <ManagerHome /> : <CustomerHome />}
     </div>
   );
 };

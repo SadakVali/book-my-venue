@@ -3,7 +3,6 @@ import { toast } from "react-hot-toast";
 
 // redux related imports
 import {
-  setCustomerBookings,
   setCancelledBookings,
   setPaymentDueToadyBookings,
   setAdvancePaidBookings,
@@ -16,7 +15,6 @@ import {
 import { apiConnector } from "../apiConnector";
 import { dashboardEndPoints } from "../apis";
 const {
-  FETCH_CUSTOMER_RECIEPTS_API,
   FETCH_ALL_CANCELLED_BOOKINGS_API,
   FETCH_ADVANCE_PAID_BOOKINGS_API,
   FETCH_ALL_BOOKED_RECIEPTS_API,
@@ -26,26 +24,6 @@ const {
   CHANGE_STATUS_TO_BOOKED_API,
   UPDATE_PAYMENT_SUMMARY_API,
 } = dashboardEndPoints;
-
-export const fetchSingleCustomerReciepts =
-  (customerContactNumber) => async (dispatch) => {
-    const toastId = toast.loading("Loading...");
-    dispatch(setLoading(true));
-    try {
-      const response = await apiConnector("POST", FETCH_CUSTOMER_RECIEPTS_API, {
-        customerContactNumber,
-      });
-      console.log("FETCH SINGLE CUSTOMER BOOKINGS RESPONSE......", response);
-      if (!response.data.success) throw new Error(response.data.message);
-      dispatch(setCustomerBookings(response.data.data));
-      toast.success("Customer bookings fetched successfully");
-    } catch (error) {
-      console.log("FETCH CUSTOMER BOOKINGS API ERROR......", error);
-      toast.error("Fetching Customer Bookings Failed");
-    }
-    dispatch(setLoading(false));
-    toast.dismiss(toastId);
-  };
 
 export const fetchAdvancePaidBookings = () => async (dispatch) => {
   const toastId = toast.loading("Loading...");

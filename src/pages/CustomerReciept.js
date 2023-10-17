@@ -1,10 +1,10 @@
 import React from "react";
-import { FaCheck } from "react-icons/fa";
-import { MdHorizontalRule } from "react-icons/md";
-import TextAreaInputField from "../components/core/VenueForm/TextAreaInputField";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
+import SecondFancyBTN from "../components/common/SecondFancyBTN";
+
+import { ReactComponent as Save } from "../assets/Icons/Save.svg";
 
 const CustomerReciept = () => {
   const steps = [
@@ -49,11 +49,11 @@ const CustomerReciept = () => {
 
   return (
     <div
-      className="my-16 w-11/12 mx-auto flex flex-col 
-      justify-center gap-y-8 items-center"
+      className="my-16 w-11/12 max-w-maxContent mx-auto flex flex-col 
+      justify-center gap-y-24 items-center"
     >
       {/* customer and function hall details */}
-      <div className="w-[80%] flex justify-between items-end">
+      <div className="w-[90%] flex justify-between items-end">
         {/* customer data */}
         <div className="flex flex-col justify-center items-start">
           <h1 className="text-gradient text-[2rem] w-fit !font-['Open_Sans']">
@@ -83,7 +83,7 @@ const CustomerReciept = () => {
         </div>
       </div>
       {/* Booking Status indicator */}
-      <div className="w-[60%] flex justify-center items-center gap-2">
+      <div className="w-[75%] -mt-8 flex justify-center items-center gap-2">
         <div
           className="rounded-full bg-[#4135F3] w-12 h-12 text-white text-[1.5rem]
           font-montserrat font-bold flex justify-center items-center relative"
@@ -124,9 +124,9 @@ const CustomerReciept = () => {
         </div>
       </div>
       {/* Booking information and customer followup summary */}
-      <div className="flex mt-16 w-[80%] justify-between items-end gap-x-16">
+      <div className="flex w-[90%] justify-between items-end gap-x-16">
         {/* Complete Booking Information */}
-        <div className="flex flex-col gap-y-1 max-w-[550px]">
+        <div className="flex flex-col gap-y-1 justify-between max-w-[520px]">
           <div className="flex gap-x-2">
             <p className="text-[1rem] font-inter leading-none">
               Total Amount :
@@ -159,7 +159,7 @@ const CustomerReciept = () => {
               2:00 PM one 18-12-2023
             </p>
           </div>
-          <p className="text-[1rem] font-inter leading-none mt-5">
+          <p className="text-[1rem] font-inter leading-tight mt-5">
             <b>NOTE : </b>If You Fail to Pay the Full payment Before this Date
             Without any Proper Reason, Your Booking Can be Cancelled by the
             Manager. Please Contact Manager and Discuss If you Need more Time.
@@ -183,10 +183,9 @@ const CustomerReciept = () => {
               }}
               {...register("summary")}
             />
-            <img
-              src="../../src/assets/Icons/Save.png"
-              className="absolute bottom-4 right-4"
-              loading="lazy"
+            <Save
+              className="absolute bottom-4 right-4 bg-white z-[1000] 
+              hover:scale-110 duration-200"
             />
             {errors["summary"] && (
               <p className="text-[1rem] text-[#FD2727]">
@@ -197,7 +196,11 @@ const CustomerReciept = () => {
         </div>
       </div>
       {/* 3 action buttons on bookings */}
-      <div></div>
+      <div className="flex w-[100%] justify-evenly">
+        <SecondFancyBTN text="Cancel Booking" />
+        <SecondFancyBTN text="Change Status to Booked" />
+        <SecondFancyBTN text="Next" />
+      </div>
     </div>
   );
 };

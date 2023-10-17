@@ -73,9 +73,10 @@ export const editVenue = (data, navigate, token) => async (dispatch) => {
 };
 
 export const fetchAllVenues = () => async (dispatch) => {
-  const toastId = toast.loading("Loading...");
+  const toastId = toast.loading("Fetching Venues...");
   dispatch(setLoading(true));
   try {
+    console.log(FETCH_ALL_VENUES_API);
     const response = await apiConnector("POST", FETCH_ALL_VENUES_API);
     console.log("FETCH ALL VENUE DETAILS API RESPONSE......", response);
     if (!response.data.success) throw new Error(response.data.message);
@@ -85,7 +86,7 @@ export const fetchAllVenues = () => async (dispatch) => {
     // navigate("/");
   } catch (error) {
     console.log("FETCH ALL VENUE DETAILS API ERROR......", error);
-    toast.error("Login Failed");
+    toast.error("Fetcing Venues Failed");
   }
   dispatch(setLoading(false));
   toast.dismiss(toastId);

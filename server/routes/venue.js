@@ -27,7 +27,7 @@ router.put("/edit-venue", auth, isAuthorized, editVenue);
 // // fetch all availbale venues on a particular date
 // router.get("/all-available-venues", fetchAvailableVenuesGivenDates);
 // fetch all venues in the city
-router.get("/get-details-of-all-venues", fetchAllVenues);
+router.post("/get-details-of-all-venues", fetchAllVenues);
 
 // export the course routes
 module.exports = router;
