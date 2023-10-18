@@ -100,14 +100,16 @@ export const formatDate = (date) => {
 };
 
 export const convertHour24HourToAMPM = (hours) => {
+  hours = parseInt(hours);
+  // console.log({ hours });
   if (hours === 0) {
-    return "12 AM";
+    return "12 : 00 AM";
   } else if (hours < 12) {
-    return `${hours} AM`;
+    return `0${hours} : 00 AM`;
   } else if (hours === 12) {
-    return "12 PM";
+    return "12 : 00 PM";
   } else {
-    return `${hours - 12} PM`;
+    return `0${hours - 12} : 00 PM`;
   }
 };
 

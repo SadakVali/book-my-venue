@@ -8,8 +8,15 @@ import * as yup from "yup";
 // importing components
 import TextInputField from "../components/core/VenueForm/TextInputField";
 import SecondFancyBTN from "../components/common/SecondFancyBTN";
+import {
+  convertHour24HourToAMPM,
+  localToUnixTimestamp,
+  unixTimestampToLocal,
+} from "../utils/utilities";
+import { BOOKING_STATUS } from "../utils/constants";
 
 // API call related imports
+import { createNewBooking } from "../services/operations/bookingsAPI";
 
 const schema = yup.object({
   customerName: yup
@@ -50,7 +57,10 @@ const BookingInfoForm = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.auth);
+  console.log({ token });
   const { venue } = useSelector((state) => state.venue);
+  const { user } = useSelector((state) => state.user);
+  const { checkIn, checkOut } = useSelector((state) => state.newBooking);
 
   const {
     register,
@@ -64,25 +74,48 @@ const BookingInfoForm = () => {
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
-      checkInTime: "03 : 00 PM on 16/12/2023",
-      checkOutTime: "04 : 00 PM on 18/12/2023",
+      checkInTime: `${convertHour24HourToAMPM(checkIn.time)} on ${
+        checkIn.date
+      }`,
+      checkOutTime: `${convertHour24HourToAMPM(checkOut.time)} on ${
+        checkOut.date
+      }`,
     },
   });
 
-  const createFormData = (data) => {
-    const formData = new FormData();
-    // Append the images and videos with their respective field names
-    for (const iterator of data.images) formData.append("images", iterator);
-    for (const iterator of data.videos) formData.append("videos", iterator);
-    for (const key in data) {
-      if (!["images", "videos"].includes(key)) formData.append(key, data[key]);
-    }
-    return formData;
-  };
-
   const onSubmit = (data) => {
-    // dispatch(createVenue(createFormData(data), navigate, token));
-    console.log(data);
+    const formData = new FormData();
+    formData.append("customerName", data.customerName);
+    formData.append("customerContactNumber", data.customerContactNumber);
+    formData.append("totalAmount", data.totalAmount);
+    formData.append("advancePaid", data.advancePaid);
+    const [di, mi, yi] = checkIn.date.split("/");
+    const checkInTime = localToUnixTimestamp(yi, mi, di, checkIn.time);
+    formData.append("checkInTime", checkInTime);
+    const [doo, mo, yo] = checkOut.date.split("/");
+    const checkOutTime = localToUnixTimestamp(yo, mo, doo, checkOut.time);
+    formData.append("checkOutTime", checkOutTime);
+
+    formData.append("venueName", venue.name);
+    formData.append("venueAddress", `${venue.street}, ${venue.landmark}`);
+    formData.append("managerContactNumber", user.contactNumber);
+    formData.append("venueId", venue._id);
+
+    formData.append("nextPaymentDueDate", checkInTime - 30 * 86400);
+    const temp = new Date();
+    const advancePaidOn = localToUnixTimestamp(
+      temp.getFullYear(),
+      temp.getMonth(),
+      temp.getDate(),
+      temp.getHours()
+    );
+    formData.append("advancePaidOn", advancePaidOn);
+
+    dispatch(createNewBooking(formData, navigate, token));
+    for (const entry of formData.entries()) {
+      const [key, value] = entry;
+      console.log(`${key} : ${value}`);
+    }
   };
 
   return (

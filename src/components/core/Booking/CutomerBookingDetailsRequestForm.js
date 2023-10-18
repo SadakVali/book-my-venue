@@ -14,7 +14,8 @@ const schema = yup.object({
     .matches(/^\d{10}$/, "Phone number is not valid"),
 });
 
-const CutomerBookingDetailsRequestForm = ({ setShowBookings }) => {
+// const CutomerBookingDetailsRequestForm = ({ setShowBookings }) => {
+const CutomerBookingDetailsRequestForm = () => {
   const {
     register,
     handleSubmit,
@@ -32,7 +33,7 @@ const CutomerBookingDetailsRequestForm = ({ setShowBookings }) => {
 
   const onSubmit = (data) => {
     dispatch(fetchSingleCustomerReciepts(data));
-    setShowBookings(true);
+    // setShowBookings(true);
   };
   return (
     <div className="flex items-center justify-center min-h-[calc(100vh-5rem)] w-full mx-auto my-auto">

@@ -19,12 +19,10 @@ exports.createNewBooking = async (req, res) => {
       managerContactNumber,
       advancePaid,
       advancePaidOn,
-      // fullyPaidDate,
       nextPaymentDueDate,
       checkInTime,
       checkOutTime,
       totalAmount,
-      // paymentSummary,
     } = req.body;
 
     // Validate required fields
@@ -37,12 +35,10 @@ exports.createNewBooking = async (req, res) => {
       !managerContactNumber ||
       !advancePaid ||
       !advancePaidOn ||
-      // !fullyPaidDate ||
       !nextPaymentDueDate ||
       !checkInTime ||
       !checkOutTime ||
       !totalAmount
-      // !paymentSummary
     )
       return res.status(400).json({
         success: false,
@@ -52,11 +48,9 @@ exports.createNewBooking = async (req, res) => {
     console.log("Entered the controller");
 
     const newBookingDetails = await BookingInfo.create({
-      //
       venueName,
       venueAddress,
       managerContactNumber,
-      // // fullyPaidDate,
       customerName,
       customerContactNumber,
       advancePaid,
@@ -65,31 +59,31 @@ exports.createNewBooking = async (req, res) => {
       checkInTime,
       checkOutTime,
       totalAmount,
-      paymentSummary,
-      //
       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     });
+    console.log({ newBookingDetails });
     // updating the allBookings field of the venue
-    await Venue.findByIdAndUpdate(venueId, {
+    const updatedVenue = await Venue.findByIdAndUpdate(venueId, {
       $push: { allBookings: newBookingDetails._id },
-    });
-    let customer = await User.findOne({
-      contactNumber: customerContactNumber,
-    });
-    if (!customer) {
-      // create new customer document with booking info
-      customer = await User.create({
-        name: customerName,
-        contactNumber: customerContactNumber,
-        role: ACCOUNT_TYPE.CUSTOMER,
-        image: `https://api.dicebear.com/5.x/initials/svg?seed=${customerName}}`,
-        allBookings: [newBookingDetails._id],
-      });
-    } else {
-      // update the user document
-      customer.allBookings.push(newBookingDetails._id);
-      customer.save();
-    }
+    }).exec();
+    console.log("DONE", updatedVenue);
+    // let customer = await User.findOne({
+    //   contactNumber: customerContactNumber,
+    // });
+    // if (!customer) {
+    //   // create new customer document with booking info
+    //   customer = await User.create({
+    //     name: customerName,
+    //     contactNumber: customerContactNumber,
+    //     role: ACCOUNT_TYPE.CUSTOMER,
+    //     image: `https://api.dicebear.com/5.x/initials/svg?seed=${customerName}}`,
+    //     allBookings: [newBookingDetails._id],
+    //   });
+    // } else {
+    //   // update the user document
+    //   customer.allBookings.push(newBookingDetails._id);
+    //   customer.save();
+    // }
     // console.log(customer);
     // Return a success response
     return res.status(200).json({

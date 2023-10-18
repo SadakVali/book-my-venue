@@ -119,13 +119,20 @@ export const fetchAllBookingsPastOccation = () => async (dispatch) => {
   toast.dismiss(toastId);
 };
 
-export const cancelSingleBooking = (bookingId) => async (dispatch) => {
+export const cancelSingleBooking = (data, token) => async (dispatch) => {
+  // data => bookingId
   const toastId = toast.loading("Loading...");
   dispatch(setLoading(true));
   try {
-    const response = await apiConnector("GET", CANCEL_A_SINGLE_BOOKING_API, {
-      bookingId,
-    });
+    const response = await apiConnector(
+      "PUT",
+      CANCEL_A_SINGLE_BOOKING_API,
+      data,
+      {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      }
+    );
     console.log("CANCEL A SINGLE BOOKING API RESPONSE......", response);
     if (!response.data.success) throw new Error(response.data.message);
     toast.success("Cancelling a Single Booking successfully");
@@ -137,13 +144,20 @@ export const cancelSingleBooking = (bookingId) => async (dispatch) => {
   toast.dismiss(toastId);
 };
 
-export const changeStatusToBooked = (bookingId) => async (dispatch) => {
+export const changeStatusToBooked = (data, token) => async (dispatch) => {
+  // data => bookingId
   const toastId = toast.loading("Loading...");
   dispatch(setLoading(true));
   try {
-    const response = await apiConnector("GET", CHANGE_STATUS_TO_BOOKED_API, {
-      bookingId,
-    });
+    const response = await apiConnector(
+      "PUT",
+      CHANGE_STATUS_TO_BOOKED_API,
+      data,
+      {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      }
+    );
     console.log("CHANGE STATUS TO BOOKED API RESPONSE......", response);
     if (!response.data.success) throw new Error(response.data.message);
     toast.success("Booking Completed successfully");
@@ -155,22 +169,28 @@ export const changeStatusToBooked = (bookingId) => async (dispatch) => {
   toast.dismiss(toastId);
 };
 
-export const updatePaymentSummary =
-  (bookingId, paymentSummary) => async (dispatch) => {
-    const toastId = toast.loading("Loading...");
-    dispatch(setLoading(true));
-    try {
-      const response = await apiConnector("GET", UPDATE_PAYMENT_SUMMARY_API, {
-        bookingId,
-        paymentSummary,
-      });
-      console.log("UPDATE PAYMENT SUMMARY API RESPONSE......", response);
-      if (!response.data.success) throw new Error(response.data.message);
-      toast.success("Payment Summary Updated successfully");
-    } catch (error) {
-      console.log("UPDATE PAYMENT SUMMARY API ERROR......", error);
-      toast.error("Payment Summary Update Failed");
-    }
-    dispatch(setLoading(false));
-    toast.dismiss(toastId);
-  };
+export const updatePaymentSummary = (data, token) => async (dispatch) => {
+  // data => bookingId, paymentSummary
+  console.log({ data, token });
+  const toastId = toast.loading("Loading...");
+  dispatch(setLoading(true));
+  try {
+    const response = await apiConnector(
+      "PUT",
+      UPDATE_PAYMENT_SUMMARY_API,
+      data,
+      {
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
+      }
+    );
+    console.log("UPDATE PAYMENT SUMMARY API RESPONSE......", response);
+    if (!response.data.success) throw new Error(response.data.message);
+    toast.success("Payment Summary Updated successfully");
+  } catch (error) {
+    console.log("UPDATE PAYMENT SUMMARY API ERROR......", error);
+    toast.error("Payment Summary Update Failed");
+  }
+  dispatch(setLoading(false));
+  toast.dismiss(toastId);
+};

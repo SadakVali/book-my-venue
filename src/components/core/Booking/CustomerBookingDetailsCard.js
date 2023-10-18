@@ -1,9 +1,30 @@
 import React from "react";
-import { useSelector } from "react-redux";
+import {
+  convertHour24HourToAMPM,
+  unixTimestampToLocal,
+} from "../../../utils/utilities";
+import { setCustomerRecieptId } from "../../../slices/customerSlice";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+const CustomerBookingDetailsCard = ({ bookingDetails }) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const onClick = () => {
+    dispatch(setCustomerRecieptId(bookingDetails._id));
+    navigate(`/customer-bookings/${bookingDetails._id}`);
+  };
+  const profileImgSrc = `https://api.dicebear.com/5.x/initials/svg?seed=${bookingDetails?.customerName}`;
 
-const CustomerBookingDetailsCard = () => {
-  const { user } = useSelector((state) => state.user);
-  const onClick = () => {};
+  const unixAdjustment = (unixTime, type = "d") => {
+    // console.log({ type });
+    const [y, m, d, t] = unixTimestampToLocal(unixTime);
+    if (type === "d")
+      return [d < 10 ? `0${d}` : d, m < 10 ? `0${m}` : m, y].join("-");
+    const res = convertHour24HourToAMPM(t);
+    // console.log({ res });
+    return res;
+  };
+
   return (
     <div
       className="rounded-xl py-4 px-6 w-fit h-fit flex flex-col gap-y-3 
@@ -19,21 +40,23 @@ const CustomerBookingDetailsCard = () => {
         pb-3 border-[#DEE1EF]"
       >
         <img
-          src={user?.image}
-          alt={`profile-${user?.name}`}
+          src={profileImgSrc}
+          alt={`profile-${bookingDetails?.customerName}`}
           loading="lazy"
           className="aspect-square w-[100px] rounded-full object-cover"
         />
         <div>
           <p className="font-montserrat font-semibold text-[1.125rem] text-[#4135F3]">
-            Sadiq Vali
+            {bookingDetails?.customerName}
           </p>
           <div className="text-[#4135F3] font-montserrat">
             <p>
-              Paid 150000 / <b>300000</b>
+              Paid {bookingDetails?.advancePaid} /{" "}
+              <b>{bookingDetails?.totalAmount}</b>
             </p>
             <p>
-              Next Due Date <b>16-11-2023</b>
+              Next Due Date{" "}
+              <b>{unixAdjustment(bookingDetails?.nextPaymentDueDate)}</b>
             </p>
           </div>
         </div>
@@ -41,18 +64,27 @@ const CustomerBookingDetailsCard = () => {
       <div className="font-montserrat text-[1rem]">
         <p>
           Personal Number :{" "}
-          <span className="text-[#4135F3]">+91 83091 57924</span>
+          <span className="text-[#4135F3]">
+            +91 {bookingDetails.customerContactNumber}
+          </span>
         </p>
         <p>
           Check In Time :{" "}
-          <span className="text-[#4135F3]">03 : 00 PM on 16-12-2023</span>
+          <span className="text-[#4135F3]">
+            {unixAdjustment(bookingDetails?.checkInTime, "t")} on{" "}
+            {unixAdjustment(bookingDetails?.checkInTime)}
+          </span>
         </p>
         <p>
           Check Out Time :{" "}
-          <span className="text-[#4135F3]">02 : 00 PM on 18-12-2023</span>
+          <span className="text-[#4135F3]">
+            {unixAdjustment(bookingDetails?.checkOutTime, "t")} on{" "}
+            {unixAdjustment(bookingDetails?.checkOutTime)}
+          </span>
         </p>
         <p>
-          Booking Status : <span className="text-[#4135F3]">CANCELLED</span>
+          Booking Status :{" "}
+          <span className="text-[#4135F3]">{bookingDetails.bookingStatus}</span>
         </p>
       </div>
     </div>

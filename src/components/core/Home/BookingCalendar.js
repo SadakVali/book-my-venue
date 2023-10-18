@@ -26,7 +26,9 @@ let oneTime = true;
 
 const BookingCalendar = ({ dateRange, setDateRange }) => {
   const { myVenue } = useSelector((state) => state.customer);
-  console.log({ myVenue });
+  const { venue } = useSelector((state) => state.venue);
+  const { token } = useSelector((state) => state.auth);
+
   const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
 
   const dispatch = useDispatch();
@@ -43,7 +45,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
       dispatch(
         bookingsOfVenueGivenMonth({
           // TODO:
-          venueId: myVenue, // "64ff36288ad816854a09a2dc",
+          venueId: token ? venue._id : myVenue, // "64ff36288ad816854a09a2dc",
           startingUnixTimeStamp,
           endingUnixTimeStamp,
         })

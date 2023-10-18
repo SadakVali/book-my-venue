@@ -1,4 +1,5 @@
 // Importing the models
+const { GiCloakDagger } = require("react-icons/gi");
 const BookingInfo = require("../models/BookingInfo");
 const User = require("../models/User");
 const Venue = require("../models/Venue");
@@ -11,10 +12,11 @@ exports.fetchSingleCustomerReciepts = async (req, res) => {
   try {
     // Validate and extract the inputs
     const { customerContactNumber } = req.body;
+    // console.log({ customerContactNumber });
     const customerBookingReciepts = await BookingInfo.find({
       customerContactNumber,
     })
-      .populate("allBookings")
+      // .populate("allBookings")
       // Sort by 'checkInTime' in descending order.
       .sort({ checkInTime: -1 })
       .exec();
@@ -51,6 +53,8 @@ exports.fetchSingleCustomerReciepts = async (req, res) => {
 exports.updatePaymentSummary = async (req, res) => {
   try {
     const { bookingId, paymentSummary } = req.body;
+    console.log("Entered Correctly");
+    console.log({ bookingId, paymentSummary });
     // Validate input
     if (!bookingId || !paymentSummary) {
       return res.status(400).json({

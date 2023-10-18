@@ -31,7 +31,7 @@ const dashboardSlice = createSlice({
     setOccasionPastBookings(state, value) {
       state.occasionPastBookings = value.payload;
     },
-    sertLoading(state, value) {
+    setLoading(state, value) {
       state.loading = value.payload;
     },
   },

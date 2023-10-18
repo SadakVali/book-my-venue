@@ -168,20 +168,19 @@ export default App;
 
 /* 
 
-HOME PAGE
-1. create steps based approach in the booking process of the managers
-2. 
-3. 
-4. Prepare Filters on the customer Home Page
+1. check why toast is not updating it's value while creating new booking
+2. cancel and booked status chnaging password verfication
+3. Connect Manager Reciept Page with the Redux state memory
+4. Prepare Manager Dashboard
+5. next & previous buttons
 
-CUSTOMER RECIEPT
-5. Prepare Manager Dashboard
-6. 
-7. Customize the cutomer Reciept Page to disable the manager functionalities for customers
-8. Connect Manager Reciept Page with the Redux state memory
-9. Connect API call to the new Booking Page to store the Booking details
+6. WORK ON THE TIME PICKER SCROLL BARS
+7. cell phone optimization
 
-10. WORK ON THE TIME PICKER SCROLL BARS
-11. impliment transition for authentication side bar
+
+
+6. Prepare Filters on the customer Home Page
+8. impliment transition for authentication side bar
+9. pagination
 
 */

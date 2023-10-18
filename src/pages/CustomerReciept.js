@@ -1,12 +1,40 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import SecondFancyBTN from "../components/common/SecondFancyBTN";
 
 import { ReactComponent as Save } from "../assets/Icons/Save.svg";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  convertHour24HourToAMPM,
+  unixTimestampToLocal,
+} from "../utils/utilities";
+import {
+  updatePaymentSummary,
+  changeStatusToBooked,
+  cancelSingleBooking,
+} from "../services/operations/dashboardAPI";
+
+import {
+  setMyBookingStatus,
+  setMyBookingSummary,
+  setMyBookings,
+} from "../slices/customerSlice";
+
+import { BOOKING_STATUS } from "../utils/constants";
 
 const CustomerReciept = () => {
+  const dispatch = useDispatch();
+
+  const { customerRecieptId, myBookings } = useSelector(
+    (state) => state.customer
+  );
+  const { token } = useSelector((state) => state.auth);
+  const customerReciept = myBookings.filter(
+    (booking) => booking._id === customerRecieptId
+  )[0];
+  console.log({ customerReciept });
   const steps = [
     {
       id: 1,
@@ -24,10 +52,10 @@ const CustomerReciept = () => {
   const step = 2;
 
   const schema = yup.object({
-    name: yup
+    paymentSummary: yup
       .string()
-      .required("Function Hall Name is Required")
-      .min(3, "Minimum 3 Characters Required")
+      .required("Summary is Required")
+      .min(50, "Minimum 50 Characters Required")
       .trim(),
   });
 
@@ -42,10 +70,63 @@ const CustomerReciept = () => {
     mode: "onChange",
     resolver: yupResolver(schema),
     defaultValues: {
-      summary:
-        "Customer Requested to Postpone the Payment Due Date, by saying that He is out of Home Town Now. Next Reminder Date 19-11-2023.",
+      bookingId: customerRecieptId,
+      paymentSummary: customerReciept?.paymentSummary,
+      // "Customer Requested to Postpone the Payment Due Date, by saying that He is out of Home Town Now. Next Reminder Date 19-11-2023.",
     },
   });
+
+  const unixAdjustment = (unixTime, type = "d") => {
+    // console.log({ type });
+    const [y, m, d, t] = unixTimestampToLocal(unixTime);
+    if (type === "d")
+      return [d < 10 ? `0${d}` : d, m < 10 ? `0${m}` : m, y].join("-");
+    const res = convertHour24HourToAMPM(t);
+    // console.log({ res });
+    return res;
+  };
+
+  const onSubmit = (data) => {
+    dispatch(updatePaymentSummary(data, token));
+    let index;
+    for (let i = 0; i < myBookings.length; i++) {
+      if (myBookings[i]._id === customerRecieptId) {
+        index = i;
+        break;
+      }
+    }
+    dispatch(
+      setMyBookingSummary({ index: index, paymentSummary: data.paymentSummary })
+    );
+  };
+
+  const onCancel = () => {
+    dispatch(cancelSingleBooking({ bookingId: customerRecieptId }, token));
+    let index;
+    for (let i = 0; i < myBookings.length; i++) {
+      if (myBookings[i]._id === customerRecieptId) {
+        index = i;
+        break;
+      }
+    }
+    dispatch(
+      setMyBookingStatus({ index: index, status: BOOKING_STATUS.CANCELLED })
+    );
+  };
+
+  const onBook = () => {
+    dispatch(changeStatusToBooked({ bookingId: customerRecieptId }, token));
+    let index;
+    for (let i = 0; i < myBookings.length; i++) {
+      if (myBookings[i]._id === customerRecieptId) {
+        index = i;
+        break;
+      }
+    }
+    dispatch(
+      setMyBookingStatus({ index: index, status: BOOKING_STATUS.BOOKED })
+    );
+  };
 
   return (
     <div
@@ -57,27 +138,27 @@ const CustomerReciept = () => {
         {/* customer data */}
         <div className="flex flex-col justify-center items-start">
           <h1 className="text-gradient text-[2rem] w-fit !font-['Open_Sans']">
-            Sadiq Vali
+            {customerReciept.customerName}
           </h1>
           <div className="flex gap-2">
             <p className="text-[1rem] font-montserrat">Personal Number : </p>
             <p className="text-[1rem] font-montserrat text-[#4135F3]">
-              +91 8309157924
+              +91 {customerReciept.customerContactNumber}
             </p>
           </div>
         </div>
         {/* function hall data */}
         <div className="flex flex-col justify-center items-end">
           <h1 className="text-gradient text-[2rem] w-fit !font-['Open_Sans']">
-            KTR Function Hall
+            {customerReciept.venueName}
           </h1>
           <p className="text-[1rem] font-montserrat">
-            Gooty Road, Near Market Yard
+            {customerReciept.venueAddress}
           </p>
           <div className="flex gap-2">
             <p className="text-[1rem] font-montserrat">Manager Number : </p>
             <p className="text-[1rem] font-montserrat text-[#4135F3]">
-              +91 8309157924
+              +91 {customerReciept.managerContactNumber}
             </p>
           </div>
         </div>
@@ -102,25 +183,66 @@ const CustomerReciept = () => {
           font-montserrat font-bold flex justify-center items-center relative"
         >
           <p>{steps[1].id}</p>
-          <p
-            className="absolute text-[#4135F3] text-[1rem] font-montserrat
-            -bottom-8 whitespace-nowrap"
-          >
-            {steps[1].title}
-          </p>
+          <div className="absolute -bottom-[3.5rem] flex justify-center items-center flex-col">
+            <p
+              className=" text-[#4135F3] text-[1rem] font-montserrat
+              whitespace-nowrap"
+            >
+              {steps[1].title}
+            </p>
+            <p
+              className="text-[#4135F3] text-[1rem] font-montserrat
+              whitespace-nowrap"
+            >
+              {unixAdjustment(customerReciept?.advancePaidOn)}
+            </p>
+          </div>
         </div>
         <div className="h-1 flex-grow border-dashed border-b-2 border-richblack-500"></div>
         <div
-          className="rounded-full bg-[#949BA5] w-12 h-12 text-white text-[1.5rem]
-          font-montserrat font-bold flex justify-center items-center relative"
+          className={`rounded-full w-12 h-12 text-white text-[1.5rem]
+          font-montserrat font-bold flex justify-center items-center relative 
+          ${
+            BOOKING_STATUS.ADVANCE_PAID === customerReciept.bookingStatus
+              ? "bg-[#949BA5]"
+              : "bg-[#4135F3]"
+          }`}
         >
           <p>{steps[2].id}</p>
-          <p
-            className="absolute text-[#4135F3] text-[1rem] font-montserrat
-            -bottom-8 whitespace-nowrap"
+          <div
+            className={`absolute flex justify-center items-center 
+            flex-col ${
+              BOOKING_STATUS.BOOKED === customerReciept.bookingStatus ||
+              BOOKING_STATUS.ADVANCE_PAID === customerReciept.bookingStatus
+                ? "-bottom-[3.5rem]"
+                : "-bottom-8"
+            }`}
           >
-            {steps[2].title}
-          </p>
+            <p
+              className="text-[#4135F3] text-[1rem] font-montserrat
+              whitespace-nowrap"
+            >
+              {BOOKING_STATUS.ADVANCE_PAID === customerReciept.bookingStatus
+                ? "Payment Due"
+                : customerReciept.bookingStatus}
+            </p>
+            {BOOKING_STATUS.BOOKED === customerReciept.bookingStatus && (
+              <p
+                className="text-[#4135F3] text-[1rem] font-montserrat
+                whitespace-nowrap"
+              >
+                {unixAdjustment(customerReciept?.fullyPaidDate)}
+              </p>
+            )}
+            {BOOKING_STATUS.ADVANCE_PAID === customerReciept.bookingStatus && (
+              <p
+                className="text-[#4135F3] text-[1rem] font-montserrat
+                whitespace-nowrap"
+              >
+                {unixAdjustment(customerReciept?.nextPaymentDueDate)}
+              </p>
+            )}
+          </div>
         </div>
       </div>
       {/* Booking information and customer followup summary */}
@@ -132,7 +254,7 @@ const CustomerReciept = () => {
               Total Amount :
             </p>
             <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
-              300000/- INR
+              {customerReciept.totalAmount}/- INR
             </p>
           </div>
           <div className="flex gap-x-2">
@@ -140,7 +262,7 @@ const CustomerReciept = () => {
               Next Payment Due Date :
             </p>
             <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
-              16-11-2023
+              {unixAdjustment(customerReciept?.nextPaymentDueDate)}
             </p>
           </div>
           <div className="flex gap-x-2">
@@ -148,7 +270,8 @@ const CustomerReciept = () => {
               Check In Time :
             </p>
             <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
-              3:00 PM one 16-12-2023
+              {unixAdjustment(customerReciept?.checkInTime, "t")} on{" "}
+              {unixAdjustment(customerReciept?.checkInTime)}
             </p>
           </div>
           <div className="flex gap-x-2">
@@ -156,7 +279,8 @@ const CustomerReciept = () => {
               Check Out Time :
             </p>
             <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
-              2:00 PM one 18-12-2023
+              {unixAdjustment(customerReciept?.checkOutTime, "t")} on{" "}
+              {unixAdjustment(customerReciept?.checkOutTime)}
             </p>
           </div>
           <p className="text-[1rem] font-inter leading-tight mt-5">
@@ -170,9 +294,13 @@ const CustomerReciept = () => {
           <p className="text-[1rem] font-inter leading-none">
             Summary of Last Payment Reminder Phone Call :
           </p>
-          <div className="flex flex-col gap-y-6 relative">
+          <form
+            className="flex flex-col gap-y-6 relative"
+            onSubmit={handleSubmit(onSubmit)}
+          >
             <textarea
-              name={"summary"}
+              name={"paymentSummary"}
+              onFocus={() => trigger("paymentSummary")}
               placeholder={"Please Enter Customer response Summary here!"}
               className="bg-white rounded-xl p-4 w-full h-[8rem] outline-none
               overflow-y-auto resize-none focus:outline-none placeholder:text-[1rem] 
@@ -181,26 +309,36 @@ const CustomerReciept = () => {
                 boxShadow:
                   "-4px -4px 4px 0px rgba(0, 0, 0, 0.25), 4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
               }}
-              {...register("summary")}
+              {...register("paymentSummary")}
             />
-            <Save
-              className="absolute bottom-4 right-4 bg-white z-[1000] 
+            {token && (
+              <button
+                type="submit"
+                className="absolute bottom-4 right-4 bg-white z-[1000] 
               hover:scale-110 duration-200"
-            />
-            {errors["summary"] && (
-              <p className="text-[1rem] text-[#FD2727]">
-                {errors["summary"].message}
+              >
+                <Save />
+              </button>
+            )}
+            {errors["paymentSummary"] && (
+              <p className="text-[1rem] text-[#FD2727] absolute -bottom-10 left-2">
+                {errors["paymentSummary"].message}
               </p>
             )}
-          </div>
+          </form>
         </div>
       </div>
       {/* 3 action buttons on bookings */}
-      <div className="flex w-[100%] justify-evenly">
-        <SecondFancyBTN text="Cancel Booking" />
-        <SecondFancyBTN text="Change Status to Booked" />
-        <SecondFancyBTN text="Next" />
-      </div>
+      {token && (
+        <div className="flex w-[100%] justify-evenly">
+          {BOOKING_STATUS.CANCELLED !== customerReciept.bookingStatus && (
+            <SecondFancyBTN text="Mark Cancelled" onClick={onCancel} />
+          )}
+          {BOOKING_STATUS.BOOKED !== customerReciept.bookingStatus && (
+            <SecondFancyBTN text="Mark Booked" onClick={onBook} />
+          )}
+        </div>
+      )}
     </div>
   );
 };
