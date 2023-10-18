@@ -10,6 +10,10 @@ import {
 // API call related imports
 import { apiConnector } from "../apiConnector";
 import { bookingEndPoints } from "../apis";
+import {
+  setCustomerRecieptId,
+  setMyBookings,
+} from "../../slices/customerSlice";
 const { CREATE_NEW_BOOKING_API, VENUE_BOOKINGS_GIVEN_MONTH_API } =
   bookingEndPoints;
 
@@ -28,7 +32,12 @@ export const createNewBooking = (data, navigate, token) => async (dispatch) => {
     if (!response?.data?.success) throw new Error(response?.data?.message);
     console.log("DONE");
     toast.success("booking created successfully");
-    navigate("/Sadiq");
+
+    dispatch(setMyBookings([response?.data?.data]));
+    dispatch(setCustomerRecieptId(response?.data?.data._id));
+    navigate(`/customer-bookings/${response?.data?.data._id}`);
+
+    // navigate("/Sadiq");
   } catch (error) {
     console.log("CREATE NEW BOOKING API ERROR......", error);
     toast.error("New Booking Creation Failed");

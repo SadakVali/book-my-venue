@@ -13,9 +13,7 @@ import CustomerBookings from "./pages/CustomerBookings";
 import CustomerReciept from "./pages/CustomerReciept";
 import Signup from "./pages/Signup";
 import Login from "./pages/Login";
-import ManagerHome from "./components/core/Home/ManagerHome/ManagerHome";
 import VenueForm from "./pages/VenueForm";
-import Dashboard from "./pages/Dashboard";
 import Error from "./pages/Error";
 
 // import components
@@ -23,16 +21,13 @@ import Navbar from "./components/common/Navbar";
 import OpenRoute from "./components/core/Auth/OpenRoute";
 import PrivateRoute from "./components/core/Auth/PrivateRoute";
 import PaymentDueTodayBookings from "./components/core/Dashboard/PaymentDueTodayBookings";
-import ManagerReciept from "./components/core/Dashboard/ManagerReciept";
-import CancelledBookings from "./components/core/Dashboard/CancelledBookings";
-import AdvancePaidBookings from "./components/core/Dashboard/AdvancePaidBookings";
-import BookedBookings from "./components/core/Dashboard/BookedBookings";
 import SignupSidebar from "./components/common/SignupSidebar";
 import { useSelector } from "react-redux";
 import BookingInfoForm from "./pages/BookingInfoForm";
 import WelcomeScreen from "./components/core/Home/WelcomeScreen";
 import { useEffect, useState } from "react";
 import ForgotPassword from "./components/core/Auth/ForgotPassword";
+import ManagerReciept from "./pages/ManagerReciept";
 
 const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
@@ -67,7 +62,7 @@ const App = () => {
           path="/customer-bookings/:bookingId"
           element=<CustomerReciept />
         />
-        {/* routes for stricktly non-authorized managers */}
+        {/* routes for stricktly un-authorized managers */}
         <Route
           path="/signup"
           element={
@@ -102,14 +97,6 @@ const App = () => {
           }
         />
         <Route
-          path="/manager-home"
-          element={
-            <PrivateRoute>
-              <ManagerHome />
-            </PrivateRoute>
-          }
-        />
-        <Route
           path="/venue-form"
           element={
             <PrivateRoute>
@@ -118,45 +105,21 @@ const App = () => {
           }
         />
         <Route
+          path="/dashboard/payment-due-today-bookings"
           element={
             <PrivateRoute>
-              <Dashboard />
+              <PaymentDueTodayBookings />
             </PrivateRoute>
           }
-        >
-          <Route
-            path="/dashboard/payment-due-today-bookings"
-            element=<PaymentDueTodayBookings />
-          />
-          <Route
-            path="/dashboard/payment-due-today-bookings/:bookingId"
-            element=<ManagerReciept />
-          />
-          <Route
-            path="/dashboard/cancelled-bookings"
-            element=<CancelledBookings />
-          />
-          <Route
-            path="/dashboard/cancelled-bookings/:bookingId"
-            element=<ManagerReciept />
-          />
-          <Route
-            path="/dashboard/advance-paid-bookings"
-            element=<AdvancePaidBookings />
-          />
-          <Route
-            path="/dashboard/advance-paid-bookings/:bookingId"
-            element=<ManagerReciept />
-          />
-          <Route
-            path="/dashboard/completely-paid-bookings"
-            element=<BookedBookings />
-          />
-          <Route
-            path="/dashboard/completely-paid-bookings/:bookingId"
-            element=<ManagerReciept />
-          />
-        </Route>
+        />
+        <Route
+          path="/dashboard/payment-due-today-bookings/:bookingId"
+          element={
+            <PrivateRoute>
+              <ManagerReciept />
+            </PrivateRoute>
+          }
+        />
         {/* 404 Error Page */}
         <Route path="*" element=<Error /> />
       </Routes>
@@ -168,19 +131,26 @@ export default App;
 
 /* 
 
-1. check why toast is not updating it's value while creating new booking
-2. cancel and booked status chnaging password verfication
-3. Connect Manager Reciept Page with the Redux state memory
-4. Prepare Manager Dashboard
-5. next & previous buttons
+1. 
+2. Code Refactoring
+3. WORK ON THE TIME PICKER SCROLL BARS
+4. productionize
+5. After talking with the Function Hall Managers work on Responsiveness of the WebApp;
+  Create intro video; Register Company and startup; update LinkedIn Profile; 
+  Inform Love Babbar, Karthik, Heena; Test the App with Profesional(Kalyan, Khaleel) 
 
-6. WORK ON THE TIME PICKER SCROLL BARS
-7. cell phone optimization
+6. Work on the Frontend and Backend of the Marital Status WebApp
+7. Complete the Deep Learning Backend
+8. Complete Productionization: Talk to the Munwar Bhayya, SRIT Vishnu, Uday, 
+  Karthik AAIC about Productionization. If they can't help then use locale host 
+  as the backend server
+9. DSA
 
 
 
-6. Prepare Filters on the customer Home Page
-8. impliment transition for authentication side bar
-9. pagination
+1. cancel and booked status changing of a booking based on password verfication
+2. Prepare Filters on the customer Home Page
+3. impliment transition for authentication side bar
+4. pagination
 
 */

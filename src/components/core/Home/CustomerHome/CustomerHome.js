@@ -10,7 +10,7 @@ const CustomerHome = () => {
   const { venues } = useSelector((state) => state.venue);
   console.log({ venues });
   useEffect(() => {
-    dispatch(fetchAllVenues());
+    if (!venues.length) dispatch(fetchAllVenues());
   }, []);
   return (
     <div className="flex flex-col justify-center items-center mx-auto gap-y-8">

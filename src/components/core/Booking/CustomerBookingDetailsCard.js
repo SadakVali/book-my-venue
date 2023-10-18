@@ -1,29 +1,18 @@
 import React from "react";
-import {
-  convertHour24HourToAMPM,
-  unixTimestampToLocal,
-} from "../../../utils/utilities";
+import { unixAdjustment } from "../../../utils/utilities";
 import { setCustomerRecieptId } from "../../../slices/customerSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+
 const CustomerBookingDetailsCard = ({ bookingDetails }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const onClick = () => {
     dispatch(setCustomerRecieptId(bookingDetails._id));
     navigate(`/customer-bookings/${bookingDetails._id}`);
   };
   const profileImgSrc = `https://api.dicebear.com/5.x/initials/svg?seed=${bookingDetails?.customerName}`;
-
-  const unixAdjustment = (unixTime, type = "d") => {
-    // console.log({ type });
-    const [y, m, d, t] = unixTimestampToLocal(unixTime);
-    if (type === "d")
-      return [d < 10 ? `0${d}` : d, m < 10 ? `0${m}` : m, y].join("-");
-    const res = convertHour24HourToAMPM(t);
-    // console.log({ res });
-    return res;
-  };
 
   return (
     <div

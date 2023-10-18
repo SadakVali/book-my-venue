@@ -100,16 +100,20 @@ export const formatDate = (date) => {
 };
 
 export const convertHour24HourToAMPM = (hours) => {
-  hours = parseInt(hours);
-  // console.log({ hours });
+  // hours = parseInt(hours);
+  console.log({ hours });
   if (hours === 0) {
     return "12 : 00 AM";
-  } else if (hours < 12) {
+  } else if (hours < 10) {
     return `0${hours} : 00 AM`;
+  } else if (hours < 12) {
+    return `${hours} : 00 AM`;
   } else if (hours === 12) {
     return "12 : 00 PM";
-  } else {
+  } else if (hours - 12 < 10) {
     return `0${hours - 12} : 00 PM`;
+  } else {
+    return `${hours - 12} : 00 PM`;
   }
 };
 
@@ -216,23 +220,43 @@ export const generateBookingStatusOfEachDay = (
     if (startDateKey === endDateKey) {
       if (bookingStatus[startDateKey] !== true) {
         if (bookingStatus[startDateKey] === null)
-          bookingStatus[startDateKey] = [null, [[strHours, endHours]], null];
+          bookingStatus[startDateKey] = [
+            null,
+            [
+              [
+                convertHour24HourToAMPM(strHours),
+                convertHour24HourToAMPM(endHours),
+              ],
+            ],
+            null,
+          ];
         else if (Array.isArray(bookingStatus[startDateKey]))
-          bookingStatus[startDateKey][1].push([strHours, endHours]);
+          bookingStatus[startDateKey][1].push([
+            convertHour24HourToAMPM(strHours),
+            convertHour24HourToAMPM(endHours),
+          ]);
       } else console.log("CODING LOGICAL ERROR EXISTS 1");
       continue;
     } else {
       if (bookingStatus[startDateKey] !== true) {
         if (bookingStatus[startDateKey] === null)
-          bookingStatus[startDateKey] = [null, [], strHours];
+          bookingStatus[startDateKey] = [
+            null,
+            [],
+            convertHour24HourToAMPM(strHours),
+          ];
         else if (Array.isArray(bookingStatus[startDateKey]))
-          bookingStatus[startDateKey][2] = strHours;
+          bookingStatus[startDateKey][2] = convertHour24HourToAMPM(strHours);
       } else console.log("CODING LOGICAL ERROR EXISTS 2");
       if (bookingStatus[endDateKey] !== true) {
         if (bookingStatus[endDateKey] === null)
-          bookingStatus[endDateKey] = [endHours, [], null];
+          bookingStatus[endDateKey] = [
+            convertHour24HourToAMPM(endHours),
+            [],
+            null,
+          ];
         else if (Array.isArray(bookingStatus[endDateKey]))
-          bookingStatus[endDateKey][0] = endHours;
+          bookingStatus[endDateKey][0] = convertHour24HourToAMPM(endHours);
       } else console.log("CODING LOGICAL ERROR EXISTS 3");
     }
 
@@ -289,4 +313,14 @@ export const generateBookingStatusOfEachDay = (
 
   setBookingStatus(bookingStatus);
   // console.log("END");
+};
+
+export const unixAdjustment = (unixTime, type = "d") => {
+  // console.log({ type });
+  const [y, m, d, t] = unixTimestampToLocal(unixTime);
+  if (type === "d")
+    return [d < 10 ? `0${d}` : d, m < 10 ? `0${m}` : m, y].join("-");
+  const res = convertHour24HourToAMPM(t);
+  // console.log({ res });
+  return res;
 };

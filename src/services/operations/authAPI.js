@@ -13,9 +13,9 @@ import {
   setVenueBookingsGivenMonth,
 } from "../../slices/newBookingSlice";
 import {
-  setAdvancePaidBookings,
-  setCancelledBookings,
-  setOccasionPastBookings,
+  // setAdvancePaidBookings,
+  // setCancelledBookings,
+  // setOccasionPastBookings,
   setPaymentDueToadyBookings,
 } from "../../slices/dashboardSlice";
 import { setVenue } from "../../slices/venueSlice";
@@ -103,10 +103,10 @@ export const logout = (navigate) => (dispatch) => {
   dispatch(setVenue(null));
   dispatch(setVenueBookingsGivenMonth(null));
   dispatch(setBookingInfo(null));
-  dispatch(setCancelledBookings(null));
-  dispatch(setAdvancePaidBookings(null));
+  // dispatch(setCancelledBookings(null));
+  // dispatch(setAdvancePaidBookings(null));
   dispatch(setPaymentDueToadyBookings(null));
-  dispatch(setOccasionPastBookings(null));
+  // dispatch(setOccasionPastBookings(null));
   localStorage.removeItem("token");
   localStorage.removeItem("user");
   localStorage.removeItem("venue");

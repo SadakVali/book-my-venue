@@ -1,13 +1,15 @@
 // imports from packages
 import { createSlice } from "@reduxjs/toolkit";
+import { BOOKING_STATUS } from "../utils/constants";
 
 // initialize variables
 const initialState = {
-  cancelledBookings: null,
+  // cancelledBookings: null,
   paymentDueToadyBookings: null,
-  advancePaidBookings: null,
-  occasionPastBookings: null,
-  bookedBookings: null,
+  index: 0,
+  // advancePaidBookings: null,
+  // occasionPastBookings: null,
+  // bookedBookings: null,
   loading: false,
 };
 
@@ -16,21 +18,50 @@ const dashboardSlice = createSlice({
   name: "dashboard",
   initialState,
   reducers: {
-    setCancelledBookings(state, value) {
-      state.cancelledBookings = value.payload;
-    },
+    // setCancelledBookings(state, value) {
+    //   state.cancelledBookings = value.payload;
+    // },
     setPaymentDueToadyBookings(state, value) {
       state.paymentDueToadyBookings = value.payload;
     },
-    setAdvancePaidBookings(state, value) {
-      state.advancePaidBookings = value.payload;
+    setIndex(state, value) {
+      state.index = state.index + value.payload;
     },
-    setBookedBookings(state, value) {
-      state.bookedBookings = value.payload;
+    setBookingStatus(state, value) {
+      const temp = [...state.paymentDueToadyBookings];
+      let index;
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i]._id === value.payload.id) {
+          index = i;
+          break;
+        }
+      }
+      temp[index].bookingStatus = value.payload.status;
+      if (value.payload.status === BOOKING_STATUS.BOOKED)
+        temp[index].fullyPaidDate = Math.floor(Date.now() / 1000);
+      state.paymentDueToadyBookings = temp;
     },
-    setOccasionPastBookings(state, value) {
-      state.occasionPastBookings = value.payload;
+    setBookingSummary(state, value) {
+      const temp = [...state.paymentDueToadyBookings];
+      let index;
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i]._id === value.payload.id) {
+          index = i;
+          break;
+        }
+      }
+      temp[index].paymentSummary = value.payload.paymentSummary;
+      state.paymentDueToadyBookings = temp;
     },
+    // setAdvancePaidBookings(state, value) {
+    //   state.advancePaidBookings = value.payload;
+    // },
+    // setBookedBookings(state, value) {
+    //   state.bookedBookings = value.payload;
+    // },
+    // setOccasionPastBookings(state, value) {
+    //   state.occasionPastBookings = value.payload;
+    // },
     setLoading(state, value) {
       state.loading = value.payload;
     },
@@ -38,12 +69,15 @@ const dashboardSlice = createSlice({
 });
 
 export const {
-  setCustomerBookings,
-  setBookedBookings,
-  setCancelledBookings,
+  // setCustomerBookings,
+  // setBookedBookings,
+  // setCancelledBookings,
   setPaymentDueToadyBookings,
-  setAdvancePaidBookings,
-  setOccasionPastBookings,
+  setBookingStatus,
+  setBookingSummary,
+  // setAdvancePaidBookings,
+  // setOccasionPastBookings,
   setLoading,
+  setIndex,
 } = dashboardSlice.actions;
 export default dashboardSlice.reducer;

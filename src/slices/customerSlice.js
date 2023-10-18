@@ -1,5 +1,7 @@
 // import from packages
 import { createSlice } from "@reduxjs/toolkit";
+import { BOOKING_STATUS } from "../utils/constants";
+import { formatDate } from "../utils/utilities";
 
 // initial state
 const initialState = {
@@ -28,12 +30,28 @@ const customerSlice = createSlice({
     },
     setMyBookingStatus(state, value) {
       const temp = [...state.myBookings];
-      temp[value.payload.index].bookingStatus = value.payload.status;
+      let index;
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i]._id === value.payload.id) {
+          index = i;
+          break;
+        }
+      }
+      temp[index].bookingStatus = value.payload.status;
+      if (value.payload.status === BOOKING_STATUS.BOOKED)
+        temp[index].fullyPaidDate = Math.floor(Date.now() / 1000);
       state.myBookings = temp;
     },
     setMyBookingSummary(state, value) {
       const temp = [...state.myBookings];
-      temp[value.payload.index].paymentSummary = value.payload.paymentSummary;
+      let index;
+      for (let i = 0; i < temp.length; i++) {
+        if (temp[i]._id === value.payload.id) {
+          index = i;
+          break;
+        }
+      }
+      temp[index].paymentSummary = value.payload.paymentSummary;
       state.myBookings = temp;
     },
   },

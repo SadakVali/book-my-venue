@@ -11,7 +11,6 @@ import "./BookingCalendar.css";
 // import utility functions
 import {
   formatDate,
-  convertHour24HourToAMPM,
   generateBookingStatusOfEachDay,
   generateStartingAndEndingUnixTimeStamps,
 } from "../../../utils/utilities";
@@ -21,16 +20,13 @@ import { bookingsOfVenueGivenMonth } from "../../../services/operations/bookings
 import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 
-// define the component level constants
-let oneTime = true;
+let oneTime;
 
 const BookingCalendar = ({ dateRange, setDateRange }) => {
   const { myVenue } = useSelector((state) => state.customer);
   const { venue } = useSelector((state) => state.venue);
   const { token } = useSelector((state) => state.auth);
-
   const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
-
   const dispatch = useDispatch();
 
   const [selectedMonth, setSelectedMonth] = useState();
@@ -39,13 +35,17 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
   const [bookingStatus, setBookingStatus] = useState([]);
 
   useEffect(() => {
+    // define the component level constants
+    oneTime = true;
+  }, []);
+
+  useEffect(() => {
     if (selectedMonth && selectedYear) {
       const { startingUnixTimeStamp, endingUnixTimeStamp } =
         generateStartingAndEndingUnixTimeStamps(selectedMonth, selectedYear);
       dispatch(
         bookingsOfVenueGivenMonth({
-          // TODO:
-          venueId: token ? venue._id : myVenue, // "64ff36288ad816854a09a2dc",
+          venueId: token ? venue._id : myVenue,
           startingUnixTimeStamp,
           endingUnixTimeStamp,
         })
@@ -54,7 +54,12 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
   }, [selectedMonth, selectedYear]);
 
   useEffect(() => {
-    if (venueBookingsGivenMonth.length) {
+    if (
+      selectedMonth &&
+      selectedYear &&
+      venueBookingsGivenMonth &&
+      venueBookingsGivenMonth.length
+    ) {
       const unixTimeStamps = [];
       for (const iter of venueBookingsGivenMonth) {
         const { checkInTime, checkOutTime } = iter;
@@ -122,6 +127,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
       nextBTN.removeEventListener("click", handleNextClick);
     };
   }, [selectedMonth, currentMonth, selectedYear]);
+  // }, [selectedMonth, selectedYear]);
 
   const isLeftSideBooked = (date) =>
     bookingStatus[formatDate(date)][0] !== null;
@@ -139,23 +145,17 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
           content={
             <div className="z-10 flex flex-col items-start">
               {bookingInfo[0] && (
-                <p>{`Booked from 12 AM to ${convertHour24HourToAMPM(
-                  bookingInfo[0]
-                )}`}</p>
+                <p>{`Booked from 12 AM to ${bookingInfo[0]}`}</p>
               )}
               {bookingInfo[1].length > 0
                 ? bookingInfo[1].map((range, index) => (
                     <p key={index}>
-                      {`Booked from ${convertHour24HourToAMPM(
-                        range[0]
-                      )} to ${convertHour24HourToAMPM(range[1])}`}
+                      {`Booked from ${range[0]} to ${range[1]}`}
                     </p>
                   ))
                 : null}
               {bookingInfo[2] && (
-                <p>{`Booked from ${convertHour24HourToAMPM(
-                  bookingInfo[2]
-                )} to 11:59 PM`}</p>
+                <p>{`Booked from ${bookingInfo[2]} to 11:59 PM`}</p>
               )}
             </div>
           }
@@ -164,6 +164,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
         </Tippy>
       );
   };
+
   return (
     <>
       <div

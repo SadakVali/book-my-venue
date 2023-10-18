@@ -22,7 +22,7 @@ export const fetchSingleCustomerReciepts = (data) => async (dispatch) => {
     console.log("FETCH SINGLE CUSTOMER BOOKINGS RESPONSE......", response);
     if (!response?.data?.success) throw new Error(response?.data?.message);
     dispatch(setMyBookings(response?.data?.data));
-    if (response.data.data.length === 0)
+    if (response?.data?.data?.length === 0)
       toast.success("No Bookings with your Number");
     else toast.success("Customer bookings fetched successfully");
   } catch (error) {

@@ -46,11 +46,11 @@ const CutomerBookingDetailsRequestForm = () => {
           errors={errors}
           register={register}
           trigger={trigger}
-          label="Customer Full Name"
+          label="Customer Contact Number"
           inTagsNamePlaceholderObject={[
             {
               inTagName: "customerContactNumber",
-              inTagPlaceholder: "Enter Customer Full Name",
+              inTagPlaceholder: "Enter Customer Contact Number",
             },
           ]}
         />

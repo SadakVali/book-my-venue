@@ -102,20 +102,14 @@ const BookingInfoForm = () => {
     formData.append("venueId", venue._id);
 
     formData.append("nextPaymentDueDate", checkInTime - 30 * 86400);
-    const temp = new Date();
-    const advancePaidOn = localToUnixTimestamp(
-      temp.getFullYear(),
-      temp.getMonth(),
-      temp.getDate(),
-      temp.getHours()
-    );
+    const advancePaidOn = Math.floor(Date.now() / 1000);
     formData.append("advancePaidOn", advancePaidOn);
 
     dispatch(createNewBooking(formData, navigate, token));
-    for (const entry of formData.entries()) {
-      const [key, value] = entry;
-      console.log(`${key} : ${value}`);
-    }
+    // for (const entry of formData.entries()) {
+    //   const [key, value] = entry;
+    //   console.log(`${key} : ${value}`);
+    // }
   };
 
   return (

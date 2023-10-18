@@ -3,11 +3,11 @@ import { toast } from "react-hot-toast";
 
 // redux related imports
 import {
-  setCancelledBookings,
+  // setCancelledBookings,
   setPaymentDueToadyBookings,
-  setAdvancePaidBookings,
-  setBookedBookings,
-  setOccasionPastBookings,
+  // setAdvancePaidBookings,
+  // setBookedBookings,
+  // setOccasionPastBookings,
   setLoading,
 } from "../../slices/dashboardSlice";
 
@@ -15,77 +15,98 @@ import {
 import { apiConnector } from "../apiConnector";
 import { dashboardEndPoints } from "../apis";
 const {
-  FETCH_ALL_CANCELLED_BOOKINGS_API,
-  FETCH_ADVANCE_PAID_BOOKINGS_API,
-  FETCH_ALL_BOOKED_RECIEPTS_API,
-  FETCH_COMPLETED_BOOKINGS_API,
+  // FETCH_ALL_CANCELLED_BOOKINGS_API,
+  // FETCH_ADVANCE_PAID_BOOKINGS_API,
+  // FETCH_ALL_BOOKED_RECIEPTS_API,
+  // FETCH_COMPLETED_BOOKINGS_API,
   FETCH_PAYMENTS_DUE_TODAY_BOOKINGS_API,
   CANCEL_A_SINGLE_BOOKING_API,
   CHANGE_STATUS_TO_BOOKED_API,
   UPDATE_PAYMENT_SUMMARY_API,
 } = dashboardEndPoints;
 
-export const fetchAdvancePaidBookings = () => async (dispatch) => {
-  const toastId = toast.loading("Loading...");
-  dispatch(setLoading(true));
-  try {
-    const response = await apiConnector("GET", FETCH_ADVANCE_PAID_BOOKINGS_API);
-    console.log("FETCH ADVANCE PAID BOOKINGS API RESPONSE......", response);
-    if (!response.data.success) throw new Error(response.data.message);
-    dispatch(setAdvancePaidBookings(response.data.data));
-    toast.success("Advance Paid bookings fetched successfully");
-  } catch (error) {
-    console.log("FETCH ADVANCE PAID BOOKINGS API ERROR......", error);
-    toast.error("Fetching Advance Paid Bookings Failed");
-  }
-  dispatch(setLoading(false));
-  toast.dismiss(toastId);
-};
+// export const fetchAdvancePaidBookings = () => async (dispatch) => {
+//   const toastId = toast.loading("Loading...");
+//   dispatch(setLoading(true));
+//   try {
+//     const response = await apiConnector("GET", FETCH_ADVANCE_PAID_BOOKINGS_API);
+//     console.log("FETCH ADVANCE PAID BOOKINGS API RESPONSE......", response);
+//     if (!response.data.success) throw new Error(response.data.message);
+//     dispatch(setAdvancePaidBookings(response.data.data));
+//     toast.success("Advance Paid bookings fetched successfully");
+//   } catch (error) {
+//     console.log("FETCH ADVANCE PAID BOOKINGS API ERROR......", error);
+//     toast.error("Fetching Advance Paid Bookings Failed");
+//   }
+//   dispatch(setLoading(false));
+//   toast.dismiss(toastId);
+// };
 
-export const fetchAllCancelledBookings = () => async (dispatch) => {
+// export const fetchAllCancelledBookings = () => async (dispatch) => {
+//   const toastId = toast.loading("Loading...");
+//   dispatch(setLoading(true));
+//   try {
+//     const response = await apiConnector(
+//       "GET",
+//       FETCH_ALL_CANCELLED_BOOKINGS_API
+//     );
+//     console.log("FETCH ALL CANCELLED BOOKINGS API RESPONSE......", response);
+//     if (!response.data.success) throw new Error(response.data.message);
+//     dispatch(setCancelledBookings(response.data.data));
+//     toast.success("Cancelled bookings fetched successfully");
+//   } catch (error) {
+//     console.log("FETCH ALL CANCELLED BOOKINGS API ERROR......", error);
+//     toast.error("Fetching Cancelled Bookings Failed");
+//   }
+//   dispatch(setLoading(false));
+//   toast.dismiss(toastId);
+// };
+
+// export const fetchAllBookedReciepts = () => async (dispatch) => {
+//   const toastId = toast.loading("Loading...");
+//   dispatch(setLoading(true));
+//   try {
+//     const response = await apiConnector("GET", FETCH_ALL_BOOKED_RECIEPTS_API);
+//     console.log("FETCH ALL BOOKED RECIEPTS API RESPONSE......", response);
+//     if (!response.data.success) throw new Error(response.data.message);
+//     dispatch(setBookedBookings(response.data.data));
+//     toast.success("Booked bookings fetched successfully");
+//   } catch (error) {
+//     console.log("FETCH ALL BOOKED RECIEPTS API ERROR......", error);
+//     toast.error("Fetching Booked Bookings Failed");
+//   }
+//   dispatch(setLoading(false));
+//   toast.dismiss(toastId);
+// };
+
+// export const fetchAllBookingsPastOccation = () => async (dispatch) => {
+//   const toastId = toast.loading("Loading...");
+//   dispatch(setLoading(true));
+//   try {
+//     const response = await apiConnector("GET", FETCH_COMPLETED_BOOKINGS_API);
+//     console.log("FETCH COMPLETED BOOKINGS API RESPONSE......", response);
+//     if (!response.data.success) throw new Error(response.data.message);
+//     dispatch(setOccasionPastBookings(response.data.data));
+//     toast.success("Completed bookings fetched successfully");
+//   } catch (error) {
+//     console.log("FETCH COMPLETED BOOKINGS API ERROR......", error);
+//     toast.error("Fetching Completed Bookings Failed");
+//   }
+//   dispatch(setLoading(false));
+//   toast.dismiss(toastId);
+// };
+
+export const fetchPaymentsDueTodayBookings = (token) => async (dispatch) => {
   const toastId = toast.loading("Loading...");
   dispatch(setLoading(true));
   try {
     const response = await apiConnector(
       "GET",
-      FETCH_ALL_CANCELLED_BOOKINGS_API
-    );
-    console.log("FETCH ALL CANCELLED BOOKINGS API RESPONSE......", response);
-    if (!response.data.success) throw new Error(response.data.message);
-    dispatch(setCancelledBookings(response.data.data));
-    toast.success("Cancelled bookings fetched successfully");
-  } catch (error) {
-    console.log("FETCH ALL CANCELLED BOOKINGS API ERROR......", error);
-    toast.error("Fetching Cancelled Bookings Failed");
-  }
-  dispatch(setLoading(false));
-  toast.dismiss(toastId);
-};
-
-export const fetchAllBookedReciepts = () => async (dispatch) => {
-  const toastId = toast.loading("Loading...");
-  dispatch(setLoading(true));
-  try {
-    const response = await apiConnector("GET", FETCH_ALL_BOOKED_RECIEPTS_API);
-    console.log("FETCH ALL BOOKED RECIEPTS API RESPONSE......", response);
-    if (!response.data.success) throw new Error(response.data.message);
-    dispatch(setBookedBookings(response.data.data));
-    toast.success("Booked bookings fetched successfully");
-  } catch (error) {
-    console.log("FETCH ALL BOOKED RECIEPTS API ERROR......", error);
-    toast.error("Fetching Booked Bookings Failed");
-  }
-  dispatch(setLoading(false));
-  toast.dismiss(toastId);
-};
-
-export const fetchPaymentsDueTodayBookings = () => async (dispatch) => {
-  const toastId = toast.loading("Loading...");
-  dispatch(setLoading(true));
-  try {
-    const response = await apiConnector(
-      "GET",
-      FETCH_PAYMENTS_DUE_TODAY_BOOKINGS_API
+      FETCH_PAYMENTS_DUE_TODAY_BOOKINGS_API,
+      null,
+      {
+        Authorization: `Bearer ${token}`,
+      }
     );
     console.log(
       "FETCH PAYMENTS DUE TODAY BOOKINGS API RESPONSE......",
@@ -97,23 +118,6 @@ export const fetchPaymentsDueTodayBookings = () => async (dispatch) => {
   } catch (error) {
     console.log("FETCH PAYMENTS DUE TODAY BOOKINGS API ERROR......", error);
     toast.error("Fetching Payment Due Bookings Failed");
-  }
-  dispatch(setLoading(false));
-  toast.dismiss(toastId);
-};
-
-export const fetchAllBookingsPastOccation = () => async (dispatch) => {
-  const toastId = toast.loading("Loading...");
-  dispatch(setLoading(true));
-  try {
-    const response = await apiConnector("GET", FETCH_COMPLETED_BOOKINGS_API);
-    console.log("FETCH COMPLETED BOOKINGS API RESPONSE......", response);
-    if (!response.data.success) throw new Error(response.data.message);
-    dispatch(setOccasionPastBookings(response.data.data));
-    toast.success("Completed bookings fetched successfully");
-  } catch (error) {
-    console.log("FETCH COMPLETED BOOKINGS API ERROR......", error);
-    toast.error("Fetching Completed Bookings Failed");
   }
   dispatch(setLoading(false));
   toast.dismiss(toastId);

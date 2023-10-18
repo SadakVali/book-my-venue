@@ -1,5 +1,5 @@
 // import packages
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -17,18 +17,17 @@ import BookingCalendar from "../BookingCalendar";
 const ManagerHome = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { checkIn, checkOut } = useSelector((state) => state.newBooking);
+  // const { checkIn, checkOut } = useSelector((state) => state.newBooking);
+  const [dateRange, setDateRange] = useState([]);
+  const [checkInTime, setCheckInTime] = useState(null);
+  const [checkOutTime, setCheckOutTime] = useState(null);
 
-  const [dateRange, setDateRange] = useState(
-    checkIn.date && checkOut.date ? [checkIn.date, checkOut.date] : []
-  );
-
-  const [checkInTime, setCheckInTime] = useState(
-    checkIn.time ? checkIn.time : null
-  );
-  const [checkOutTime, setCheckOutTime] = useState(
-    checkOut.time ? checkOut.time : null
-  );
+  // useEffect(() => {
+  //   if (checkIn.date && checkOut.date)
+  //     setDateRange([checkIn.date, checkOut.date]);
+  //   if (checkIn.time) setCheckInTime(checkIn.time);
+  //   if (checkOut.time) setCheckOutTime(checkOut.time);
+  // }, []);
 
   const onClickHandler = () => {
     dispatch(setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime }));
@@ -43,9 +42,9 @@ const ManagerHome = () => {
       className="my-16 w-11/12 max-w-maxContentTab mx-auto flex flex-col
       justify-center items-center gap-y-16"
     >
-      <BookingCalendar setDateRange={(dateRange, setDateRange)} />
+      <BookingCalendar setDateRange={setDateRange} dateRange={dateRange} />
       {/* Check in & check time time pickers */}
-      {dateRange.length > 0 && (
+      {dateRange && dateRange.length > 0 && (
         <div className="flex gap-16">
           <div className="flex flex-col justify-center items-center gap-8">
             <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
@@ -61,7 +60,15 @@ const ManagerHome = () => {
           </div>
         </div>
       )}
-      <SecondFancyBTN text="Next" onClick={onClickHandler} />
+      <div
+        className={`${
+          checkInTime !== null && checkOutTime !== null
+            ? ""
+            : "pointer-events-none opacity-50"
+        } `}
+      >
+        <SecondFancyBTN text="Next" onClick={onClickHandler} />
+      </div>
     </div>
   );
 };
