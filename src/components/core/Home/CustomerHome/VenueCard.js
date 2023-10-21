@@ -31,14 +31,14 @@ const VenueCard = ({ venueDetails }) => {
 
   return (
     <div
-      className="rounded-xl py-4 px-6 w-fit h-fit flex gap-x-8 justify-center items-center"
+      className="rounded-xl py-2 px-3 w-fit h-fit flex gap-x-6 justify-center items-center"
       style={{
         boxShadow:
           "-4px -4px 4px 0px rgba(0, 0, 0, 0.25), 4px 4px 4px 0px rgba(0, 0, 0, 0.25)",
       }}
     >
       {/* images */}
-      <div className="flex justify-center items-center w-[460px] aspect-square">
+      <div className="flex justify-center items-center h-[500px] w-[420px]">
         <Swiper
           spaceBetween={30}
           centeredSlides={true}
@@ -51,8 +51,7 @@ const VenueCard = ({ venueDetails }) => {
           }}
           navigation={true}
           modules={[Autoplay, Pagination, Navigation]}
-          // className="rounded-2xl mySwiper"
-          className="mySwiper"
+          className="rounded-2xl mySwiper"
         >
           {venueDetails.images.map((image, id) => (
             <SwiperSlide key={id}>
