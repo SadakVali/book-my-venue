@@ -40,7 +40,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedMonth && selectedYear && venue) {
+    if (selectedMonth && selectedYear) {
       const { startingUnixTimeStamp, endingUnixTimeStamp } =
         generateStartingAndEndingUnixTimeStamps(selectedMonth, selectedYear);
       dispatch(
