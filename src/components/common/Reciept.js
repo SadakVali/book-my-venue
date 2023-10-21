@@ -46,9 +46,12 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
     register,
     handleSubmit,
     trigger,
-    setValue,
-    getValues,
-    formState: { errors, isSubmitSuccessful },
+    // setValue,
+    // getValues,
+    formState: {
+      errors,
+      // isSubmitSuccessful
+    },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),

@@ -37,11 +37,14 @@ const VenueForm = () => {
   const {
     register,
     handleSubmit,
-    reset,
+    // reset,
     trigger,
     setValue,
     getValues,
-    formState: { errors, isSubmitSuccessful },
+    formState: {
+      errors,
+      // isSubmitSuccessful
+    },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),

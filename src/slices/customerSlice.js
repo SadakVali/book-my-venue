@@ -1,7 +1,6 @@
 // import from packages
 import { createSlice } from "@reduxjs/toolkit";
 import { BOOKING_STATUS } from "../utils/constants";
-import { formatDate } from "../utils/utilities";
 
 // initial state
 const initialState = {

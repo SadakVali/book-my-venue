@@ -59,16 +59,18 @@ const BookingInfoForm = () => {
   const { venue } = useSelector((state) => state.venue);
   const { user } = useSelector((state) => state.user);
   const { checkIn, checkOut } = useSelector((state) => state.newBooking);
-  const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
 
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
+    // reset,
+    // setValue,
     trigger,
     getValues,
-    formState: { errors, isSubmitSuccessful },
+    formState: {
+      errors,
+      // isSubmitSuccessful
+    },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),

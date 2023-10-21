@@ -19,11 +19,14 @@ const CutomerBookingDetailsRequestForm = () => {
   const {
     register,
     handleSubmit,
-    reset,
-    setValue,
+    // reset,
+    // setValue,
     trigger,
     getValues,
-    formState: { errors, isSubmitSuccessful },
+    formState: {
+      errors,
+      // isSubmitSuccessful
+    },
   } = useForm({
     mode: "onChange",
     resolver: yupResolver(schema),
