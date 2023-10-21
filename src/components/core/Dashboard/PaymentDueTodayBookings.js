@@ -30,12 +30,13 @@ const PaymentDueTodayBookings = () => {
 
   return (
     <div
-      className="my-16 w-11/12 max-w-maxContent mx-auto flex flex-col justify-center 
+      className="my-16 w-11/12 max-w-maxContent mx-auto flex gap-x-6 flex-wrap justify-center 
       gap-y-24 items-center"
     >
       {paymentDueToadyBookings &&
         paymentDueToadyBookings.map((booking) => (
           <div
+            key={booking._id}
             className="rounded-xl py-4 px-6 w-fit h-fit flex flex-col gap-y-3 
             justify-center items-start hover:cursor-pointer"
             style={{

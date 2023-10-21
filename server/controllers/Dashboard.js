@@ -92,40 +92,40 @@ exports.updatePaymentSummary = async (req, res) => {
   }
 };
 
-// get All Advance Paid Bookings
-// (current UnixTimeStamp < nextPaymentDueDate and bookingStatus === "AdvancePaid")
-exports.fetchAdvancePaidBookings = async (req, res) => {
-  try {
-    const advancePaidBookings = await BookingInfo.find({
-      nextPaymentDueDate: { $gt: Math.floor(Date.now() / 1000) },
-      bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
-    }) // Sort by 'checkInTime' in descending order.
-      .sort({ nextPaymentDueDate: -1 })
-      .exec();
+// // get All Advance Paid Bookings
+// // (current UnixTimeStamp < nextPaymentDueDate and bookingStatus === "AdvancePaid")
+// exports.fetchAdvancePaidBookings = async (req, res) => {
+//   try {
+//     const advancePaidBookings = await BookingInfo.find({
+//       nextPaymentDueDate: { $gt: Math.floor(Date.now() / 1000) },
+//       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
+//     }) // Sort by 'checkInTime' in descending order.
+//       .sort({ nextPaymentDueDate: -1 })
+//       .exec();
 
-    if (advancePaidBookings.length === 0)
-      return res.status(204).json({
-        success: false,
-        message: "There are No Adavance Paid Bookings",
-      });
+//     if (advancePaidBookings.length === 0)
+//       return res.status(204).json({
+//         success: false,
+//         message: "There are No Adavance Paid Bookings",
+//       });
 
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message:
-        "All Advance Paid Bookings But Not Due Today Reciepts fetched successfully",
-      data: advancePaidBookings,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message:
-        "Something went wrong while fetching All Advance Paid Bookings But Not Due Today Reciepts",
-      error: error.message,
-    });
-  }
-};
+//     // Return a success response
+//     return res.status(200).json({
+//       success: true,
+//       message:
+//         "All Advance Paid Bookings But Not Due Today Reciepts fetched successfully",
+//       data: advancePaidBookings,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       success: false,
+//       message:
+//         "Something went wrong while fetching All Advance Paid Bookings But Not Due Today Reciepts",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // change status to cancel
 exports.cancelSingleBooking = async (req, res) => {
@@ -163,37 +163,37 @@ exports.cancelSingleBooking = async (req, res) => {
   }
 };
 
-// get All Cancelled Bookings (bookingStatus === "Cancelled")
-exports.fetchAllCancelledBookings = async (req, res) => {
-  try {
-    // Sort it by occation date in descending order
-    const allCancelledBookings = await BookingInfo.find({
-      bookingStatus: BOOKING_STATUS.CANCELLED,
-    }) // Sort by 'checkInTime' in descending order.
-      .sort({ checkInTime: -1 })
-      .exec();
-    // Check if there are no matching bookings
-    if (allCancelledBookings.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No bookings with 'Cancelled' status found.",
-      });
-    }
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message: "All Cancelled Reciepts fetched successfully",
-      data: allCancelledBookings,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message: "Something went wrong while fetching the Cancelled reciepts",
-      error: error.message,
-    });
-  }
-};
+// // get All Cancelled Bookings (bookingStatus === "Cancelled")
+// exports.fetchAllCancelledBookings = async (req, res) => {
+//   try {
+//     // Sort it by occation date in descending order
+//     const allCancelledBookings = await BookingInfo.find({
+//       bookingStatus: BOOKING_STATUS.CANCELLED,
+//     }) // Sort by 'checkInTime' in descending order.
+//       .sort({ checkInTime: -1 })
+//       .exec();
+//     // Check if there are no matching bookings
+//     if (allCancelledBookings.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "No bookings with 'Cancelled' status found.",
+//       });
+//     }
+//     // Return a success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "All Cancelled Reciepts fetched successfully",
+//       data: allCancelledBookings,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       success: false,
+//       message: "Something went wrong while fetching the Cancelled reciepts",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // change status to booked
 exports.changeStatusToBooked = async (req, res) => {
@@ -231,80 +231,83 @@ exports.changeStatusToBooked = async (req, res) => {
   }
 };
 
-// get All Completely Paid booking reciepts (bookingStatus === "Booked")
-exports.fetchAllBookedReciepts = async (req, res) => {
-  try {
-    // Sort it by occation date in descending order
-    const allCompletelyBookedReciepts = await BookingInfo.find({
-      bookingStatus: BOOKING_STATUS.BOOKED,
-    }) // Sort by 'checkInTime' in Ascending order.
-      .sort({ checkInTime: 1 })
-      .exec();
-    // Check if there are no matching bookings
-    if (allCompletelyBookedReciepts.length === 0) {
-      return res.status(404).json({
-        success: false,
-        message: "No bookings with 'Booked' status found.",
-      });
-    }
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message: "All Completely Paid Reciepts fetched successfully",
-      data: allCompletelyBookedReciepts,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message:
-        "Something went wrong while fetching all Completely Paid Reciepts",
-      error: error.message,
-    });
-  }
-};
+// // get All Completely Paid booking reciepts (bookingStatus === "Booked")
+// exports.fetchAllBookedReciepts = async (req, res) => {
+//   try {
+//     // Sort it by occation date in descending order
+//     const allCompletelyBookedReciepts = await BookingInfo.find({
+//       bookingStatus: BOOKING_STATUS.BOOKED,
+//     }) // Sort by 'checkInTime' in Ascending order.
+//       .sort({ checkInTime: 1 })
+//       .exec();
+//     // Check if there are no matching bookings
+//     if (allCompletelyBookedReciepts.length === 0) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "No bookings with 'Booked' status found.",
+//       });
+//     }
+//     // Return a success response
+//     return res.status(200).json({
+//       success: true,
+//       message: "All Completely Paid Reciepts fetched successfully",
+//       data: allCompletelyBookedReciepts,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       success: false,
+//       message:
+//         "Something went wrong while fetching all Completely Paid Reciepts",
+//       error: error.message,
+//     });
+//   }
+// };
 
-// get All Occation Over booking reciepts (bookingStatus === "OccasionOver")
-exports.fetchAllBookingsPastOccation = async (req, res) => {
-  try {
-    // Sort it by occation date in descending order
-    const allOccasionCompletedBookings = await BookingInfo.find({
-      bookingStatus: BOOKING_STATUS.OCCATION_OVER,
-    }) // Sort by 'checkInTime' in descending order.
-      .sort({ checkInTime: -1 })
-      .exec();
-    // Check if there are no matching bookings
-    if (allOccasionCompletedBookings.length === 0) {
-      return res.status(203).json({
-        success: true,
-        message: "",
-      });
-    }
-    // Return a success response
-    return res.status(200).json({
-      success: true,
-      message:
-        "All Bookings Reciepts whose Occation has been selebrated in your Venue fetched successfully",
-      data: allOccasionCompletedBookings,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      success: false,
-      message:
-        "Something went wrong while fetching All Completed Bookings Reciepts",
-      error: error.message,
-    });
-  }
-};
+// // get All Occation Over booking reciepts (bookingStatus === "OccasionOver")
+// exports.fetchAllBookingsPastOccation = async (req, res) => {
+//   try {
+//     // Sort it by occation date in descending order
+//     const allOccasionCompletedBookings = await BookingInfo.find({
+//       bookingStatus: BOOKING_STATUS.OCCATION_OVER,
+//     }) // Sort by 'checkInTime' in descending order.
+//       .sort({ checkInTime: -1 })
+//       .exec();
+//     // Check if there are no matching bookings
+//     if (allOccasionCompletedBookings.length === 0) {
+//       return res.status(203).json({
+//         success: true,
+//         message: "",
+//       });
+//     }
+//     // Return a success response
+//     return res.status(200).json({
+//       success: true,
+//       message:
+//         "All Bookings Reciepts whose Occation has been selebrated in your Venue fetched successfully",
+//       data: allOccasionCompletedBookings,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       success: false,
+//       message:
+//         "Something went wrong while fetching All Completed Bookings Reciepts",
+//       error: error.message,
+//     });
+//   }
+// };
 
 // get All Payment Due today Bookings
 // (current UnixTimeStamp >= nextPaymentDueDate and bookingStatus === "AdvancePaid")
 exports.fetchPaymentsDueTodayBookings = async (req, res) => {
   try {
-    console.log("Entered the controller correctly");
+    console.log(
+      "Entered the controller correctly",
+      Math.floor(Date.now() / 1000)
+    );
+    // nextPaymentDueDate: { $lte: 1701423000 },
     const paymentDueReciepts = await BookingInfo.find({
-      // nextPaymentDueDate: { $lte: 1701423000 },
       nextPaymentDueDate: { $lte: Math.floor(Date.now() / 1000) },
       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     }) // Sort by 'nextPaymentDueDate' in Ascending order.

@@ -47,17 +47,18 @@ const ManagerHome = () => {
       const checkInUnixTime = localToUnixTimestamp(yi, mi, di, checkInTime);
       const [doo, mo, yo] = formatDate(dateRange[1]).split("/");
       const checkOutUnixTime = localToUnixTimestamp(yo, mo, doo, checkOutTime);
-      if (checkForConflict([checkInUnixTime, checkOutUnixTime], unixTimeStamps))
+      if (
+        checkForConflict([checkInUnixTime, checkOutUnixTime], unixTimeStamps)
+      ) {
         toast.error("Booking Conflict Occured");
-    } else {
-      dispatch(
-        setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime })
-      );
-      dispatch(
-        setCheckOut({ date: formatDate(dateRange[1]), time: checkOutTime })
-      );
-      navigate("/booking-info-form");
+        return;
+      }
     }
+    dispatch(setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime }));
+    dispatch(
+      setCheckOut({ date: formatDate(dateRange[1]), time: checkOutTime })
+    );
+    navigate("/booking-info-form");
   };
 
   return (

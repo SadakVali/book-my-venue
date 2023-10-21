@@ -25,35 +25,35 @@ const router = express.Router();
 // #######################################################################
 // customer reciepts are allowed to see by anyone
 router.post("/fetch-customer-reciepts", fetchSingleCustomerReciepts);
-// fetch the booking that are cancelled
-router.get(
-  "/get-cencelled-bookings",
-  auth,
-  isAuthorized,
-  fetchAllCancelledBookings
-);
-// get advance paid bookings whose payment due date is not today
-router.get(
-  "/get-advance-only-paid-bookings",
-  auth,
-  isAuthorized,
-  fetchAdvancePaidBookings
-);
-// get all bookings that completely paid money
-router.get(
-  "/get-completely-booked-reciepts",
-  auth,
-  isAuthorized,
-  fetchAllBookedReciepts
-);
+// // fetch the booking that are cancelled
+// router.get(
+//   "/get-cencelled-bookings",
+//   auth,
+//   isAuthorized,
+//   fetchAllCancelledBookings
+// );
+// // get advance paid bookings whose payment due date is not today
+// router.get(
+//   "/get-advance-only-paid-bookings",
+//   auth,
+//   isAuthorized,
+//   fetchAdvancePaidBookings
+// );
+// // get all bookings that completely paid money
+// router.get(
+//   "/get-completely-booked-reciepts",
+//   auth,
+//   isAuthorized,
+//   fetchAllBookedReciepts
+// );
 
-// get all the bookings whose Occation is already completed
-router.get(
-  "/get-bookings-past-occation",
-  auth,
-  isAuthorized,
-  fetchAllBookingsPastOccation
-);
+// // get all the bookings whose Occation is already completed
+// router.get(
+//   "/get-bookings-past-occation",
+//   auth,
+//   isAuthorized,
+//   fetchAllBookingsPastOccation
+// );
 // get all booking that need to be reminded for payment today
 router.get(
   "/get-payment-due-today-bookings",
