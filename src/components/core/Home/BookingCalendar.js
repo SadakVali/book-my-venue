@@ -146,7 +146,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
           content={
             <div className="z-10 flex flex-col items-start">
               {bookingInfo[0] && (
-                <p>{`Booked from 12 AM to ${bookingInfo[0]}`}</p>
+                <p>{`Booked from 12 : 00 AM to ${bookingInfo[0]}`}</p>
               )}
               {bookingInfo[1].length > 0
                 ? bookingInfo[1].map((range, index) => (
@@ -156,7 +156,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
                   ))
                 : null}
               {bookingInfo[2] && (
-                <p>{`Booked from ${bookingInfo[2]} to 11:59 PM`}</p>
+                <p>{`Booked from ${bookingInfo[2]} to 11 : 59 PM`}</p>
               )}
             </div>
           }
@@ -165,6 +165,11 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
         </Tippy>
       );
   };
+
+  const today = new Date();
+  const maxDate = new Date(today);
+  // Set the year to the next year
+  maxDate.setFullYear(maxDate.getFullYear() + 1);
 
   return (
     <>
@@ -182,6 +187,8 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
       <div className="w-fit flex flex-col justify-center items-center gap-[1rem]">
         <Calendar
           tileContent={getTileContent}
+          // minDate={new Date()}
+          // maxDate={maxDate}
           showNeighboringMonth={false}
           value={dateRange}
           onChange={(range) => setDateRange(range)}

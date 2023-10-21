@@ -29,13 +29,6 @@ const ManagerHome = () => {
 
   const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
 
-  // useEffect(() => {
-  //   if (checkIn.date && checkOut.date)
-  //     setDateRange([checkIn.date, checkOut.date]);
-  //   if (checkIn.time) setCheckInTime(checkIn.time);
-  //   if (checkOut.time) setCheckOutTime(checkOut.time);
-  // }, []);
-
   const onClickHandler = () => {
     const unixTimeStamps = [];
     if (venueBookingsGivenMonth.length > 0) {
