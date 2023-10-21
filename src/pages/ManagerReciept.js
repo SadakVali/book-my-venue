@@ -59,11 +59,11 @@ const ManagerReciept = () => {
   };
 
   const showPreviousReciept = () => {
-    if (index > 0) setIndex(-1);
+    if (index > 0) dispatch(setIndex(-1));
   };
 
   const showNextReciept = () => {
-    if (index < paymentDueToadyBookings.length - 1) setIndex(1);
+    if (index < paymentDueToadyBookings.length - 1) dispatch(setIndex(1));
   };
 
   return (
