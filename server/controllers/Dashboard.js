@@ -1,5 +1,4 @@
 // Importing the models
-const { GiCloakDagger } = require("react-icons/gi");
 const BookingInfo = require("../models/BookingInfo");
 const User = require("../models/User");
 const Venue = require("../models/Venue");
