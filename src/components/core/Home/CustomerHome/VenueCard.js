@@ -54,8 +54,8 @@ const VenueCard = ({ venueDetails }) => {
           // className="rounded-2xl mySwiper"
           className="mySwiper"
         >
-          {venueDetails.images.map((image) => (
-            <SwiperSlide>
+          {venueDetails.images.map((image, id) => (
+            <SwiperSlide key={id}>
               <img src={image.url} />
             </SwiperSlide>
           ))}
@@ -143,7 +143,7 @@ const VenueCard = ({ venueDetails }) => {
               <p className="font-montserrat text-[1rem]">
                 Non Vegetarian{" "}
                 <b className="text-[1.5rem]">
-                  ₹ {venueDetails.food.NonvegPricePerPlate}
+                  ₹ {venueDetails.food.nonvegPricePerPlate}
                 </b>{" "}
                 / Plate
               </p>

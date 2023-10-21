@@ -33,7 +33,7 @@ export const createVenue = (data, navigate, token) => async (dispatch) => {
     }
     toast.success("new venue creation successful");
     // TODO: Route to manager home <=> venue.status === "published"
-    navigate("/manager-home");
+    navigate("/");
   } catch (error) {
     console.log("CREATE VENUE API ERROR......", error);
     toast.error("New Venue Creation Failed");
@@ -62,7 +62,7 @@ export const editVenue = (data, navigate, token) => async (dispatch) => {
     }
     toast.success("editing venue successful");
     // TODO: Route to manager home <=> venue.status === "published"
-    navigate("/manager-home");
+    navigate("/");
   } catch (error) {
     console.log("EDIT VENUE DETAILS API ERROR......", error);
     toast.error("Edit Venue Details Failed");
@@ -83,7 +83,6 @@ export const fetchAllVenues = () => async (dispatch) => {
     toast.success("Fetching All Venues Successfull");
     dispatch(setVenues(response.data.data));
     localStorage.setItem("venues", JSON.stringify(response.data.data));
-    // navigate("/");
   } catch (error) {
     console.log("FETCH ALL VENUE DETAILS API ERROR......", error);
     toast.error("Fetcing Venues Failed");

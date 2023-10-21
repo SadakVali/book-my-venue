@@ -62,6 +62,7 @@ const App = () => {
           path="/customer-bookings/:bookingId"
           element=<CustomerReciept />
         />
+
         {/* routes for stricktly un-authorized managers */}
         <Route
           path="/signup"

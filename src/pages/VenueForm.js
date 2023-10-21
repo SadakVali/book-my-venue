@@ -122,6 +122,7 @@ const VenueForm = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -134,6 +135,7 @@ const VenueForm = () => {
           ]}
         />
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -146,6 +148,7 @@ const VenueForm = () => {
           ]}
         />
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -158,6 +161,7 @@ const VenueForm = () => {
           ]}
         />
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -171,6 +175,7 @@ const VenueForm = () => {
           ]}
         />
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -183,6 +188,7 @@ const VenueForm = () => {
           ]}
         />
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -270,6 +276,7 @@ const VenueForm = () => {
         />
         <div className="-mt-3">
           <TextInputField
+            trigger={trigger}
             getValues={getValues}
             errors={errors}
             register={register}
@@ -355,6 +362,7 @@ const VenueForm = () => {
           Accordingly."
         />
         <TextInputField
+          trigger={trigger}
           getValues={getValues}
           errors={errors}
           register={register}
@@ -391,6 +399,7 @@ const VenueForm = () => {
           onClick={() => getCurrentLocation({ setValue, trigger })}
         >
           <TextInputField
+            trigger={trigger}
             getValues={getValues}
             errors={errors}
             register={register}

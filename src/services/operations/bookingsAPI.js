@@ -36,8 +36,6 @@ export const createNewBooking = (data, navigate, token) => async (dispatch) => {
     dispatch(setMyBookings([response?.data?.data]));
     dispatch(setCustomerRecieptId(response?.data?.data._id));
     navigate(`/customer-bookings/${response?.data?.data._id}`);
-
-    // navigate("/Sadiq");
   } catch (error) {
     console.log("CREATE NEW BOOKING API ERROR......", error);
     toast.error("New Booking Creation Failed");

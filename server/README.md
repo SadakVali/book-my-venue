@@ -1,3 +1,3 @@
-# BookMyHall
+# BookMyVenue
 
 Venue Booking Web App

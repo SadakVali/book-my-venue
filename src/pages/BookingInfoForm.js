@@ -9,7 +9,6 @@ import * as yup from "yup";
 import TextInputField from "../components/core/VenueForm/TextInputField";
 import SecondFancyBTN from "../components/common/SecondFancyBTN";
 import {
-  checkForConflict,
   convertHour24HourToAMPM,
   localToUnixTimestamp,
 } from "../utils/utilities";

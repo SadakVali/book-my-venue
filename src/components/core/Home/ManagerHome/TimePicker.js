@@ -46,8 +46,8 @@ function TimePicker({ setState }) {
 
   const translateY = -1 * parseInt(visibleValueIndex) * itemHeightInPx;
 
-  console.log({ selectedValue: inputArr[parseInt(visibleValueIndex)] });
-  console.log({ selectedValue: parseInt(visibleValueIndex) });
+  // console.log({ selectedValue: inputArr[parseInt(visibleValueIndex)] });
+  // console.log({ selectedValue: parseInt(visibleValueIndex) });
 
   const handleTouchStart = (event) => {
     const { clientY } = event.touches[0];

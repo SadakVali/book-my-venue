@@ -48,9 +48,6 @@ const Login = () => {
   const handleOnSubmit = (event) => {
     event.preventDefault();
     dispatch(login(contactNumber, password, navigate));
-    console.log("START");
-    navigate("/venue-form");
-    console.log("END");
   };
 
   return (

@@ -40,7 +40,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
   }, []);
 
   useEffect(() => {
-    if (selectedMonth && selectedYear) {
+    if (selectedMonth && selectedYear && venue) {
       const { startingUnixTimeStamp, endingUnixTimeStamp } =
         generateStartingAndEndingUnixTimeStamps(selectedMonth, selectedYear);
       dispatch(
@@ -51,16 +51,17 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
         })
       );
     }
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear, venue]);
 
   useEffect(() => {
     if (
       selectedMonth &&
       selectedYear &&
       venueBookingsGivenMonth &&
-      venueBookingsGivenMonth.length
+      venueBookingsGivenMonth.length > 0
     ) {
       const unixTimeStamps = [];
+      console.log("STarted");
       for (const iter of venueBookingsGivenMonth) {
         const { checkInTime, checkOutTime } = iter;
         unixTimeStamps.push([checkInTime, checkOutTime]);

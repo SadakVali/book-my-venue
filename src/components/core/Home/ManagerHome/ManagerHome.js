@@ -38,16 +38,17 @@ const ManagerHome = () => {
 
   const onClickHandler = () => {
     const unixTimeStamps = [];
-    for (const iter of venueBookingsGivenMonth) {
-      const { checkInTime, checkOutTime } = iter; // unix time stamps
-      unixTimeStamps.push([checkInTime, checkOutTime]);
-    }
-    const [di, mi, yi] = formatDate(dateRange[0]).split("/");
-    const checkInUnixTime = localToUnixTimestamp(yi, mi, di, checkInTime);
-    const [doo, mo, yo] = formatDate(dateRange[1]).split("/");
-    const checkOutUnixTime = localToUnixTimestamp(yo, mo, doo, checkOutTime);
-    if (checkForConflict([checkInUnixTime, checkOutUnixTime], unixTimeStamps)) {
-      toast.error("Booking Conflict Occured");
+    if (venueBookingsGivenMonth.length > 0) {
+      for (const iter of venueBookingsGivenMonth) {
+        const { checkInTime, checkOutTime } = iter; // unix time stamps
+        unixTimeStamps.push([checkInTime, checkOutTime]);
+      }
+      const [di, mi, yi] = formatDate(dateRange[0]).split("/");
+      const checkInUnixTime = localToUnixTimestamp(yi, mi, di, checkInTime);
+      const [doo, mo, yo] = formatDate(dateRange[1]).split("/");
+      const checkOutUnixTime = localToUnixTimestamp(yo, mo, doo, checkOutTime);
+      if (checkForConflict([checkInUnixTime, checkOutUnixTime], unixTimeStamps))
+        toast.error("Booking Conflict Occured");
     } else {
       dispatch(
         setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime })

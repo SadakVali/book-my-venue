@@ -35,7 +35,7 @@ export const signup =
         contactNumber,
         password,
       });
-      console.log("SIGNUP API RESPONSE......", response?.data);
+      // console.log("SIGNUP API RESPONSE......", response?.data);
       if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("signup successful");
       navigate("/login");
@@ -60,7 +60,7 @@ export const login =
       // console.log("LOGIN API RESPONSE......", response);
       if (!response?.data?.success) throw new Error(response?.data?.message);
       toast.success("Login Successfull");
-      console.log("USER DATA...", response?.data?.data);
+      // console.log("USER DATA...", response?.data?.data);
       if (!!response?.data?.data?.token) {
         dispatch(setToken(response?.data?.data?.token));
         localStorage.setItem(
@@ -80,15 +80,17 @@ export const login =
         "token",
         JSON.stringify(response?.data?.data?.token)
       );
-      // console.log(navigate);
-      // navigate("/dashboard/payment-due-today-bookings");
-
-      // if (response?.data?.data?.venue) navigate("/manager-home");
-      // else {
-      //   console.log("else part is being executed");
-      //   navigate("/venue-form");
-      // }
-      console.log("Login API end...");
+      if (response?.data?.data?.venue) {
+        navigate("/");
+        console.log(
+          "Something fishy is happening bro",
+          response?.data?.data?.user?.venue
+        );
+      } else {
+        navigate("/venue-form");
+        console.log("Its Somehow getting redicted Bro");
+      }
+      // console.log("Login API end...");
     } catch (error) {
       console.log("LOGIN API ERROR......", error);
       toast.error("Login Failed");
