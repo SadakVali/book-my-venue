@@ -144,6 +144,35 @@ textarea::-webkit-scrollbar {
   background: url("./assets/Images/WelComeScreen.png") center center/cover
     no-repeat;
   z-index: 100;
+  animation: fadeOut 3s ease-in-out; /* Adjust the duration and timing function as needed */
+}
+
+@keyframes fadeOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.home-screen {
+  animation: fadeIn 2s ease-in-out;
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 .swiper {

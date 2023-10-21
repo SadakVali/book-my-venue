@@ -4,7 +4,7 @@ const User = require("../models/User");
 const Venue = require("../models/Venue");
 
 // const constants
-const { BOOKING_STATUS, ACCOUNT_TYPE } = require("../utils/constants");
+const { BOOKING_STATUS } = require("../utils/constants");
 
 // create a new booking
 exports.createNewBooking = async (req, res) => {
@@ -45,7 +45,30 @@ exports.createNewBooking = async (req, res) => {
         message: "All fields are required",
       });
 
-    console.log("Entered the controller");
+    // console.log("Entered the controller");
+
+    const existingBookings = await BookingInfo.find({
+      venueId,
+      // return those existing bookings those satisfy bothe the conditions below
+      $and: [
+        {
+          // This part checks if the existing booking's check-in time is less
+          // than or equal to the new booking's check-out time.
+          checkInTime: { $lte: checkOutTime },
+          // This part checks if the existing booking's check-out time is greater
+          // than or equal to the new booking's check-in time.
+          checkOutTime: { $gte: checkInTime },
+        },
+      ],
+    });
+
+    // If there are existing bookings with a time conflict, return an error response
+    if (existingBookings.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: "Booking time conflict with existing booking",
+      });
+    }
 
     const newBookingDetails = await BookingInfo.create({
       venueName,
@@ -61,12 +84,12 @@ exports.createNewBooking = async (req, res) => {
       totalAmount,
       bookingStatus: BOOKING_STATUS.ADVANCE_PAID,
     });
-    console.log({ newBookingDetails });
+    // console.log({ newBookingDetails });
     // updating the allBookings field of the venue
     const updatedVenue = await Venue.findByIdAndUpdate(venueId, {
       $push: { allBookings: newBookingDetails._id },
     }).exec();
-    console.log("DONE", updatedVenue);
+    // console.log("DONE", updatedVenue);
     // let customer = await User.findOne({
     //   contactNumber: customerContactNumber,
     // });

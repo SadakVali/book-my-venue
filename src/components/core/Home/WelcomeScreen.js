@@ -1,6 +1,6 @@
 import React from "react";
 
-const Home = ({ disableWelcomeScreen }) => {
+const WelcomeScreen = ({ disableWelcomeScreen }) => {
   return (
     <div
       className={`welcome-screen fixed w-screen h-screen top-0 bottom-0 
@@ -11,4 +11,4 @@ const Home = ({ disableWelcomeScreen }) => {
   );
 };
 
-export default Home;
+export default WelcomeScreen;

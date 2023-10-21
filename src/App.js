@@ -37,8 +37,8 @@ const App = () => {
     // Set a timeout to disable the WelcomeScreen image after 3 seconds
     const timeout = setTimeout(() => {
       setDisableWelcomeScreen(true);
-      // }, 5000);
-    }, 100);
+    }, 3000);
+    // }, 100);
     // Clear the timeout when the component unmounts to avoid memory leaks
     return () => {
       clearTimeout(timeout);
@@ -128,29 +128,3 @@ const App = () => {
 };
 
 export default App;
-
-/* 
-
-1. 
-2. Code Refactoring
-3. WORK ON THE TIME PICKER SCROLL BARS
-4. productionize
-5. After talking with the Function Hall Managers work on Responsiveness of the WebApp;
-  Create intro video; Register Company and startup; update LinkedIn Profile; 
-  Inform Love Babbar, Karthik, Heena; Test the App with Profesional(Kalyan, Khaleel) 
-
-6. Work on the Frontend and Backend of the Marital Status WebApp
-7. Complete the Deep Learning Backend
-8. Complete Productionization: Talk to the Munwar Bhayya, SRIT Vishnu, Uday, 
-  Karthik AAIC about Productionization. If they can't help then use locale host 
-  as the backend server
-9. DSA
-
-
-
-1. cancel and booked status changing of a booking based on password verfication
-2. Prepare Filters on the customer Home Page
-3. impliment transition for authentication side bar
-4. pagination
-
-*/

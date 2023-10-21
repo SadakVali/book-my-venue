@@ -84,8 +84,8 @@ export const checkForConflict = (newBooking, existingBookings) => {
     const [existingCheckInTimestamp, existingCheckOutTimestamp] =
       existingBooking;
     if (
-      newCheckInTimestamp < existingCheckOutTimestamp &&
-      newCheckOutTimestamp > existingCheckInTimestamp
+      newCheckInTimestamp <= existingCheckOutTimestamp &&
+      newCheckOutTimestamp >= existingCheckInTimestamp
     )
       return true;
   }
@@ -208,10 +208,10 @@ export const generateBookingStatusOfEachDay = (
       unixTimestampToLocal(startUnixTiemStamp);
     const [endYear, endMonth, endDay, endHours] =
       unixTimestampToLocal(endUnixTimeStamp);
-    console.log({
-      start: [strYear, strMonth, strDay, strHours],
-      end: [endYear, endMonth, endDay, endHours],
-    });
+    // console.log({
+    //   start: [strYear, strMonth, strDay, strHours],
+    //   end: [endYear, endMonth, endDay, endHours],
+    // });
     const startDate = new Date(strYear, strMonth - 1, strDay);
     const endDate = new Date(endYear, endMonth - 1, endDay);
 
@@ -301,14 +301,14 @@ export const generateBookingStatusOfEachDay = (
   //   start: [2024, 1, 12, 15]}
   //   ]
 
-  // TODO: Need to eliminate before productioinization
+  // // TODO: Need to eliminate before productioinization
   bookingStatus["15/12/2023"] = [
-    8,
+    convertHour24HourToAMPM(8),
     [
-      [9, 13],
-      [14, 17],
+      [convertHour24HourToAMPM(9), convertHour24HourToAMPM(13)],
+      [convertHour24HourToAMPM(14), convertHour24HourToAMPM(17)],
     ],
-    18,
+    convertHour24HourToAMPM(18),
   ];
 
   setBookingStatus(bookingStatus);

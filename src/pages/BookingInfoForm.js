@@ -9,11 +9,10 @@ import * as yup from "yup";
 import TextInputField from "../components/core/VenueForm/TextInputField";
 import SecondFancyBTN from "../components/common/SecondFancyBTN";
 import {
+  checkForConflict,
   convertHour24HourToAMPM,
   localToUnixTimestamp,
-  unixTimestampToLocal,
 } from "../utils/utilities";
-import { BOOKING_STATUS } from "../utils/constants";
 
 // API call related imports
 import { createNewBooking } from "../services/operations/bookingsAPI";
@@ -61,6 +60,7 @@ const BookingInfoForm = () => {
   const { venue } = useSelector((state) => state.venue);
   const { user } = useSelector((state) => state.user);
   const { checkIn, checkOut } = useSelector((state) => state.newBooking);
+  const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
 
   const {
     register,

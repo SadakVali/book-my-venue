@@ -20,6 +20,7 @@ import { bookingsOfVenueGivenMonth } from "../../../services/operations/bookings
 import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 
+// define the component level constants
 let oneTime;
 
 const BookingCalendar = ({ dateRange, setDateRange }) => {
@@ -35,7 +36,6 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
   const [bookingStatus, setBookingStatus] = useState([]);
 
   useEffect(() => {
-    // define the component level constants
     oneTime = true;
   }, []);
 

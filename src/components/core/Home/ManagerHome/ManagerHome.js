@@ -1,5 +1,5 @@
 // import packages
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -8,11 +8,16 @@ import SecondFancyBTN from "../../../common/SecondFancyBTN";
 import TimePicker from "./TimePicker";
 
 // import utility functions
-import { formatDate } from "../../../../utils/utilities";
+import {
+  checkForConflict,
+  formatDate,
+  localToUnixTimestamp,
+} from "../../../../utils/utilities";
 
 // redux related imports
 import { setCheckIn, setCheckOut } from "../../../../slices/newBookingSlice";
 import BookingCalendar from "../BookingCalendar";
+import toast from "react-hot-toast";
 
 const ManagerHome = () => {
   const navigate = useNavigate();
@@ -22,6 +27,8 @@ const ManagerHome = () => {
   const [checkInTime, setCheckInTime] = useState(null);
   const [checkOutTime, setCheckOutTime] = useState(null);
 
+  const { venueBookingsGivenMonth } = useSelector((state) => state.newBooking);
+
   // useEffect(() => {
   //   if (checkIn.date && checkOut.date)
   //     setDateRange([checkIn.date, checkOut.date]);
@@ -30,11 +37,26 @@ const ManagerHome = () => {
   // }, []);
 
   const onClickHandler = () => {
-    dispatch(setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime }));
-    dispatch(
-      setCheckOut({ date: formatDate(dateRange[1]), time: checkOutTime })
-    );
-    navigate("/booking-info-form");
+    const unixTimeStamps = [];
+    for (const iter of venueBookingsGivenMonth) {
+      const { checkInTime, checkOutTime } = iter; // unix time stamps
+      unixTimeStamps.push([checkInTime, checkOutTime]);
+    }
+    const [di, mi, yi] = formatDate(dateRange[0]).split("/");
+    const checkInUnixTime = localToUnixTimestamp(yi, mi, di, checkInTime);
+    const [doo, mo, yo] = formatDate(dateRange[1]).split("/");
+    const checkOutUnixTime = localToUnixTimestamp(yo, mo, doo, checkOutTime);
+    if (checkForConflict([checkInUnixTime, checkOutUnixTime], unixTimeStamps)) {
+      toast.error("Booking Conflict Occured");
+    } else {
+      dispatch(
+        setCheckIn({ date: formatDate(dateRange[0]), time: checkInTime })
+      );
+      dispatch(
+        setCheckOut({ date: formatDate(dateRange[1]), time: checkOutTime })
+      );
+      navigate("/booking-info-form");
+    }
   };
 
   return (
@@ -50,13 +72,13 @@ const ManagerHome = () => {
             <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
               Check In Time
             </p>
-            <TimePicker setState={setCheckInTime} prevState={checkInTime} />
+            <TimePicker setState={setCheckInTime} />
           </div>
           <div className="flex flex-col justify-center items-center gap-8">
             <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
               Check Out Time
             </p>
-            <TimePicker setState={setCheckOutTime} prevState={checkOutTime} />
+            <TimePicker setState={setCheckOutTime} />
           </div>
         </div>
       )}
