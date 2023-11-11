@@ -15,44 +15,27 @@ const SignupSidebar = () => {
     setStep2(false);
   });
 
-  return step2 ? (
+  return (
     <div
-      className="gap-y-4 fixed right-[0%] top-[50%] -translate-y-[50%] 
-      bg-[#E2E5EA] px-4 min-h-screen z-[10000] flex flex-col items-center 
-      justify-center"
-      ref={ref}
+      className="flex flex-col items-center gap-y-16 bg-[#E2E5EA] px-4 
+      min-h-screen justify-center absolute min-w-full z-[10000]"
     >
-      <div
-        className="text-gradient w-fit text-[4rem] flex flex-col items-center 
-        justify-center !font-accent"
-      >
-        <p>You Don't Need to</p>
-        <p>LogIn / SignUp</p>
-        <p>to Use Our Platform</p>
-      </div>
-    </div>
-  ) : (
-    <div
-      className="flex flex-col items-center gap-y-4 fixed right-[0%] top-[50%] 
-      -translate-y-[50%] bg-[#E2E5EA] px-4 min-h-screen justify-center
-      z-[1000]"
-    >
-      <p className="text-gradient w-fit text-[6rem]">
+      <p className="text-gradient w-fit text-[5rem]">
         Are You a<sub>.</sub>
       </p>
-      <div className="flex items-center gap-x-8">
+      <div className="flex flex-col items-center gap-y-8 w-full">
         <FirstFancyBTN
-          text="Function Hall Customer ?"
+          text="Customer?"
           onClick={() => {
             navigator("/");
-            setStep2(true);
+            dispatch(setSidebarFlag(false));
           }}
         />
-        <p className="text-gradient w-fit text-[6rem]">
+        <p className="text-gradient w-fit text-[5rem]">
           <sub>.</sub>OR<sub>...</sub>
         </p>
         <FirstFancyBTN
-          text="Function Hall Manager ?"
+          text="Manager?"
           onClick={() => dispatch(setSidebarFlag(false))}
         />
       </div>

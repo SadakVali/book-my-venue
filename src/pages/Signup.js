@@ -110,7 +110,7 @@ const Signup = () => {
       {loading ? (
         <div className="spinner"></div>
       ) : (
-        <form onSubmit={handleOnSubmit} className="w-full max-w-fit">
+        <form onSubmit={handleOnSubmit} className="w-full max-w-fit m-4">
           <div className="flex flex-col gap-y-14">
             <div className="flex flex-col gap-y-6">
               <label>
@@ -129,7 +129,7 @@ const Signup = () => {
                   />
                   {nameTickFlagState && <Tick />}
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
 
               <label className="w-full">
@@ -153,7 +153,7 @@ const Signup = () => {
                     confirmContactNumber &&
                     isValidContactNum && <Tick />}
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
 
               <label className="w-full">
@@ -177,7 +177,7 @@ const Signup = () => {
                     contactNumber &&
                     isValidContactNum && <Tick />}
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
 
               <label className="w-full">
@@ -209,7 +209,7 @@ const Signup = () => {
                     confirmPassword &&
                     isPasswordStrong && <Tick />}
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
 
               <label className="w-full">
@@ -243,7 +243,7 @@ const Signup = () => {
                     <Tick />
                   )}
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
             </div>
             <FirstFancyBTN text="Sign Up" />

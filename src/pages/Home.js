@@ -16,8 +16,8 @@ const Home = () => {
   }, []);
   return (
     <div
-      className="flex flex-col justify-center items-center w-11/12 max-w-maxContent 
-      mx-auto my-16 gap-y-8 home-screen"
+      className="flex flex-col justify-center items-center w-full sm:w-11/12 
+      max-w-maxContent mx-auto my-16 gap-y-8 home-screen"
     >
       {token ? <ManagerHome /> : <CustomerHome />}
     </div>

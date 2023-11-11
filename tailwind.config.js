@@ -145,7 +145,7 @@ module.exports = {
     },
     extend: {
       maxWidth: {
-        maxContent: "1260px",
+        maxContent: "1120px", // 1120px 1260px
         maxContentTab: "650px",
       },
     },

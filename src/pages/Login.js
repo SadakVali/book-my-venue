@@ -55,7 +55,7 @@ const Login = () => {
       {loading ? (
         <div className="spinner"></div>
       ) : (
-        <form onSubmit={handleOnSubmit} className="w-full max-w-fit">
+        <form onSubmit={handleOnSubmit} className="w-full max-w-fit m-4">
           <div className="flex flex-col gap-y-10">
             <div className="flex flex-col gap-y-6">
               <label className="w-full">
@@ -76,7 +76,7 @@ const Login = () => {
                   />
                   {tickFlagState && <Tick />}
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
 
               <label className="w-full">
@@ -104,7 +104,7 @@ const Login = () => {
                     )}
                   </span>
                 </div>
-                <div className="h-[0.0625rem] bg-[#4135F3]"></div>
+                <div className="h-[0.5px] bg-[#4135F3]"></div>
               </label>
               <div className="flex justify-between items-center">
                 <Link to="/forgot-password">

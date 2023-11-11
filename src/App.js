@@ -7,7 +7,6 @@ import { Routes, Route } from "react-router-dom";
 // import pages
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Contact from "./pages/Contact";
 import VenueDetails from "./pages/VenueDetails";
 import CustomerBookings from "./pages/CustomerBookings";
 import CustomerReciept from "./pages/CustomerReciept";
@@ -48,14 +47,13 @@ const App = () => {
   return !disableWelcomeScreen ? (
     <WelcomeScreen disableWelcomeScreen={disableWelcomeScreen} />
   ) : (
-    <div className="min-h-screen flex flex-col bg-[#ECEFF4]">
+    <div className="min-h-screen flex flex-col bg-[#ECEFF4] w-full">
       <Navbar />
       {sidebarFlag && <SignupSidebar />}
       <Routes>
         {/* routes for any type of users */}
         <Route path="/" element=<Home /> />
         <Route path="/about" element=<About /> />
-        <Route path="/contact" element=<Contact /> />
         <Route path="/venues/:venueId" element=<VenueDetails /> />
         <Route path="/customer-bookings" element=<CustomerBookings /> />
         <Route

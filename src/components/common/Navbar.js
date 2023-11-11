@@ -5,6 +5,7 @@ import logo from "../../assets/Logo/logo.png";
 import { NavbarLinks } from "../../assets/data/NavbarLinks";
 import ProfileDropDown from "../core/Auth/ProfileDropDown";
 import { setSidebarFlag } from "../../slices/authSlice";
+import NavSidebar from "./NavSidebar";
 
 const Navbar = () => {
   const { token } = useSelector((state) => state.auth);
@@ -17,7 +18,7 @@ const Navbar = () => {
         {/* company Logo and name */}
         <Link to="/" className="flex items-center justify-center">
           <img src={logo} alt="Logo" loading="lazy" width={80} />
-          <p className="text-gradient text-[4rem]">
+          <p className="text-gradient text-[4rem] hidden lg:inline">
             BookMyVenue<sub>.</sub>
           </p>
         </Link>
@@ -65,6 +66,9 @@ const Navbar = () => {
             </Link>
           )}
           {token !== null && <ProfileDropDown />}
+        </div>
+        <div className="inline md:hidden">
+          <NavSidebar />
         </div>
       </div>
     </div>

@@ -43,7 +43,7 @@ const ProfileDropDown = () => {
             px-[12px] hover:bg-[#ECEFF4]"
           >
             <AiOutlineProfile className="text-lg" />
-            <p className=" whitespace-nowrap">Venue Details</p>
+            <p className="whitespace-nowrap">Venue Details</p>
           </Link>
           <Link
             to="/dashboard/payment-due-today-bookings"
