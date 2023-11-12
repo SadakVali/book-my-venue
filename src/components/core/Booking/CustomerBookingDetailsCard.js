@@ -32,7 +32,7 @@ const CustomerBookingDetailsCard = ({ bookingDetails }) => {
           src={profileImgSrc}
           alt={`profile-${bookingDetails?.customerName}`}
           loading="lazy"
-          className="aspect-square w-[100px] rounded-full object-cover"
+          className="aspect-square w-[50px] rounded-full object-cover"
         />
         <div>
           <p className="font-montserrat font-semibold text-[1.125rem] text-[#4135F3]">
@@ -50,7 +50,7 @@ const CustomerBookingDetailsCard = ({ bookingDetails }) => {
           </div>
         </div>
       </div>
-      <div className="font-montserrat text-[1rem]">
+      <div className="font-montserrat text-[0.9rem]">
         <p>
           Personal Number :{" "}
           <span className="text-[#4135F3]">
@@ -58,14 +58,14 @@ const CustomerBookingDetailsCard = ({ bookingDetails }) => {
           </span>
         </p>
         <p>
-          Check In Time :{" "}
+          Check In :{" "}
           <span className="text-[#4135F3]">
             {unixAdjustment(bookingDetails?.checkInTime, "t")} on{" "}
             {unixAdjustment(bookingDetails?.checkInTime)}
           </span>
         </p>
         <p>
-          Check Out Time :{" "}
+          Check Out :{" "}
           <span className="text-[#4135F3]">
             {unixAdjustment(bookingDetails?.checkOutTime, "t")} on{" "}
             {unixAdjustment(bookingDetails?.checkOutTime)}

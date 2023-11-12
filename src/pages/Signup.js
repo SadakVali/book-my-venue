@@ -106,7 +106,7 @@ const Signup = () => {
   const handlePaste = (e) => e.preventDefault();
 
   return (
-    <div className="grid my-auto place-items-center">
+    <div className="grid my-8 place-items-center">
       {loading ? (
         <div className="spinner"></div>
       ) : (

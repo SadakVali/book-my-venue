@@ -54,7 +54,7 @@ const CustomerReciept = () => {
 
   return (
     <div
-      className="my-16 w-11/12 max-w-maxContent mx-auto flex flex-col justify-center 
+      className="my-16 sm:w-11/12 px-1 max-w-maxContent mx-auto flex flex-col justify-center 
       gap-y-24 items-center"
     >
       {customerReciept && (
@@ -64,7 +64,7 @@ const CustomerReciept = () => {
         />
       )}
       {token && (
-        <div className="flex w-[100%] justify-evenly">
+        <div className="flex justify-evenly gap-8 mx-auto flex-wrap">
           {BOOKING_STATUS.CANCELLED !== customerReciept.bookingStatus && (
             <SecondFancyBTN text="Mark Cancelled" onClick={onCancel} />
           )}

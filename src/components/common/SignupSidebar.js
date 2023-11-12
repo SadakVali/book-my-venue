@@ -25,7 +25,7 @@ const SignupSidebar = () => {
       </p>
       <div className="flex flex-col items-center gap-y-8 w-full">
         <FirstFancyBTN
-          text="Customer?"
+          text="Venue Customer?"
           onClick={() => {
             navigator("/");
             dispatch(setSidebarFlag(false));
@@ -35,7 +35,7 @@ const SignupSidebar = () => {
           <sub>.</sub>OR<sub>...</sub>
         </p>
         <FirstFancyBTN
-          text="Manager?"
+          text="Venue Manager?"
           onClick={() => dispatch(setSidebarFlag(false))}
         />
       </div>

@@ -74,10 +74,13 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
   return (
     <>
       {/* customer and function hall details */}
-      <div className="w-[90%] flex justify-between items-end">
+      <div className="w-[90%] flex justify-between items-end flex-wrap gap-8">
         {/* customer data */}
-        <div className="flex flex-col justify-center items-start">
-          <h1 className="text-gradient text-[2rem] w-fit !font-['Open_Sans']">
+        <div className="mx-auto flex flex-col justify-center items-start">
+          <h1
+            className="text-gradient w-fit !font-['Open_Sans']"
+            style={{ fontSize: "clamp(1.25rem, 4.5vw, 2rem)" }}
+          >
             {customerReciept.customerName}
           </h1>
           <div className="flex gap-2">
@@ -88,12 +91,15 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
           </div>
         </div>
         {/* function hall data */}
-        <div className="flex flex-col justify-center items-end">
-          <h1 className="text-gradient text-[2rem] w-fit !font-['Open_Sans']">
+        <div className="mx-auto flex flex-col justify-center items-end">
+          <h1
+            className="text-gradient w-fit !font-['Open_Sans']"
+            style={{ fontSize: "clamp(1.25rem, 4.5vw, 2rem)" }}
+          >
             {customerReciept.venueName}
           </h1>
           <p className="text-[1rem] font-montserrat">
-            {customerReciept.venueAddress}
+            {customerReciept.venueAddress.split(",").slice(0, 1).join("")}
           </p>
           <div className="flex gap-2">
             <p className="text-[1rem] font-montserrat">Manager Number : </p>
@@ -104,7 +110,7 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
         </div>
       </div>
       {/* Booking Status indicator */}
-      <div className="w-[75%] -mt-8 flex justify-center items-center gap-2">
+      <div className="sm:w-[75%] relative -left-[15%] sm:left-[0%] mx-auto -mt-8 flex flex-col sm:flex-row justify-center items-center gap-2">
         <div
           className="rounded-full bg-[#4135F3] w-12 h-12 text-white text-[1.5rem]
           font-montserrat font-bold flex justify-center items-center relative"
@@ -112,21 +118,21 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
           <p>{steps[0].id}</p>
           <p
             className="absolute text-[#4135F3] text-[1rem] font-montserrat
-            -bottom-8 whitespace-nowrap"
+            sm:-bottom-8 left-14 sm:-left-14 whitespace-nowrap"
           >
             {steps[0].title}
           </p>
         </div>
-        <div className="h-1 flex-grow border-dashed border-b-2 border-richblack-500"></div>
+        <div className="sm:h-1 h-24 w-1 flex-grow border-dashed border-r-2 sm:border-b-2 border-richblack-500"></div>
         <div
           className="rounded-full bg-[#4135F3] w-12 h-12 text-white text-[1.5rem]
           font-montserrat font-bold flex justify-center items-center relative"
         >
           <p>{steps[1].id}</p>
-          <div className="absolute -bottom-[3.5rem] flex justify-center items-center flex-col">
+          <div className="absolute sm:-bottom-[3.5rem] left-14 sm:-left-[5.5rem] flex justify-center sm:items-center flex-col">
             <p
-              className=" text-[#4135F3] text-[1rem] font-montserrat
-              whitespace-nowrap"
+              className="text-[#4135F3] text-[1rem] font-montserrat
+              sm:whitespace-nowrap"
             >
               {`${steps[1].title} ${customerReciept.advancePaid.toLocaleString(
                 "en-IN"
@@ -140,7 +146,7 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
             </p>
           </div>
         </div>
-        <div className="h-1 flex-grow border-dashed border-b-2 border-richblack-500"></div>
+        <div className="sm:h-1 h-24 w-1 flex-grow border-dashed border-r-2 sm:border-b-2 border-richblack-500"></div>
         <div
           className={`rounded-full w-12 h-12 text-white text-[1.5rem]
           font-montserrat font-bold flex justify-center items-center relative 
@@ -152,12 +158,12 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
         >
           <p>{steps[2].id}</p>
           <div
-            className={`absolute flex justify-center items-center 
+            className={`absolute flex justify-center sm:items-center 
             flex-col ${
               BOOKING_STATUS.BOOKED === customerReciept.bookingStatus ||
               BOOKING_STATUS.ADVANCE_PAID === customerReciept.bookingStatus
-                ? "-bottom-[3.5rem]"
-                : "-bottom-8"
+                ? "sm:-bottom-[3.5rem] left-14 sm:-left-7"
+                : "sm:-bottom-8"
             }`}
           >
             <p
@@ -188,53 +194,53 @@ const Reciept = ({ customerReciept, setSummaryStateInRedux }) => {
         </div>
       </div>
       {/* Booking information and customer followup summary */}
-      <div className="flex w-[90%] justify-between items-end gap-x-16">
+      <div className="flex mx-auto sm:w-[90%] justify-between items-center sm:items-end gap-16 flex-wrap">
         {/* Complete Booking Information */}
-        <div className="flex flex-col gap-y-1 justify-between max-w-[520px]">
+        <div className="mx-auto flex flex-col gap-y-1 justify-between">
           <div className="flex gap-x-2">
-            <p className="text-[1rem] font-inter leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter leading-none">
               Total Amount :
             </p>
-            <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter text-[#4135F3] leading-none">
               {customerReciept.totalAmount.toLocaleString("en-IN")}/- INR
             </p>
           </div>
           <div className="flex gap-x-2">
-            <p className="text-[1rem] font-inter leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter leading-none">
               Next Payment Due Date :
             </p>
-            <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter text-[#4135F3] leading-none">
               {unixAdjustment(customerReciept?.nextPaymentDueDate)}
             </p>
           </div>
           <div className="flex gap-x-2">
-            <p className="text-[1rem] font-inter leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter leading-none">
               Check In Time :
             </p>
-            <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter text-[#4135F3] leading-none">
               {unixAdjustment(customerReciept?.checkInTime, "t")} on{" "}
               {unixAdjustment(customerReciept?.checkInTime)}
             </p>
           </div>
           <div className="flex gap-x-2">
-            <p className="text-[1rem] font-inter leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter leading-none">
               Check Out Time :
             </p>
-            <p className="text-[1rem] font-inter text-[#4135F3] leading-none">
+            <p className="text-[0.9rem] sm:text-[1rem] font-inter text-[#4135F3] leading-none">
               {unixAdjustment(customerReciept?.checkOutTime, "t")} on{" "}
               {unixAdjustment(customerReciept?.checkOutTime)}
             </p>
           </div>
-          <p className="text-[1rem] font-inter leading-tight mt-5">
+          <p className="min-w-[350px] max-w-[450px] lg:inline hidden text-[1rem] font-inter leading-tight mt-5">
             <b>NOTE : </b>If You Fail to Pay the Full payment Before this Date
             Without any Proper Reason, Your Booking Can be Cancelled by the
             Manager. Please Contact Manager and Discuss If you Need more Time.
           </p>
         </div>
         {/* customer followup summary */}
-        <div className="flex flex-col gap-y-5 w-full justify-end">
+        <div className="mx-auto flex flex-col gap-y-5 w-full justify-end max-w-[400px] min-w-[320px]">
           <p className="text-[1rem] font-inter leading-none">
-            Summary of Last Payment Reminder Phone Call :
+            Summary of Last Payment Reminder Call :
           </p>
           <form
             className="flex flex-col gap-y-6 relative"

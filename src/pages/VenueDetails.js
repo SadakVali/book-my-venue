@@ -6,7 +6,7 @@ const VenueDetails = () => {
   const [dateRange, setDateRange] = useState([]);
   return (
     <div
-      className="w-11/12 max-w-maxContentTab mx-auto my-auto 
+      className="w-full sm:w-11/12 max-w-maxContentTab mx-auto my-auto 
       grid gap-y-16 place-items-center"
     >
       <BookingCalendar setDateRange={(dateRange, setDateRange)} />

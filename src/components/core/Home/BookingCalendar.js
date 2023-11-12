@@ -173,14 +173,17 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
 
   return (
     <>
-      <div
-        className="text-gradient w-full text-[2.5rem] flex flex-col items-center
-        justify-center"
-      >
-        <p className="font-extrabold font-accent">
+      <div className="text-gradient w-full hidden sm:flex gap-4 flex-col items-center justify-center">
+        <p
+          className="font-extrabold font-accent"
+          style={{ fontSize: "clamp(1rem, 4.5vw, 2rem)" }}
+        >
           Simplify Your Booking Experience &
         </p>
-        <p className="font-extrabold font-accent">
+        <p
+          className="font-extrabold font-accent text-[2vw]"
+          style={{ fontSize: "clamp(1rem, 4.5vw, 2rem)" }}
+        >
           Stress-Free Reservations for Managers
         </p>
       </div>
@@ -218,7 +221,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
               Booked
             </p>
           </div>
-          <div className="relative w-[3rem] h-[3rem] rounded-[0.625rem] bg-white">
+          <div className="relative right-4 sm:right-0 w-[3rem] h-[3rem] rounded-[0.625rem] bg-white">
             <p
               className="absolute font-montserrat text-black text-[0.75rem] 
               font-bold left-[50%] top-[50%]"
@@ -226,7 +229,7 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
               Available
             </p>
           </div>
-          <div className="relative w-[3rem] h-[3rem] rounded-[0.625rem] bg-[#cfd]">
+          <div className="relative right-8 sm:right-0 w-[3rem] h-[3rem] rounded-[0.625rem] bg-[#cfd]">
             <p
               className="absolute font-montserrat text-black text-[0.75rem] 
               font-bold left-[50%] top-[50%]"

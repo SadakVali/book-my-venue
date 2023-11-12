@@ -71,7 +71,7 @@ const VenueCard = ({ venueDetails }) => {
       {/* function hall info */}
       <div className="w-full flex flex-col gap-y-4 justify-center items-start">
         {/* <div className="w-full flex justify-between items-end"> */}
-        <div className="w-full flex justify-between items-end px-4 pb-4">
+        <div className="w-full flex justify-between items-end px-4 xl:px-0 pb-4">
           {/* function hall name & address */}
           <div className="flex flex-col justify-center items-start">
             <h1 className="text-gradient text-[2rem] w-fit !font-['Open_Sans']">

@@ -53,7 +53,7 @@ const CheckboxInputField = ({
                 type="checkbox"
                 name={inTagName}
                 checked={userInteractionArr[index]}
-                className="relative appearance-none w-[1.9rem] aspect-square 
+                className="relative appearance-none min-w-[1.9rem] aspect-square 
                 rounded-md bg-white"
                 {...register(inTagName)}
               />

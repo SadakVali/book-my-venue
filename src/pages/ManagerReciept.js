@@ -78,13 +78,13 @@ const ManagerReciept = () => {
         />
       )}
       {paymentDueToadyBookings && (
-        <div className="flex justify-around items-center w-[100%]">
+        <div className="mx-auto flex justify-around items-center gap-8 w-[100%] flex-wrap">
           <ColorArrowRight
             onClick={showPreviousReciept}
             className={`cursor-pointer rotate-180 active:scale-90 h-[3.5rem] 
             w-[3.5rem] ${index === 0 && "opacity-20 pointer-events-none"}`}
           />
-          <div className="flex gap-x-12">
+          <div className="flex order-1 gap-x-12 justify-center flex-wrap gap-8">
             {BOOKING_STATUS.CANCELLED !==
               paymentDueToadyBookings[index].bookingStatus && (
               <SecondFancyBTN text="Mark Cancelled" onClick={onCancel} />
@@ -96,7 +96,7 @@ const ManagerReciept = () => {
           </div>
           <ColorArrowRight
             onClick={showNextReciept}
-            className={`cursor-pointer active:scale-90 h-[3.5rem] w-[3.5rem] ${
+            className={`cursor-pointer lg:order-2 active:scale-90 h-[3.5rem] w-[3.5rem] ${
               index === paymentDueToadyBookings.length - 1 &&
               "opacity-20 pointer-events-none"
             }`}

@@ -31,7 +31,7 @@ const PaymentDueTodayBookings = () => {
   return (
     <div
       className="my-16 w-11/12 max-w-maxContent mx-auto flex gap-x-6 flex-wrap justify-center 
-      gap-y-24 items-center"
+      gap-y-12 items-center"
     >
       {paymentDueToadyBookings &&
         paymentDueToadyBookings.map((booking) => (
@@ -53,7 +53,7 @@ const PaymentDueTodayBookings = () => {
                 src={`https://api.dicebear.com/5.x/initials/svg?seed=${booking?.customerName}`}
                 alt={`profile-${booking?.customerName}`}
                 loading="lazy"
-                className="aspect-square w-[100px] rounded-full object-cover"
+                className="aspect-square w-[50px] rounded-full object-cover"
               />
               <div>
                 <p className="font-montserrat font-semibold text-[1.125rem] text-[#4135F3]">
@@ -71,7 +71,7 @@ const PaymentDueTodayBookings = () => {
                 </div>
               </div>
             </div>
-            <div className="font-montserrat text-[1rem]">
+            <div className="font-montserrat text-[0.95rem]">
               <p>
                 Personal Number :{" "}
                 <span className="text-[#4135F3]">
@@ -79,14 +79,14 @@ const PaymentDueTodayBookings = () => {
                 </span>
               </p>
               <p>
-                Check In Time :{" "}
+                Check In :{" "}
                 <span className="text-[#4135F3]">
                   {unixAdjustment(booking?.checkInTime, "t")} on{" "}
                   {unixAdjustment(booking?.checkInTime)}
                 </span>
               </p>
               <p>
-                Check Out Time :{" "}
+                Check Out :{" "}
                 <span className="text-[#4135F3]">
                   {unixAdjustment(booking?.checkOutTime, "t")} on{" "}
                   {unixAdjustment(booking?.checkOutTime)}
