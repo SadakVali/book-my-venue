@@ -59,40 +59,33 @@ const ManagerHome = () => {
       className="min-h-[70vh] h-full w-11/12 max-w-maxContentTab mx-auto flex flex-col
       justify-center items-center"
     >
-      {dateRange && dateRange.length === 0 && (
-        <BookingCalendar setDateRange={setDateRange} dateRange={dateRange} />
-      )}
+      <BookingCalendar setDateRange={setDateRange} dateRange={dateRange} />
       {/* Check in & check time time pickers */}
       {dateRange && dateRange.length > 0 && (
-        <div
-          className="fixed left-0 right-0 flex flex-col 
-          justify-center items-center gap-y-16"
-        >
-          <div className="flex gap-16 flex-col sm:flex-row">
-            <div className="flex flex-col justify-center items-center gap-8">
-              <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
-                Check In Time
-              </p>
-              <TimePicker setState={setCheckInTime} />
-            </div>
-            <div className="flex flex-col justify-center items-center gap-8">
-              <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
-                Check Out Time
-              </p>
-              <TimePicker setState={setCheckOutTime} />
-            </div>
+        <div className="flex gap-16 flex-col sm:flex-row">
+          <div className="flex flex-col justify-center items-center gap-8">
+            <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
+              Check In Time
+            </p>
+            <TimePicker setState={setCheckInTime} />
           </div>
-          <div
-            className={`${
-              checkInTime !== null && checkOutTime !== null
-                ? ""
-                : "pointer-events-none opacity-50"
-            } `}
-          >
-            <SecondFancyBTN text="Next" onClick={onClickHandler} />
+          <div className="flex flex-col justify-center items-center gap-8">
+            <p className="text-[1.25rem] text-[#4135F3] font-montserrat">
+              Check Out Time
+            </p>
+            <TimePicker setState={setCheckOutTime} />
           </div>
         </div>
       )}
+      <div
+        className={`${
+          checkInTime !== null && checkOutTime !== null
+            ? ""
+            : "pointer-events-none opacity-50"
+        } `}
+      >
+        <SecondFancyBTN text="Next" onClick={onClickHandler} />
+      </div>
     </div>
   );
 };

@@ -17,7 +17,7 @@ const Home = () => {
   return (
     <div
       className="flex flex-col justify-center items-center w-full sm:w-11/12 
-      max-w-maxContent mx-auto mt-16 gap-y-8 home-screen h-full"
+      max-w-maxContent mx-auto my-16 gap-y-8 home-screen h-full"
     >
       {token ? <ManagerHome /> : <CustomerHome />}
     </div>

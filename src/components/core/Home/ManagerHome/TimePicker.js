@@ -52,19 +52,7 @@ function TimePicker({ setState }) {
   const handleTouchStart = (event) => {
     const { clientY } = event.touches[0];
     setTouchStartY(clientY);
-    // Add a class to the body to prevent scrolling
-    // document.body.id.add("scrollable");
-    // console.log(document.body.className);
-    // document.body.id = "scrollable";
   };
-
-  // const handleTouchEnd = () => {
-  //   setTouchStartY(null);
-  //   // Remove the class from the body to allow scrolling
-  //   // document.body.classList.remove("scrollable");
-  //   // console.log(document.body.className);
-  //   document.body.removeAttribute("id");
-  // };
 
   const handleTouchMove = (event) => {
     if (touchStartY !== null) {
@@ -101,13 +89,11 @@ function TimePicker({ setState }) {
     if (scrollableDiv) {
       scrollableDiv.addEventListener("touchstart", handleTouchStart);
       scrollableDiv.addEventListener("touchmove", handleTouchMove);
-      // scrollableDiv.addEventListener("touchend", handleTouchEnd);
       scrollableDiv.addEventListener("wheel", handleWheel);
 
       return () => {
         scrollableDiv.removeEventListener("touchstart", handleTouchStart);
         scrollableDiv.removeEventListener("touchmove", handleTouchMove);
-        // scrollableDiv.removeEventListener("touchend", handleTouchEnd);
         scrollableDiv.removeEventListener("wheel", handleWheel);
       };
     }
