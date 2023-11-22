@@ -23,31 +23,30 @@ import PaymentDueTodayBookings from "./components/core/Dashboard/PaymentDueToday
 import SignupSidebar from "./components/common/SignupSidebar";
 import { useSelector } from "react-redux";
 import BookingInfoForm from "./pages/BookingInfoForm";
-// import WelcomeScreen from "./components/core/Home/WelcomeScreen";
-// import { useEffect, useState } from "react";
+import WelcomeScreen from "./components/core/Home/WelcomeScreen";
+import { useEffect, useState } from "react";
 import ForgotPassword from "./components/core/Auth/ForgotPassword";
 import ManagerReciept from "./pages/ManagerReciept";
 
 const App = () => {
   const { sidebarFlag } = useSelector((state) => state.auth);
-  // const [disableWelcomeScreen, setDisableWelcomeScreen] = useState(false);
+  const [disableWelcomeScreen, setDisableWelcomeScreen] = useState(false);
 
-  // useEffect(() => {
-  //   // Set a timeout to disable the WelcomeScreen image after 3 seconds
-  //   const timeout = setTimeout(() => {
-  //     setDisableWelcomeScreen(true);
-  //   }, 3000);
-  //   // }, 100);
-  //   // Clear the timeout when the component unmounts to avoid memory leaks
-  //   return () => {
-  //     clearTimeout(timeout);
-  //   };
-  // }, []);
+  useEffect(() => {
+    // Set a timeout to disable the WelcomeScreen image after 3 seconds
+    const timeout = setTimeout(() => {
+      setDisableWelcomeScreen(true);
+    }, 3000);
+    // }, 100);
+    // Clear the timeout when the component unmounts to avoid memory leaks
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, []);
 
-  // return !disableWelcomeScreen ? (
-  //   <WelcomeScreen disableWelcomeScreen={disableWelcomeScreen} />
-  // ) : (
-  return (
+  return !disableWelcomeScreen ? (
+    <WelcomeScreen disableWelcomeScreen={disableWelcomeScreen} />
+  ) : (
     <div className="min-h-screen flex flex-col bg-[#ECEFF4] w-full">
       <Navbar />
       {sidebarFlag && <SignupSidebar />}

@@ -130,8 +130,8 @@ function TimePicker({ setState }) {
             {inputArr.map((item, index) => (
               <p
                 key={index}
-                className={`flex justify-center text-[#4135F3] font-light leading-normal`}
-                style={{ fontSize: `${itemHeightInRem / 1.5}rem` }}
+                className={`flex justify-center text-[#4135F3] font-light leading-normal
+                text-[${itemHeightInRem / 1.5}rem]`}
               >
                 {item.split(" ")[0]}
               </p>
@@ -153,8 +153,8 @@ function TimePicker({ setState }) {
             {inputArr.map((item, index) => (
               <p
                 key={index}
-                className={`flex justify-center text-[#4135F3] font-light leading-normal`}
-                style={{ fontSize: `${itemHeightInRem / 1.5}rem` }}
+                className={`flex justify-center text-[#4135F3] font-light leading-normal
+                text-[${itemHeightInRem / 1.5}rem]`}
               >
                 {item.split(" ")[1]}
               </p>
@@ -162,7 +162,6 @@ function TimePicker({ setState }) {
           </div>
         </div>
       </div>
-      {/* AM or PM */}
       <div
         className={`w-fit px-2 h-[${itemHeightInRem}rem] rounded-[0.94rem]
         resize-none focus:outline-none outline-none overflow-y-hidden
@@ -177,8 +176,8 @@ function TimePicker({ setState }) {
           {inputArr.map((item, index) => (
             <p
               key={index}
-              className={`flex justify-center text-[#4135F3] font-light leading-normal`}
-              style={{ fontSize: `${itemHeightInRem / 1.5}rem` }}
+              className={`flex justify-center text-[#4135F3] font-light leading-normal
+              text-[${itemHeightInRem / 1.5}rem]`}
             >
               {item.split(" ")[2]}
             </p>

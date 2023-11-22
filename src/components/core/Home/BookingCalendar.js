@@ -190,8 +190,8 @@ const BookingCalendar = ({ dateRange, setDateRange }) => {
       <div className="w-fit flex flex-col justify-center items-center gap-[1rem]">
         <Calendar
           tileContent={getTileContent}
-          minDate={new Date()}
-          maxDate={maxDate}
+          // minDate={new Date()}
+          // maxDate={maxDate}
           showNeighboringMonth={false}
           value={dateRange}
           onChange={(range) => setDateRange(range)}
