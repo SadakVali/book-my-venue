@@ -57,7 +57,7 @@ const ManagerHome = () => {
   return (
     <div
       className="min-h-[70vh] h-full w-11/12 max-w-maxContentTab mx-auto flex flex-col
-      justify-center items-center"
+      justify-center items-center gap-y-16"
     >
       <BookingCalendar setDateRange={setDateRange} dateRange={dateRange} />
       {/* Check in & check time time pickers */}
