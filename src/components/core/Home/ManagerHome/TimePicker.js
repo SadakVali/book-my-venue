@@ -53,15 +53,17 @@ function TimePicker({ setState }) {
     const { clientY } = event.touches[0];
     setTouchStartY(clientY);
     // Add a class to the body to prevent scrolling
-    document.body.classList.add("scrollable");
-    console.log(document.body.className);
+    // document.body.id.add("scrollable");
+    // console.log(document.body.className);
+    document.body.id = "scrollable";
   };
 
   const handleTouchEnd = () => {
     setTouchStartY(null);
     // Remove the class from the body to allow scrolling
-    document.body.classList.remove("scrollable");
-    console.log(document.body.className);
+    // document.body.classList.remove("scrollable");
+    // console.log(document.body.className);
+    document.body.removeAttribute("id");
   };
 
   const handleTouchMove = (event) => {
