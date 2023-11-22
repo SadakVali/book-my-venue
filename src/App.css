@@ -212,5 +212,7 @@ textarea::-webkit-scrollbar {
 }
 
 .scrollable {
+  position: fixed;
+  width: 100%;
   overflow: hidden;
 }
