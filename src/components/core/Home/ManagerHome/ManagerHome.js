@@ -65,7 +65,7 @@ const ManagerHome = () => {
       {/* Check in & check time time pickers */}
       {dateRange && dateRange.length > 0 && (
         <div
-          className="absolute left-0 right-0 flex flex-col 
+          className="fixed left-0 right-0 flex flex-col 
           justify-center items-center gap-y-16"
         >
           <div className="flex gap-16 flex-col sm:flex-row">
