@@ -210,3 +210,7 @@ textarea::-webkit-scrollbar {
   flex: 1 1 var(--min-col-size);
   max-width: 25rem;
 }
+
+.scrollable {
+  overflow: hidden;
+}
